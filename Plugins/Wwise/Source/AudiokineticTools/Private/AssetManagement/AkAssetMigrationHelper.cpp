@@ -32,7 +32,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "IAudiokineticTools.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "AssetToolsModule.h"
-#include "Wwise/WwiseAllowShrinking.h"
+#include "WwiseUnrealDefines.h"
 
 #include "GenericPlatform/GenericPlatformFile.h"
 #if UE_5_0_OR_LATER
@@ -674,7 +674,7 @@ namespace AkAssetMigration
 		}
 
 		TArray<TSharedPtr<FJsonValue>> IncludeIdJson;
-		for (const FString& IncludedId : IncludeIds)
+		for (const FString IncludedId : IncludeIds)
 		{
 			TSharedPtr<FJsonObject> IncludedObject = MakeShared< FJsonObject>();
 			IncludedObject->SetStringField(WwiseWaapiHelper::OBJECT, IncludedId);
@@ -857,7 +857,7 @@ namespace AkAssetMigration
 							FString value = ProjectContent.Mid(ValueIdx, ValueEndIdx - ValueIdx);
 							if (value != ItemToAdd.Value)
 							{
-								ProjectContent.RemoveAt(ValueIdx, ValueEndIdx - ValueIdx, EWwiseAllowShrinking::No);
+								ProjectContent.RemoveAt(ValueIdx, ValueEndIdx - ValueIdx, false);
 								ProjectContent.InsertAt(ValueIdx, ItemToAdd.Value);
 								bModified = true;
 							}

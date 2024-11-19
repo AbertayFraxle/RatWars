@@ -43,7 +43,6 @@ Super(ObjectInitializer)
 
 	RootComponent = AkComponent;
 
-
 	//bNoDelete = true;
 	SetHidden(true);
 	AutoPost = false;
@@ -105,6 +104,12 @@ void AAkAmbientSound::StartPlaying()
 {
 	if( !IsCurrentlyPlaying() )
 	{
+		FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
+		if (AkAudioDevice)
+		{
+			AkAudioDevice->SetAttenuationScalingFactor(this, AkComponent->AttenuationScalingFactor);
+		}
+		
 		if (AkComponent->AkAudioEvent)
 		{
 			AkComponent->AkAudioEvent->PostOnActor(this, nullptr, nullptr, nullptr, (AkCallbackType)0, nullptr, StopWhenOwnerIsDestroyed);

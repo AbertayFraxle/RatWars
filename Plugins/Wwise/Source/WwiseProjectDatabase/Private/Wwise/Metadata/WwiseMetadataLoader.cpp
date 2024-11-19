@@ -17,126 +17,119 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
+#include "Wwise/Metadata/WwiseMetadataLoadable.h"
+#include "Wwise/Stats/ProjectDatabase.h"
+
+#include "Dom/JsonObject.h"
+
 #include <inttypes.h>
 
-void WwiseMetadataLoader::Fail(const WwiseDBString& FieldName)
+void FWwiseMetadataLoader::Fail(const TCHAR* FieldName)
 {
-	WWISE_DB_LOG(Error, "Could not retrieve field %s", *FieldName);
+	UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not retrieve field %s"), FieldName);
 	bResult = false;
 }
 
-void WwiseMetadataLoader::LogParsed(const WwiseDBString& FieldName, const WwiseDBShortId Id, const WwiseDBString& Name)
+void FWwiseMetadataLoader::LogParsed(const TCHAR* FieldName, const uint32 Id, const FName Name)
 {
 	if (bResult)
 	{
-		if (Id && !Name.IsEmpty())
+		if (Id && !Name.IsNone())
 		{
-			WWISE_DB_LOG(VeryVerbose, "Parsed %s [%" PRIu32 "] %s", *FieldName, Id, *Name);
+			UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Parsed %s [%" PRIu32 "] %s"), FieldName, Id, *Name.ToString());
 		}
 		else if (Id)
 		{
-			WWISE_DB_LOG(VeryVerbose, "Parsed %s [%" PRIu32 "]", *FieldName, Id);
+			UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Parsed %s [%" PRIu32 "]"), FieldName, Id);
 		}
-		else if (!Name.IsEmpty())
+		else if (!Name.IsNone())
 		{
-			WWISE_DB_LOG(VeryVerbose, "Parsed %s: %s", *FieldName, *Name);
+			UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Parsed %s: %s"), FieldName, *Name.ToString());
 		}
 		else
 		{
-			WWISE_DB_LOG(VeryVerbose, "Parsed %s", *FieldName);
+			UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Parsed %s"), FieldName);
 		}
 	}
 	else 
 	{
-		if (Id && !Name.IsEmpty())
+		if (Id && !Name.IsNone())
 		{
-			WWISE_DB_LOG(Log, "... while parsing %s [%" PRIu32 "] %s", *FieldName, Id, *Name);
+			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("... while parsing %s [%" PRIu32 "] %s"), FieldName, Id, *Name.ToString());
 		}
 		else if (Id)
 		{
-			WWISE_DB_LOG(Log, "... while parsing %s [%" PRIu32 "]", *FieldName, Id);
+			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("... while parsing %s [%" PRIu32 "]"), FieldName, Id);
 		}
-		else if (!Name.IsEmpty())
+		else if (!Name.IsNone())
 		{
-			WWISE_DB_LOG(Log, "... while parsing %s: %s", *FieldName, *Name);
+			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("... while parsing %s: %s"), FieldName, *Name.ToString());
 		}
 		else
 		{
-			WWISE_DB_LOG(Log, "... while parsing %s", *FieldName);
+			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("... while parsing %s"), FieldName);
 		}
 	}
 }
 
-bool WwiseMetadataLoader::GetBool(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required)
+bool FWwiseMetadataLoader::GetBool(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required)
 {
-	if(Object == nullptr)
-	{
-		Fail(FieldName);
-		return false;
-	}
-	Object->AddRequestedValue("bool"_wwise_db, FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("bool"), FieldName);
 
 	bool Value = false;
 
-	if (!JsonObject.TryGetBoolField(FieldName, Value) && Required == WwiseRequiredMetadata::Mandatory)
+	if (!JsonObject->TryGetBoolField(FieldName, Value) && Required == EWwiseRequiredMetadata::Mandatory)
 	{
-		Fail(FieldName);
+		Fail(*FieldName);
 	}
 
 	Object->IncLoadedSize(sizeof(Value));
 	return Value;
 }
 
-float WwiseMetadataLoader::GetFloat(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required)
+float FWwiseMetadataLoader::GetFloat(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required)
 {
-	if(Object == nullptr)
-	{
-		Fail(FieldName);
-		return 0.f;
-	}
-	Object->AddRequestedValue("float"_wwise_db, FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("float"), FieldName);
 
 	double Value{};
 
-	if (!JsonObject.TryGetDoubleField(FieldName, Value) && Required == WwiseRequiredMetadata::Mandatory)
+	if (!JsonObject->TryGetNumberField(FieldName, Value) && Required == EWwiseRequiredMetadata::Mandatory)
 	{
-		Fail(FieldName);
+		Fail(*FieldName);
 	}
 
 	Object->IncLoadedSize(sizeof(Value));
 	return float(Value);
 }
 
-WwiseDBGuid WwiseMetadataLoader::GetGuid(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required)
+FGuid FWwiseMetadataLoader::GetGuid(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required)
 {
-	if(Object == nullptr)
-	{
-		Fail(FieldName);
-		return WwiseDBGuid();
-	}
-	Object->AddRequestedValue("guid"_wwise_db, FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("guid"), FieldName);
 
-	WwiseDBGuid Value{};
+	FGuid Value{};
 
-	WwiseDBString ValueAsString;
-	if (!JsonObject.TryGetStringField(FieldName, ValueAsString))
+	FString ValueAsString;
+	if (!JsonObject->TryGetStringField(FieldName, ValueAsString))
 	{
-		if (Required == WwiseRequiredMetadata::Mandatory)
+		if (Required == EWwiseRequiredMetadata::Mandatory)
 		{
-			Fail(FieldName);
+			Fail(*FieldName);
 		}
 	}
-	else if (ValueAsString.Size() != 38)
+	else if (ValueAsString.Len() != 38)
 	{
-		WWISE_DB_LOG(Error, "Invalid GUID %s: %s", *FieldName, *ValueAsString);
-		Fail(FieldName);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Invalid GUID %s: %s"), *FieldName, *ValueAsString);
+		Fail(*FieldName);
 	}
 	else
 	{
-		if (!WwiseDBGuid::Parse(ValueAsString, Value))
+		if (!FGuid::ParseExact(ValueAsString, EGuidFormats::DigitsWithHyphensInBraces, Value))
 		{
-			WWISE_DB_LOG(Error, "Could not decode GUID %s: %s", *FieldName, *ValueAsString);
-			Fail(FieldName);
+			UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not decode GUID %s: %s"), *FieldName, *ValueAsString);
+			Fail(*FieldName);
 		}
 	}
 
@@ -144,40 +137,32 @@ WwiseDBGuid WwiseMetadataLoader::GetGuid(WwiseMetadataLoadable* Object, const Ww
 	return Value;
 }
 
-WwiseDBString WwiseMetadataLoader::GetString(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required)
+FName FWwiseMetadataLoader::GetString(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required)
 {
-	if(Object == nullptr)
-	{
-		Fail(FieldName);
-		return WwiseDBString();
-	}
-	Object->AddRequestedValue("string"_wwise_db, FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("string"), FieldName);
 
-	WwiseDBString Value{};
+	FString Value{};
 
-	if (!JsonObject.TryGetStringField(FieldName, Value) && Required == WwiseRequiredMetadata::Mandatory)
+	if (!JsonObject->TryGetStringField(FieldName, Value) && Required == EWwiseRequiredMetadata::Mandatory)
 	{
-		Fail(FieldName);
+		Fail(*FieldName);
 	}
 
-	Object->IncLoadedSize(sizeof(Value) + Value.AllocatedSize());
-	return WwiseDBString(Value);
+	Object->IncLoadedSize(sizeof(Value) + Value.GetAllocatedSize());
+	return FName(Value);
 }
 
-WwiseDBShortId WwiseMetadataLoader::GetWwiseShortId(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required)
+uint32 FWwiseMetadataLoader::GetUint32(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required)
 {
-	if(Object == nullptr)
-	{
-		Fail(FieldName);
-		return WwiseDBShortId();
-	}
-	Object->AddRequestedValue("WwiseShortId"_wwise_db, FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("uint32"), FieldName);
 
-	WwiseDBShortId Value{};
+	uint32 Value{};
 
-	if (!JsonObject.TryGetShortIdField(FieldName, Value) && Required == WwiseRequiredMetadata::Mandatory)
+	if (!JsonObject->TryGetNumberField(FieldName, Value) && Required == EWwiseRequiredMetadata::Mandatory)
 	{
-		Fail(FieldName);
+		Fail(*FieldName);
 	}
 
 	Object->IncLoadedSize(sizeof(Value));

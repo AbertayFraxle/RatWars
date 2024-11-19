@@ -34,10 +34,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Async/Async.h"
 #include "Misc/ScopeLock.h"
 #include "Misc/CoreDelegates.h"
-
-#if AK_SUPPORT_WAAPI
 #include "Wwise/API/WAAPI.h"
 
+#if AK_SUPPORT_WAAPI
 #include "Misc/App.h"
 #include "Misc/Paths.h"
 #if PLATFORM_WINDOWS
@@ -458,21 +457,6 @@ bool FAkWaapiClient::IsProjectLoaded()
 #endif
 }
 
-void FAkWaapiClient::ConvertProjectPath(FString& Path)
-{
-#if PLATFORM_MAC
-	if(Path.StartsWith(TEXT("Y:")))
-	{
-		Path.ReplaceInline(TEXT("Y:"), *FPlatformMisc::GetEnvironmentVariable(TEXT("HOME")));
-	}
-	if(Path.StartsWith(TEXT("Z:")))
-	{
-		Path.ReplaceInline(TEXT("Z:"), *FPlatformMisc::GetEnvironmentVariable(TEXT("ROOT")));
-	}
-	Path.ReplaceInline(TEXT("\\"), TEXT("/"));
-#endif
-}
-
 /** This is called when the reconnection handler successfully connects to WAAPI.
 *  We check if the correct project is loaded on a background thread. If it is, we broadcast OnProjectLoaded.
 *  We also subscribe to ak::wwise::core::project::loaded in order to check the project whenever one is loaded.
@@ -574,7 +558,17 @@ FString GetAndWaitForCurrentProject(float RetrySleepTimeSeconds)
 			FPlatformProcess::Sleep(RetrySleepTimeSeconds);
 		}
 	}
-	FAkWaapiClient::ConvertProjectPath(ProjectPath);
+#if PLATFORM_MAC
+	if(ProjectPath.StartsWith(TEXT("Y:")))
+	{
+		ProjectPath.ReplaceInline(TEXT("Y:"), *FPlatformMisc::GetEnvironmentVariable(TEXT("HOME")));
+	}
+	if(ProjectPath.StartsWith(TEXT("Z:")))
+	{
+		ProjectPath.ReplaceInline(TEXT("Z:"), *FPlatformMisc::GetEnvironmentVariable(TEXT("ROOT")));
+	}
+	ProjectPath.ReplaceInline(TEXT("\\"), TEXT("/"));
+#endif
 	return ProjectPath;
 }
 

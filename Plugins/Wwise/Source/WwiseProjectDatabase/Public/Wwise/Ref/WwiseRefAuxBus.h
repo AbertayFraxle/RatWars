@@ -19,44 +19,44 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefAuxBus : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefAuxBus : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::AuxBus;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::AuxBus;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType AuxBusIndex;
 
-	WwiseRefAuxBus() {}
-	WwiseRefAuxBus(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefAuxBus() {}
+	FWwiseRefAuxBus(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InAuxBusIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		AuxBusIndex(InAuxBusIndex)
 	{}
-	const WwiseMetadataBus* GetAuxBus() const;
-	void GetAllAuxBusRefs(WwiseDBSet<const WwiseRefAuxBus*>& OutAuxBusRefs, const WwiseAuxBusGlobalIdsMap& InGlobalMap) const;
+	const FWwiseMetadataBus* GetAuxBus() const;
+	void GetAllAuxBusRefs(TSet<const FWwiseRefAuxBus*>& OutAuxBusRefs, const WwiseAuxBusGlobalIdsMap& InGlobalMap) const;
 	WwiseCustomPluginIdsMap GetAuxBusCustomPlugins(const WwiseCustomPluginGlobalIdsMap& GlobalMap) const;
 	WwisePluginShareSetIdsMap GetAuxBusPluginShareSets(const WwisePluginShareSetGlobalIdsMap& GlobalMap) const;
 	WwiseAudioDeviceIdsMap GetAuxBusAudioDevices(const WwiseAudioDeviceGlobalIdsMap& GlobalMap) const;
 
-	WwiseDBShortId AuxBusId() const;
-	WwiseDBGuid AuxBusGuid() const;
-	const WwiseDBString* AuxBusName() const;
-	const WwiseDBString* AuxBusObjectPath() const;
+	uint32 AuxBusId() const;
+	FGuid AuxBusGuid() const;
+	FName AuxBusName() const;
+	FName AuxBusObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefAuxBus& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefAuxBus& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& AuxBusIndex == Rhs.AuxBusIndex;
 	}
-	bool operator!=(const WwiseRefAuxBus& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefAuxBus& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefAuxBus::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefAuxBus::FGlobalIdsMap
 {
 	WwiseAuxBusGlobalIdsMap GlobalIdsMap;
 };

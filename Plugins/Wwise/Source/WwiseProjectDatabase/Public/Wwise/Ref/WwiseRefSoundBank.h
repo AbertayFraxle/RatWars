@@ -19,24 +19,24 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBanksInfo.h"
 
-class WwiseRefSoundBank : public WwiseRefSoundBanksInfo
+class WWISEPROJECTDATABASE_API FWwiseRefSoundBank : public FWwiseRefSoundBanksInfo
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::SoundBank;
-	struct FGlobalIdsMap;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::SoundBank;
+	struct WWISEPROJECTDATABASE_API FGlobalIdsMap;
 
 	WwiseRefIndexType SoundBankIndex;
-	WwiseDBShortId LanguageId;
+	uint32 LanguageId;
 
-	WwiseRefSoundBank() {}
-	WwiseRefSoundBank(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId) :
-		WwiseRefSoundBanksInfo(InRootMediaRef, InJsonFilePath),
+	FWwiseRefSoundBank() {}
+	FWwiseRefSoundBank(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId) :
+		FWwiseRefSoundBanksInfo(InRootMediaRef, InJsonFilePath),
 		SoundBankIndex(InSoundBankIndex),
 		LanguageId(InLanguageId)
 	{}
-	const WwiseMetadataSoundBank* GetSoundBank() const;
+	const FWwiseMetadataSoundBank* GetSoundBank() const;
 	WwiseMediaIdsMap GetSoundBankMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const;
 	WwiseCustomPluginIdsMap GetSoundBankCustomPlugins(const WwiseCustomPluginGlobalIdsMap& GlobalMap) const;
 	WwisePluginShareSetIdsMap GetSoundBankPluginShareSets(const WwisePluginShareSetGlobalIdsMap& GlobalMap) const;
@@ -57,23 +57,22 @@ public:
 	bool IsUserBank() const;
 	bool IsInitBank() const;
 
-	WwiseDBShortId SoundBankId() const;
-	const WwiseDBGuid* SoundBankGuid() const;
-	const WwiseDBString* SoundBankLanguage() const;
-	const WwiseDBString* SoundBankShortName() const;
-	const WwiseDBString* SoundBankObjectPath() const;
-	
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefSoundBank& Rhs) const
+	uint32 SoundBankId() const;
+	FGuid SoundBankGuid() const;
+	FName SoundBankShortName() const;
+	FName SoundBankObjectPath() const;
+
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefSoundBank& Rhs) const
 	{
-		return WwiseRefSoundBanksInfo::operator ==(Rhs)
+		return FWwiseRefSoundBanksInfo::operator ==(Rhs)
 			&& SoundBankIndex == Rhs.SoundBankIndex;
 	}
-	bool operator!=(const WwiseRefSoundBank& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefSoundBank& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefSoundBank::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefSoundBank::FGlobalIdsMap
 {
 	WwiseSoundBankGlobalIdsMap GlobalIdsMap;
 };

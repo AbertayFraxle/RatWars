@@ -52,7 +52,6 @@ public:
 	virtual void MigrateWwiseObjectInfo() override;
 	virtual void ValidateShortID(FWwiseObjectInfo& WwiseInfo) const override;
 	virtual bool SplitAssetName(FString& OutGroupName, FString& OutValueName) const;
-	virtual EWwiseGroupType GetGroupType() const { return EWwiseGroupType::Unknown; }
 #endif
 
 #if WITH_EDITOR
@@ -63,10 +62,6 @@ public:
 #endif // UE_5_4_OR_LATER
 #endif // WITH_EDITOR
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
-#endif
-	
 protected :
 	virtual void LoadGroupValue(){};
 	void UnloadGroupValue(bool bAsync);

@@ -20,7 +20,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include <inttypes.h>
 
-#include "Wwise/WwiseConcurrencyModule.h"
 #include "Wwise/WwiseFileHandlerModule.h"
 #include "Wwise/WwiseGlobalCallbacks.h"
 #include "Wwise/WwiseStreamableFileStateInfo.h"
@@ -861,13 +860,6 @@ void FWwiseFileState::AsyncOp(const TCHAR* InDebugName, FBasicFunction&& Fct)
 	if (UNLIKELY(!FileStateExecutionQueue))
 	{
 		UE_LOG(LogWwiseFileHandler, Error, TEXT("FWwiseFileState::AsyncOp %s %" PRIu32 ": Doing async op on terminated state"), GetManagingTypeName(), GetShortId());
-		if (auto* Module = IWwiseConcurrencyModule::GetModule())
-		{
-			if (auto* DefaultQueue = Module->GetDefaultQueue())
-			{
-				return DefaultQueue->Async(InDebugName, MoveTemp(Fct));
-			}
-		}
 		return Fct();
 	}
 	FileStateExecutionQueue->Async(InDebugName, MoveTemp(Fct));

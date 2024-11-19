@@ -19,18 +19,18 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 
-struct WwiseMetadataLanguageAttributes : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataLanguageAttributes : public FWwiseMetadataLoadable
 {
-	WwiseDBString Name;
-	WwiseDBShortId Id;
-	WwiseDBGuid GUID;
+	FName Name;
+	uint32 Id;
+	FGuid GUID;
 	bool bDefault;
 	bool bUseAsStandIn;
 
-	WwiseMetadataLanguageAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataLanguageAttributes(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataLanguage : public WwiseMetadataLanguageAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataLanguage : public FWwiseMetadataLanguageAttributes
 {
-	WwiseMetadataLanguage(WwiseMetadataLoader& Loader);
+	FWwiseMetadataLanguage(FWwiseMetadataLoader& Loader);
 };

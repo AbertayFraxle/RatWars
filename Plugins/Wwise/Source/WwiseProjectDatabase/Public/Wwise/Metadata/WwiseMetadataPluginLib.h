@@ -19,30 +19,30 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 
-enum class WwiseMetadataPluginLibType : WwiseDBShortId
+enum class EWwiseMetadataPluginLibType : uint32
 {
 	Source,
 	Effect,
 	AudioDevice,
 	Metadata,
-	Unknown = (WwiseDBShortId)-1
+	Unknown = (uint32)-1
 };
 
-struct WwiseMetadataPluginLibAttributes : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPluginLibAttributes : public FWwiseMetadataLoadable
 {
-	WwiseDBString LibName;
-	WwiseDBShortId LibId;
-	WwiseMetadataPluginLibType Type;
-	WwiseDBString DLL;
-	WwiseDBString StaticLib;
+	FName LibName;
+	uint32 LibId;
+	EWwiseMetadataPluginLibType Type;
+	FName DLL;
+	FName StaticLib;
 
-	WwiseMetadataPluginLibAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPluginLibAttributes(FWwiseMetadataLoader& Loader);
 
 private:
-	static WwiseMetadataPluginLibType TypeFromString(const WwiseDBString& TypeString);
+	static EWwiseMetadataPluginLibType TypeFromString(const FName& TypeString);
 };
 
-struct WwiseMetadataPluginLib : public WwiseMetadataPluginLibAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPluginLib : public FWwiseMetadataPluginLibAttributes
 {
-	WwiseMetadataPluginLib(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPluginLib(FWwiseMetadataLoader& Loader);
 };

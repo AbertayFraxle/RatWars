@@ -16,17 +16,19 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefPluginInfo.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataRootFile.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
-const WwiseDBString WwiseRefPluginInfo::NAME = "PluginInfo"_wwise_db;
+const TCHAR* const FWwiseRefPluginInfo::NAME = TEXT("PluginInfo");
 
-const WwiseMetadataPluginInfo* WwiseRefPluginInfo::GetPluginInfo() const
+const FWwiseMetadataPluginInfo* FWwiseRefPluginInfo::GetPluginInfo() const
 {
 	const auto* RootFile = GetRootFile();
-	if (!RootFile) [[unlikely]]
+	if (UNLIKELY(!RootFile))
 	{
 		return nullptr;
 	}
-	WWISE_DB_CLOG(!RootFile->PluginInfo, Error, "Could not get PluginInfo");
+	UE_CLOG(!RootFile->PluginInfo, LogWwiseProjectDatabase, Error, TEXT("Could not get PluginInfo"));
 	return RootFile->PluginInfo;
 }

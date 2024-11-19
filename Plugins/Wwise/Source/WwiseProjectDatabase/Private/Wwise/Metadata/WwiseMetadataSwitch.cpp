@@ -18,8 +18,8 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataSwitch.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
-WwiseMetadataSwitch::WwiseMetadataSwitch(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader)
+FWwiseMetadataSwitch::FWwiseMetadataSwitch(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader)
 {
-	Loader.LogParsed("Switch"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("Switch"), Id, Name);
 }

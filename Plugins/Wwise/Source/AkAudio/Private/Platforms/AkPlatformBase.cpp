@@ -21,9 +21,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Misc/Paths.h"
 #include "WwiseUnrealHelper.h"
 
-FString FAkPlatformBase::GetWwiseSoundEnginePluginDirectory()
+FString FAkPlatformBase::GetWwisePluginDirectory()
 {
-	return FPaths::ConvertRelativePathToFull(IPluginManager::Get().FindPlugin(TEXT("WwiseSoundEngine"))->GetBaseDir());
+	return FPaths::ConvertRelativePathToFull(IPluginManager::Get().FindPlugin(TEXT("Wwise"))->GetBaseDir());
 }
 
 FString FAkPlatformBase::GetDSPPluginsDirectory(const FString& PlatformArchitecture)

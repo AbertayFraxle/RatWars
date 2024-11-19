@@ -32,9 +32,37 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/WwiseResourceLoader.h"
 #include "Wwise/WwiseSoundBankManager.h"
 
-#include "Wwise/WwiseTask.h"
+#include "Async/Async.h"
 
 #include <inttypes.h>
+
+#include "Wwise/WwiseTask.h"
+
+FWwiseSwitchContainerLeafGroupValueUsageCount::FLoadedData::FLoadedData()
+{
+}
+
+bool FWwiseSwitchContainerLeafGroupValueUsageCount::FLoadedData::IsLoaded() const
+{
+	return LoadedSoundBanks.Num() > 0 || LoadedExternalSources.Num() > 0 || LoadedMedia.Num() > 0;
+}
+
+FWwiseSwitchContainerLeafGroupValueUsageCount::FWwiseSwitchContainerLeafGroupValueUsageCount(
+	const FWwiseSwitchContainerLeafCookedData& InKey):
+	Key(InKey)
+{}
+
+bool FWwiseSwitchContainerLeafGroupValueUsageCount::HaveAllKeys() const
+{
+	if (UNLIKELY(Key.GroupValueSet.Num() < LoadedGroupValues.Num()))
+	{
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("Have more keys loaded (%d) than existing in key (%d) @ %p for key %s"),
+			LoadedGroupValues.Num(), Key.GroupValueSet.Num(), &LoadedData, *Key.GetDebugString());
+		return true;
+	}
+
+	return Key.GroupValueSet.Num() == LoadedGroupValues.Num();
+}
 
 WWISE_RESOURCELOADERIMPL_TEST_CONST bool FWwiseResourceLoaderImpl::Test::bMockSleepOnMediaLoad{ false };
 
@@ -52,8 +80,94 @@ FWwiseResourceLoaderImpl::FWwiseResourceLoaderImpl(
 	MediaManager(&MediaManager),
 	SoundBankManager(&SoundBankManager)
 {
+#if WITH_EDITORONLY_DATA
+	GeneratedSoundBanksPath.Path = TEXT("/");
+#endif
 }
 
+FName FWwiseResourceLoaderImpl::GetUnrealExternalSourcePath() const
+{
+#if WITH_EDITORONLY_DATA
+	if(FPaths::IsRelative( CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString()))
+	{
+		return FName(GeneratedSoundBanksPath.Path / CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString() / CurrentPlatform.Platform->ExternalSourceRootPath.ToString());
+	}
+	else
+	{
+		return FName(CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString() / CurrentPlatform.Platform->ExternalSourceRootPath.ToString());
+	}
+#else
+	if (UNLIKELY(!ExternalSourceManager))
+	{
+		ExternalSourceManager = IWwiseExternalSourceManager::Get();
+		if (UNLIKELY(!ExternalSourceManager))
+		{
+			UE_LOG(LogWwiseResourceLoader, Error, TEXT("Failed to retrieve External Source Manager"));
+			return {};
+		}
+	}
+	return FName(FPaths::ProjectContentDir() / ExternalSourceManager->GetStagingDirectory());
+#endif
+}
+
+FString FWwiseResourceLoaderImpl::GetUnrealPath() const
+{
+#if WITH_EDITOR
+	if(FPaths::IsRelative( CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString()))
+	{
+		return GeneratedSoundBanksPath.Path / CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString();
+	}
+	else
+	{
+		return CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString();
+	}
+#elif WITH_EDITORONLY_DATA
+	UE_LOG(LogWwiseResourceLoader, Error, TEXT("GetUnrealPath should not be used in WITH_EDITORONLY_DATA (Getting path for %s)"), *InPath);
+	if(FPaths::IsRelative( CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString()))
+	{
+		return GeneratedSoundBanksPath.Path / CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString();
+	}
+	else
+	{
+		return CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString();
+	}
+#else
+	return StagePath;
+#endif
+}
+
+FString FWwiseResourceLoaderImpl::GetUnrealPath(const FString& InPath) const
+{
+#if WITH_EDITOR
+	return GetUnrealGeneratedSoundBanksPath(InPath);
+#elif WITH_EDITORONLY_DATA
+	UE_LOG(LogWwiseResourceLoader, Error, TEXT("GetUnrealPath should not be used in WITH_EDITORONLY_DATA (Getting path for %s)"), *InPath);
+	return GetUnrealGeneratedSoundBanksPath(InPath);
+#else
+	return GetUnrealStagePath(InPath);
+#endif
+}
+
+FString FWwiseResourceLoaderImpl::GetUnrealStagePath(const FString& InPath) const
+{
+	if (UNLIKELY(StagePath.IsEmpty()))
+	{
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("StagePath not set up (GetUnrealStagePath for %s)"), *InPath);
+	}
+	return StagePath / InPath;
+}
+
+#if WITH_EDITORONLY_DATA
+FString FWwiseResourceLoaderImpl::GetUnrealGeneratedSoundBanksPath(const FString& InPath) const
+{
+	if (UNLIKELY(GeneratedSoundBanksPath.Path.IsEmpty()))
+	{
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("GeneratedSoundBanksPath not set up (GetUnrealGeneratedSoundBanksPath for %s)"), *InPath);
+	}
+
+	return GeneratedSoundBanksPath.Path / CurrentPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString() / InPath;
+}
+#endif
 
 
 EWwiseResourceLoaderState FWwiseResourceLoaderImpl::GetResourceLoaderState()
@@ -66,7 +180,7 @@ void FWwiseResourceLoaderImpl::SetResourceLoaderState(EWwiseResourceLoaderState 
 	WwiseResourceLoaderState = State;
 }
 
-bool FWwiseResourceLoaderImpl::IsEnabled() const
+bool FWwiseResourceLoaderImpl::IsEnabled()
 {
 	return WwiseResourceLoaderState == EWwiseResourceLoaderState::Enabled;
 }
@@ -81,7 +195,7 @@ void FWwiseResourceLoaderImpl::Enable()
 	SetResourceLoaderState(EWwiseResourceLoaderState::Enabled);
 }
 
-void FWwiseResourceLoaderImpl::UpdateLanguage(FWwiseSetLanguagePromise&& Promise, const FWwiseLanguageCookedData& InLanguage, EWwiseReloadLanguage InReloadLanguage)
+void FWwiseResourceLoaderImpl::SetLanguageAsync(FWwiseSetLanguagePromise&& Promise, const FWwiseLanguageCookedData& InLanguage, EWwiseReloadLanguage InReloadLanguage)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT(TEXT("FWwiseResourceLoaderImpl::SetLanguageAsync"));
 	SCOPE_CYCLE_COUNTER(STAT_WwiseResourceLoaderTiming);
@@ -94,8 +208,8 @@ void FWwiseResourceLoaderImpl::UpdateLanguage(FWwiseSetLanguagePromise&& Promise
 		return Promise.EmplaceValue();
 	}
 
-	UE_CLOG(OldLanguage.GetLanguageName().IsNone(), LogWwiseResourceLoader, Log, TEXT("[SetLanguage] To %s"), *NewLanguage.GetLanguageName().ToString());
-	UE_CLOG(!OldLanguage.GetLanguageName().IsNone(), LogWwiseResourceLoader, Log, TEXT("[SetLanguage] from %s to %s"), *OldLanguage.GetLanguageName().ToString(), *NewLanguage.GetLanguageName().ToString());
+	UE_CLOG(!OldLanguage.GetLanguageName().IsValid(), LogWwiseResourceLoader, Log, TEXT("[SetLanguage] To %s"), *NewLanguage.GetLanguageName().ToString());
+	UE_CLOG(OldLanguage.GetLanguageName().IsValid(), LogWwiseResourceLoader, Log, TEXT("[SetLanguage] from %s to %s"), *OldLanguage.GetLanguageName().ToString(), *NewLanguage.GetLanguageName().ToString());
 
 	FCompletionFuture Future = MakeFulfilledWwisePromise<void>().GetFuture();
 
@@ -393,42 +507,6 @@ void FWwiseResourceLoaderImpl::SetPlatform(const FWwiseSharedPlatformId& InPlatf
 	CurrentPlatform = InPlatform;
 }
 
-FWwiseLoadedAssetLibraryPtr FWwiseResourceLoaderImpl::CreateAssetLibraryNode(const FWwiseAssetLibraryCookedData& InAssetLibraryCookedData)
-{
-	return new FWwiseLoadedAssetLibraryListNode(FWwiseLoadedAssetLibraryInfo(InAssetLibraryCookedData));
-}
-
-void FWwiseResourceLoaderImpl::LoadAssetLibraryNode(FWwiseLoadedAssetLibraryPromise&& Promise, FWwiseLoadedAssetLibraryPtr&& InAssetLibraryListNode)
-{
-	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadAssetLibraryNode"));
-	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
-
-	auto& LoadedAssetLibrary = InAssetLibraryListNode->GetValue();
-	LogLoad(LoadedAssetLibrary);
-
-	AttachAssetLibraryNode(InAssetLibraryListNode);
-
-	Timing.Stop();
-	Promise.EmplaceValue(InAssetLibraryListNode);
-}
-
-void FWwiseResourceLoaderImpl::UnloadAssetLibraryNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedAssetLibraryPtr&& InAssetLibraryListNode)
-{
-	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadAssetLibraryNode"));
-	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
-
-	auto& LoadedAssetLibrary = InAssetLibraryListNode->GetValue();
-
-	LogUnload(LoadedAssetLibrary);
-
-	DetachAssetLibraryNode(InAssetLibraryListNode);
-
-	delete InAssetLibraryListNode;
-
-	Timing.Stop();
-	Promise.EmplaceValue();
-}
-
 
 FWwiseLoadedAuxBusPtr FWwiseResourceLoaderImpl::CreateAuxBusNode(
 	const FWwiseLocalizedAuxBusCookedData& InAuxBusCookedData, const FWwiseLanguageCookedData* InLanguageOverride)
@@ -436,15 +514,14 @@ FWwiseLoadedAuxBusPtr FWwiseResourceLoaderImpl::CreateAuxBusNode(
 	const auto* LanguageKey = GetLanguageMapKey(InAuxBusCookedData.AuxBusLanguageMap, InLanguageOverride, InAuxBusCookedData.DebugName);
 	if (UNLIKELY(!LanguageKey))
 	{
-		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateAuxBusNode: Could not find language for Aux Bus %s (%" PRIu32 ")"),
-			*InAuxBusCookedData.DebugName.ToString(), InAuxBusCookedData.AuxBusId);
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateAuxBusNode: Could not find language for Aux Bus %s"), *InAuxBusCookedData.DebugName.ToString());
 		return nullptr;
 	}
 
 	return new FWwiseLoadedAuxBusListNode(FWwiseLoadedAuxBusInfo(InAuxBusCookedData, *LanguageKey));
 }
 
-void FWwiseResourceLoaderImpl::LoadAuxBusNode(FWwiseLoadedAuxBusPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode)
+void FWwiseResourceLoaderImpl::LoadAuxBusAsync(FWwiseLoadedAuxBusPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadAuxBusAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -485,7 +562,7 @@ void FWwiseResourceLoaderImpl::LoadAuxBusNode(FWwiseLoadedAuxBusPromise&& Promis
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadAuxBusNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode)
+void FWwiseResourceLoaderImpl::UnloadAuxBusAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadAuxBusAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -526,15 +603,14 @@ FWwiseLoadedEventPtr FWwiseResourceLoaderImpl::CreateEventNode(
 	const auto* LanguageKey = GetLanguageMapKey(InEventCookedData.EventLanguageMap, InLanguageOverride, InEventCookedData.DebugName);
 	if (UNLIKELY(!LanguageKey))
 	{
-		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateEventNode: Could not find language for Event %s (%" PRIu32 ")"),
-			*InEventCookedData.DebugName.ToString(), InEventCookedData.EventId);
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateEventNode: Could not find language for Event %s"), *InEventCookedData.DebugName.ToString());
 		return nullptr;
 	}
 
 	return new FWwiseLoadedEventListNode(FWwiseLoadedEventInfo(InEventCookedData, *LanguageKey));
 }
 
-void FWwiseResourceLoaderImpl::LoadEventNode(FWwiseLoadedEventPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode)
+void FWwiseResourceLoaderImpl::LoadEventAsync(FWwiseLoadedEventPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadEventAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -576,7 +652,7 @@ void FWwiseResourceLoaderImpl::LoadEventNode(FWwiseLoadedEventPromise&& Promise,
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadEventNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode)
+void FWwiseResourceLoaderImpl::UnloadEventAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadEventAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -617,7 +693,7 @@ FWwiseLoadedExternalSourcePtr FWwiseResourceLoaderImpl::CreateExternalSourceNode
 	return new FWwiseLoadedExternalSourceListNode(FWwiseLoadedExternalSourceInfo(InExternalSourceCookedData));
 }
 
-void FWwiseResourceLoaderImpl::LoadExternalSourceNode(FWwiseLoadedExternalSourcePromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode)
+void FWwiseResourceLoaderImpl::LoadExternalSourceAsync(FWwiseLoadedExternalSourcePromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadExternalSourceAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -650,7 +726,7 @@ void FWwiseResourceLoaderImpl::LoadExternalSourceNode(FWwiseLoadedExternalSource
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadExternalSourceNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode)
+void FWwiseResourceLoaderImpl::UnloadExternalSourceAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadExternalSourceAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -683,7 +759,7 @@ FWwiseLoadedGroupValuePtr FWwiseResourceLoaderImpl::CreateGroupValueNode(
 	return new FWwiseLoadedGroupValueListNode(FWwiseLoadedGroupValueInfo(InGroupValueCookedData));
 }
 
-void FWwiseResourceLoaderImpl::LoadGroupValueNode(FWwiseLoadedGroupValuePromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode)
+void FWwiseResourceLoaderImpl::LoadGroupValueAsync(FWwiseLoadedGroupValuePromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadGroupValueAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -716,7 +792,7 @@ void FWwiseResourceLoaderImpl::LoadGroupValueNode(FWwiseLoadedGroupValuePromise&
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadGroupValueNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode)
+void FWwiseResourceLoaderImpl::UnloadGroupValueAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadGroupValueAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -749,7 +825,7 @@ FWwiseLoadedInitBankPtr FWwiseResourceLoaderImpl::CreateInitBankNode(
 	return new FWwiseLoadedInitBankListNode(FWwiseLoadedInitBankInfo(InInitBankCookedData));
 }
 
-void FWwiseResourceLoaderImpl::LoadInitBankNode(FWwiseLoadedInitBankPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode)
+void FWwiseResourceLoaderImpl::LoadInitBankAsync(FWwiseLoadedInitBankPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadInitBankAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -782,7 +858,7 @@ void FWwiseResourceLoaderImpl::LoadInitBankNode(FWwiseLoadedInitBankPromise&& Pr
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadInitBankNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode)
+void FWwiseResourceLoaderImpl::UnloadInitBankAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadInitBankAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -814,7 +890,7 @@ FWwiseLoadedMediaPtr FWwiseResourceLoaderImpl::CreateMediaNode(const FWwiseMedia
 	return new FWwiseLoadedMediaListNode(FWwiseLoadedMediaInfo(InMediaCookedData));
 }
 
-void FWwiseResourceLoaderImpl::LoadMediaNode(FWwiseLoadedMediaPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode)
+void FWwiseResourceLoaderImpl::LoadMediaAsync(FWwiseLoadedMediaPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadMediaAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -847,7 +923,7 @@ void FWwiseResourceLoaderImpl::LoadMediaNode(FWwiseLoadedMediaPromise&& Promise,
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadMediaNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode)
+void FWwiseResourceLoaderImpl::UnloadMediaAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadMediaAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -880,15 +956,14 @@ FWwiseLoadedShareSetPtr FWwiseResourceLoaderImpl::CreateShareSetNode(
 	const auto* LanguageKey = GetLanguageMapKey(InShareSetCookedData.ShareSetLanguageMap, InLanguageOverride, InShareSetCookedData.DebugName);
 	if (UNLIKELY(!LanguageKey))
 	{
-		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateShareSetNode: Could not find language for ShareSet %s (%" PRIu32 ")"),
-			*InShareSetCookedData.DebugName.ToString(), InShareSetCookedData.ShareSetId);
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateShareSetNode: Could not find language for ShareSet %s"), *InShareSetCookedData.DebugName.ToString());
 		return nullptr;
 	}
 
 	return new FWwiseLoadedShareSetListNode(FWwiseLoadedShareSetInfo(InShareSetCookedData, *LanguageKey));
 }
 
-void FWwiseResourceLoaderImpl::LoadShareSetNode(FWwiseLoadedShareSetPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode)
+void FWwiseResourceLoaderImpl::LoadShareSetAsync(FWwiseLoadedShareSetPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadShareSetAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -930,7 +1005,7 @@ void FWwiseResourceLoaderImpl::LoadShareSetNode(FWwiseLoadedShareSetPromise&& Pr
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadShareSetNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode)
+void FWwiseResourceLoaderImpl::UnloadShareSetAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadShareSetAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -970,15 +1045,14 @@ FWwiseLoadedSoundBankPtr FWwiseResourceLoaderImpl::CreateSoundBankNode(
 	const auto* LanguageKey = GetLanguageMapKey(InSoundBankCookedData.SoundBankLanguageMap, InLanguageOverride, InSoundBankCookedData.DebugName);
 	if (UNLIKELY(!LanguageKey))
 	{
-		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateSoundBankNode: Could not find language for SoundBank %s (%" PRIu32 ")"),
-			*InSoundBankCookedData.DebugName.ToString(), InSoundBankCookedData.SoundBankId);
+		UE_LOG(LogWwiseResourceLoader, Error, TEXT("CreateSoundBankNode: Could not find language for SoundBank %s"), *InSoundBankCookedData.DebugName.ToString());
 		return nullptr;
 	}
 
 	return new FWwiseLoadedSoundBankListNode(FWwiseLoadedSoundBankInfo(InSoundBankCookedData, *LanguageKey));
 }
 
-void FWwiseResourceLoaderImpl::LoadSoundBankNode(FWwiseLoadedSoundBankPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode)
+void FWwiseResourceLoaderImpl::LoadSoundBankAsync(FWwiseLoadedSoundBankPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::LoadSoundBankAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -1020,7 +1094,7 @@ void FWwiseResourceLoaderImpl::LoadSoundBankNode(FWwiseLoadedSoundBankPromise&& 
 	});
 }
 
-void FWwiseResourceLoaderImpl::UnloadSoundBankNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode)
+void FWwiseResourceLoaderImpl::UnloadSoundBankAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode)
 {
 	SCOPED_WWISERESOURCELOADER_EVENT_2(TEXT("FWwiseResourceLoaderImpl::UnloadSoundBankAsync"));
 	FWwiseAsyncCycleCounter Timing(GET_STATID(STAT_WwiseResourceLoaderTiming));
@@ -1447,7 +1521,7 @@ void FWwiseResourceLoaderImpl::LoadInitBankResources(FWwiseResourceLoadPromise&&
 		LoadedData.bLoaded = bInResult;
 		if (UNLIKELY(!LoadedData.bLoaded))
 		{
-			UE_LOG(LogWwiseResourceLoader, Warning, TEXT("LoadInitBankResources: Could not load InitBank %s (%" PRIu32 ")"),
+			UE_LOG(LogWwiseResourceLoader, Error, TEXT("LoadInitBankResources: Could not load InitBank %s (%" PRIu32 ")"),
 				*InCookedData.DebugName.ToString(), (uint32)InCookedData.SoundBankId);
 		}
 
@@ -2170,15 +2244,6 @@ void FWwiseResourceLoaderImpl::DeleteSwitchContainerLeafGroupValueUsageCount(FWw
 	}
 }
 
-void FWwiseResourceLoaderImpl::AttachAssetLibraryNode(FWwiseLoadedAssetLibraryListNode* AssetLibraryListNode)
-{
-	{
-		FScopeLock Lock(&ListUpdateCriticalSection);		
-		LoadedAssetLibraryList.AddTail(AssetLibraryListNode);
-	}
-	INC_DWORD_STAT(STAT_WwiseResourceLoaderAssetLibraries);
-}
-
 void FWwiseResourceLoaderImpl::AttachAuxBusNode(FWwiseLoadedAuxBusPtr AuxBusListNode)
 {
 	{
@@ -2251,14 +2316,6 @@ void FWwiseResourceLoaderImpl::AttachSoundBankNode(FWwiseLoadedSoundBankPtr Soun
 	INC_DWORD_STAT(STAT_WwiseResourceLoaderSoundBanks);
 }
 
-void FWwiseResourceLoaderImpl::DetachAssetLibraryNode(FWwiseLoadedAssetLibraryListNode* AssetLibraryListNode)
-{
-	{
-		FScopeLock Lock(&ListUpdateCriticalSection);		
-		LoadedAssetLibraryList.RemoveNode(AssetLibraryListNode, false);
-	}
-	DEC_DWORD_STAT(STAT_WwiseResourceLoaderAssetLibraries);
-}
 
 void FWwiseResourceLoaderImpl::DetachAuxBusNode(FWwiseLoadedAuxBusPtr AuxBusListNode)
 {
@@ -2532,7 +2589,7 @@ void FWwiseResourceLoaderImpl::WaitForFutures(FCompletionFutureArray&& FutureArr
 void FWwiseResourceLoaderImpl::LoadSoundBankFile(const FWwiseSoundBankCookedData& InSoundBank, FLoadFileCallback&& InCallback) const
 {
 	UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[LoadSoundBankAsync: %" PRIu32 "] %s at %s"),
-		(uint32)InSoundBank.SoundBankId, *InSoundBank.DebugName.ToString(), *InSoundBank.PackagedFile.PathName.ToString());
+		(uint32)InSoundBank.SoundBankId, *InSoundBank.DebugName.ToString(), *InSoundBank.SoundBankPathName.ToString());
 
 	if (UNLIKELY(!SoundBankManager))
 	{
@@ -2544,7 +2601,7 @@ void FWwiseResourceLoaderImpl::LoadSoundBankFile(const FWwiseSoundBankCookedData
 			return;
 		}
 	}
-	SoundBankManager->LoadSoundBank(InSoundBank, [&InSoundBank, InCallback = MoveTemp(InCallback)](bool bInResult)
+	SoundBankManager->LoadSoundBank(InSoundBank, GetUnrealPath(), [&InSoundBank, InCallback = MoveTemp(InCallback)](bool bInResult)
 	{
 		UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[LoadSoundBankAsync: %" PRIu32 "] %s: Done."),
 			(uint32)InSoundBank.SoundBankId, *InSoundBank.DebugName.ToString());
@@ -2554,9 +2611,9 @@ void FWwiseResourceLoaderImpl::LoadSoundBankFile(const FWwiseSoundBankCookedData
 
 void FWwiseResourceLoaderImpl::UnloadSoundBankFile(const FWwiseSoundBankCookedData& InSoundBank, FUnloadFileCallback&& InCallback) const
 {
-	auto Path = InSoundBank.PackagedFile.PathName;
+	auto Path = GetUnrealPath(InSoundBank.SoundBankPathName);
 	UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[UnloadSoundBankAsync: %" PRIu32 "] %s at %s"),
-		(uint32)InSoundBank.SoundBankId, *InSoundBank.DebugName.ToString(), *InSoundBank.PackagedFile.PathName.ToString());
+		(uint32)InSoundBank.SoundBankId, *InSoundBank.DebugName.ToString(), *InSoundBank.SoundBankPathName.ToString());
 
 	if (UNLIKELY(!SoundBankManager))
 	{
@@ -2564,7 +2621,7 @@ void FWwiseResourceLoaderImpl::UnloadSoundBankFile(const FWwiseSoundBankCookedDa
 		InCallback();
 		return;
 	}
-	SoundBankManager->UnloadSoundBank(InSoundBank, [&InSoundBank, InCallback = MoveTemp(InCallback)]()
+	SoundBankManager->UnloadSoundBank(InSoundBank, GetUnrealPath(), [&InSoundBank, InCallback = MoveTemp(InCallback)]()
 	{
 		UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[UnloadSoundBankAsync: %" PRIu32 "] %s: Done."),
 			(uint32)InSoundBank.SoundBankId, *InSoundBank.DebugName.ToString());
@@ -2574,9 +2631,9 @@ void FWwiseResourceLoaderImpl::UnloadSoundBankFile(const FWwiseSoundBankCookedDa
 
 void FWwiseResourceLoaderImpl::LoadMediaFile(const FWwiseMediaCookedData& InMedia, FLoadFileCallback&& InCallback) const
 {
-	auto Path = InMedia.PackagedFile.PathName;
+	auto Path = GetUnrealPath(InMedia.MediaPathName);
 	UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[LoadMediaAsync: %" PRIu32 "] %s at %s"),
-		(uint32)InMedia.MediaId, *InMedia.DebugName.ToString(), *InMedia.PackagedFile.PathName.ToString());
+		(uint32)InMedia.MediaId, *InMedia.DebugName.ToString(), *InMedia.MediaPathName.ToString());
 
 	if (UNLIKELY(!MediaManager))
 	{
@@ -2589,7 +2646,7 @@ void FWwiseResourceLoaderImpl::LoadMediaFile(const FWwiseMediaCookedData& InMedi
 		}
 	}
 
-	MediaManager->LoadMedia(InMedia, [&InMedia, InCallback = MoveTemp(InCallback)](bool bInResult)
+	MediaManager->LoadMedia(InMedia, GetUnrealPath(), [&InMedia, InCallback = MoveTemp(InCallback)](bool bInResult)
 	{
 		UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[LoadMediaAsync: %" PRIu32 "] %s: Done."),
 			(uint32)InMedia.MediaId, *InMedia.DebugName.ToString());
@@ -2599,9 +2656,9 @@ void FWwiseResourceLoaderImpl::LoadMediaFile(const FWwiseMediaCookedData& InMedi
 
 void FWwiseResourceLoaderImpl::UnloadMediaFile(const FWwiseMediaCookedData& InMedia, FUnloadFileCallback&& InCallback) const
 {
-	auto Path = InMedia.PackagedFile.PathName;
+	auto Path = GetUnrealPath(InMedia.MediaPathName);
 	UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[UnloadMediaAsync: %" PRIu32 "] %s at %s"),
-		(uint32)InMedia.MediaId, *InMedia.DebugName.ToString(), *InMedia.PackagedFile.PathName.ToString());
+		(uint32)InMedia.MediaId, *InMedia.DebugName.ToString(), *InMedia.MediaPathName.ToString());
 
 
 	if (UNLIKELY(!MediaManager))
@@ -2611,7 +2668,7 @@ void FWwiseResourceLoaderImpl::UnloadMediaFile(const FWwiseMediaCookedData& InMe
 		return;
 	}
 
-	MediaManager->UnloadMedia(InMedia, [&InMedia, InCallback = MoveTemp(InCallback)]()
+	MediaManager->UnloadMedia(InMedia, GetUnrealPath(), [&InMedia, InCallback = MoveTemp(InCallback)]()
 	{
 		UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[UnloadMediaAsync: %" PRIu32 "] %s: Done."),
 			(uint32)InMedia.MediaId, *InMedia.DebugName.ToString());
@@ -2635,7 +2692,7 @@ void FWwiseResourceLoaderImpl::LoadExternalSourceFile(const FWwiseExternalSource
 		}
 	}
 
-	ExternalSourceManager->LoadExternalSource(InExternalSource, CurrentLanguage, [&InExternalSource, InCallback = MoveTemp(InCallback)](bool bInResult)
+	ExternalSourceManager->LoadExternalSource(InExternalSource, GetUnrealExternalSourcePath(), CurrentLanguage, [&InExternalSource, InCallback = MoveTemp(InCallback)](bool bInResult)
 	{
 		UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[LoadExternalSourceAsync: %" PRIu32 "] %s: Done."),
 			(uint32)InExternalSource.Cookie, *InExternalSource.DebugName.ToString());
@@ -2655,7 +2712,7 @@ void FWwiseResourceLoaderImpl::UnloadExternalSourceFile(const FWwiseExternalSour
 		return;
 	}
 
-	ExternalSourceManager->UnloadExternalSource(InExternalSource, CurrentLanguage, [&InExternalSource, InCallback = MoveTemp(InCallback)]()
+	ExternalSourceManager->UnloadExternalSource(InExternalSource, GetUnrealExternalSourcePath(), CurrentLanguage, [&InExternalSource, InCallback = MoveTemp(InCallback)]()
 	{
 		UE_LOG(LogWwiseResourceLoader, VeryVerbose, TEXT("[UnloadExternalSourceAsync: %" PRIu32 "] %s: Done."),
 			(uint32)InExternalSource.Cookie, *InExternalSource.DebugName.ToString());

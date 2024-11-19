@@ -23,32 +23,43 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "CoreTypes.h"
 #include "Containers/UnrealString.h"
 #include "GenericPlatform/GenericPlatformFile.h"
-#include "Wwise/AdapterTypes/IWwiseDirectoryVisitor.h"
 
-class WWISEPROJECTDATABASE_API WwiseDirectoryVisitor
+class WWISEPROJECTDATABASE_API FWwiseDirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 {
-	friend IWwiseDirectoryVisitor<WwiseDirectoryVisitor>;
 public:
-	WwiseDirectoryVisitor(const WwiseDBString* InPlatformName = nullptr) :
-		PlatformName(InPlatformName)
+	FWwiseDirectoryVisitor(IPlatformFile& InFileInterface,
+						   const FName* InPlatformName = nullptr,
+						   const FGuid* InPlatformGuid = nullptr) :
+		FileInterface(InFileInterface),
+		PlatformName(InPlatformName),
+		PlatformGuid(InPlatformGuid)
 	{}
 
-	WwiseGeneratedFiles& Get();
+	FWwiseGeneratedFiles& Get();
 
 protected:
-	bool Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory);
+	bool Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory) override;
 
 private:
-	WwiseGeneratedFiles GeneratedDirectory;
-	
+	IPlatformFile& FileInterface;
+	FWwiseGeneratedFiles GeneratedDirectory;
+
+	class IGettableVisitor
+	{
+	public:
+		virtual FWwiseGeneratedFiles::FPlatformFiles& Get() = 0;
+		virtual ~IGettableVisitor() {}
+	};
 	class FPlatformRootDirectoryVisitor;
 
-	WwiseDBArray<WwiseDBFuture<FPlatformRootDirectoryVisitor*>> Futures;
+	TArray<TFuture<FPlatformRootDirectoryVisitor*>> Futures;
 
-	const WwiseDBString* PlatformName;
+	const FName* PlatformName;
+	const FGuid* PlatformGuid;
 
 	class FSoundBankVisitor;
 	class FMediaVisitor;
-	WwiseDirectoryVisitor& operator=(const WwiseDirectoryVisitor& Rhs) = delete;
-	WwiseDirectoryVisitor(const WwiseDirectoryVisitor& Rhs) = delete;
+
+	FWwiseDirectoryVisitor& operator=(const FWwiseDirectoryVisitor& Rhs) = delete;
+	FWwiseDirectoryVisitor(const FWwiseDirectoryVisitor& Rhs) = delete;
 };

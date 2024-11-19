@@ -49,38 +49,32 @@ void FWwiseReconcileImpl::GetAllWwiseRefs()
 		UE_LOG(LogWwiseReconcile, Error, TEXT("Could not load project database"));
 		return;
 	}
-	WwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
+	FWwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
 
 	// Check to make sure there are no issues getting data for the CurrentPlatform
-	if (DataStructure.GetSoundBanks().Size() == 0)
+	if (DataStructure.GetSoundBanks().Num() == 0)
 	{
-		auto PlatformName = DataStructure.GetCurrentPlatform().GetPlatformName();
-		UE_LOG(LogWwiseReconcile, Error, TEXT("No data loaded from Wwise project database for the curent platform %s"), *FWwiseStringConverter::ToFString(PlatformName));
+		FName PlatformName = DataStructure.GetCurrentPlatform().GetPlatformName();
+		UE_LOG(LogWwiseReconcile, Error, TEXT("No data loaded from Wwise project database for the curent platform %s"), *PlatformName.ToString());
 		return;
 	}
-	if (DataStructure.GetCurrentPlatformData()->Guids.Size() == 0)
+	if (DataStructure.GetCurrentPlatformData()->Guids.Num() == 0)
 	{
-		auto PlatformName = DataStructure.GetCurrentPlatform().GetPlatformName();
-		UE_LOG(LogWwiseReconcile, Error, TEXT("No data loaded from Wwise project database for the curent platform %s"), *FWwiseStringConverter::ToFString(PlatformName));
+		FName PlatformName = DataStructure.GetCurrentPlatform().GetPlatformName();
+		UE_LOG(LogWwiseReconcile, Error, TEXT("No data loaded from Wwise project database for the curent platform %s"), *PlatformName.ToString());
 		return;
 	}
 
-	int Count = 0;
 	for (const auto& WwiseRef : DataStructure.GetCurrentPlatformData()->Guids)
 	{
-		WwiseDBPair<const WwiseDatabaseLocalizableGuidKey, WwiseAnyRef> Pair(WwiseRef);
-		if (Pair.GetSecond().GetType() != WwiseRefType::SoundBank)
+		if (WwiseRef.Value.GetType() != EWwiseRefType::SoundBank)
 		{
-			int A, B, C, D;
-			Pair.GetFirst().Guid.GetGuidValues(A, B, C, D);
-			FGuid Guid(A, B, C, D);
-			GuidToWwiseRef.Add(Guid, { DataStructure.GetCurrentPlatformData()->Guids.At(Count) });
+			GuidToWwiseRef.Add(WwiseRef.Key.Guid, { &WwiseRef.Value });
 		}
-		Count++;
 	}
 }
 
-bool FWwiseReconcileImpl::IsAssetOutOfDate(const FAssetData& AssetData, const WwiseAnyRef& WwiseRef)
+bool FWwiseReconcileImpl::IsAssetOutOfDate(const FAssetData& AssetData, const FWwiseAnyRef& WwiseRef)
 {
 	auto StringGuid = AssetData.TagsAndValues.FindTag(GET_MEMBER_NAME_CHECKED(FWwiseObjectInfo, WwiseGuid));
 	auto StringShortId = AssetData.TagsAndValues.FindTag(GET_MEMBER_NAME_CHECKED(FWwiseObjectInfo, WwiseShortId));
@@ -93,39 +87,37 @@ bool FWwiseReconcileImpl::IsAssetOutOfDate(const FAssetData& AssetData, const Ww
 	if (StringGuid.IsSet())
 	{
 		const auto AssetGuid = WwiseRef.GetGuid();
-		int A, B, C, D;
-		AssetGuid.GetGuidValues(A, B, C, D);
 		const auto AssetId = WwiseRef.GetId(); 
-		return FGuid(A, B, C, D) != FGuid(StringGuid.AsString()) ||
+		return AssetGuid != FGuid(StringGuid.AsString()) ||
 			AssetId != ShortId ||
-			WwiseName != FWwiseStringConverter::ToFString(WwiseRef.GetName());
+			WwiseName != WwiseRef.GetName().ToString();
 	}
 	return false;
 }
 
-UClass* FWwiseReconcileImpl::GetUClassFromWwiseRefType(WwiseRefType RefType)
+UClass* FWwiseReconcileImpl::GetUClassFromWwiseRefType(EWwiseRefType RefType)
 {
 	switch (RefType)
 	{
-	case WwiseRefType::Event:
+	case EWwiseRefType::Event:
 		return UAkAudioEvent::StaticClass();
-	case WwiseRefType::AuxBus:
+	case EWwiseRefType::AuxBus:
 		return UAkAuxBus::StaticClass();
-	case WwiseRefType::AcousticTexture:
+	case EWwiseRefType::AcousticTexture:
 		return UAkAcousticTexture::StaticClass();
-	case WwiseRefType::AudioDevice:
+	case EWwiseRefType::AudioDevice:
 		return UAkAudioDeviceShareSet::StaticClass();
-	case WwiseRefType::State:
+	case EWwiseRefType::State:
 		return UAkStateValue::StaticClass();
-	case WwiseRefType::Switch:
+	case EWwiseRefType::Switch:
 		return UAkSwitchValue::StaticClass();
-	case WwiseRefType::GameParameter:
+	case EWwiseRefType::GameParameter:
 		return UAkRtpc::StaticClass();
-	case WwiseRefType::Trigger:
+	case EWwiseRefType::Trigger:
 		return UAkTrigger::StaticClass();
-	case WwiseRefType::PluginShareSet:
+	case EWwiseRefType::PluginShareSet:
 		return UAkEffectShareSet::StaticClass();
-	case WwiseRefType::None:
+	case EWwiseRefType::None:
 		return nullptr;
 	default:
 		return nullptr;
@@ -215,8 +207,8 @@ void FWwiseReconcileImpl::GetAssetChanges(TArray<FWwiseReconcileItem>& Reconcile
 			i++;
 			continue;
 		}
-		const WwiseAnyRef* WwiseRefValue = ReconcileItem.WwiseAnyRef.WwiseAnyRef;
-		WwiseRefType RefType = WwiseRefValue->GetType();
+		const FWwiseAnyRef* WwiseRefValue = ReconcileItem.WwiseAnyRef.WwiseAnyRef;
+		EWwiseRefType RefType = WwiseRefValue->GetType();
 		UClass* RefClass = GetUClassFromWwiseRefType(RefType);
 		FAssetData Asset = ReconcileItem.Asset;
 
@@ -233,25 +225,17 @@ void FWwiseReconcileImpl::GetAssetChanges(TArray<FWwiseReconcileItem>& Reconcile
 				AddToCreate(ReconcileItem);
 			}
 		}
-
 		else if (EnumHasAnyFlags(OperationFlags, EWwiseReconcileOperationFlags::UpdateExisting))
 		{
 			if (RefClass && Asset.IsValid())
 			{
-				FName AssetName = AkUnrealAssetDataHelper::GetAssetDefaultName(WwiseRefValue);
-
-				if(IsAssetOutOfDate(Asset, *WwiseRefValue))
-				{
-					ReconcileItem.OperationRequired |= EWwiseReconcileOperationFlags::UpdateExisting;
-					AssetsToUpdate.Add(ReconcileItem);
-				}
-
-				if (Asset.AssetName != AssetName)
-				{
-					ReconcileItem.OperationRequired |= EWwiseReconcileOperationFlags::RenameExisting;
-					AssetsToRename.Add(ReconcileItem.Asset);
-				}
+				AddToUpdate(ReconcileItem);
+				AddToRename(ReconcileItem);
 			}
+		}
+		if(EnumHasAnyFlags(OperationFlags, EWwiseReconcileOperationFlags::Move))
+		{
+			AddToMove(ReconcileItem);
 		}
 		if(ReconcileItem.OperationRequired == EWwiseReconcileOperationFlags::None)
 		{
@@ -318,12 +302,11 @@ bool FWwiseReconcileImpl::AddToMove(FWwiseReconcileItem& ReconcileItem)
 	return false;
 }
 
-bool FWwiseReconcileImpl::ShouldMove(const WwiseAnyRef& Ref, FAssetData InAssetPath, FString& OutNewAssetPath)
+bool FWwiseReconcileImpl::ShouldMove(const FWwiseAnyRef& Ref, FAssetData InAssetPath, FString& OutNewAssetPath)
 {
 	UE_LOG(LogWwiseReconcile, VeryVerbose, TEXT("Moving Assets is not implemented. Be careful with your Source Control when implementing it."));
 	return false;
 }
-
 
 TArray<FAssetData> FWwiseReconcileImpl::UpdateExistingAssets(FScopedSlowTask& SlowTask)
 {
@@ -561,7 +544,7 @@ TArray<FAssetData> FWwiseReconcileImpl::CreateAssets(FScopedSlowTask& SlowTask)
 		{
 			return NewAssets;
 		}
-		const WwiseAnyRef WwiseRef = *Asset.WwiseAnyRef;
+		const FWwiseAnyRef WwiseRef = *Asset.WwiseAnyRef;
 
 		FName AssetName = AkUnrealAssetDataHelper::GetAssetDefaultName(&WwiseRef);
 		FString AssetPackagePath = GetAssetPackagePath(WwiseRef);
@@ -633,7 +616,7 @@ TArray<FAssetData> FWwiseReconcileImpl::CreateAssets(FScopedSlowTask& SlowTask)
 	return NewAssets;
 }
 
-FString FWwiseReconcileImpl::GetAssetPackagePath(const WwiseAnyRef& WwiseRef)
+FString FWwiseReconcileImpl::GetAssetPackagePath(const FWwiseAnyRef& WwiseRef)
 {
 	return AkUnrealAssetDataHelper::GetAssetDefaultPackagePath(&WwiseRef);;
 }

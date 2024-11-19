@@ -24,8 +24,7 @@ public class WwiseUtils : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] {
-			"Core",
-			"WwiseLowLevelUtils",
+			"Core"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {

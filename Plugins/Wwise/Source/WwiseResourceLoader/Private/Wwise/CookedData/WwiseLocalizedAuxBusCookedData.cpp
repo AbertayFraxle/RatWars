@@ -17,10 +17,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/CookedData/WwiseLocalizedAuxBusCookedData.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 FWwiseLocalizedAuxBusCookedData::FWwiseLocalizedAuxBusCookedData():
 	AuxBusLanguageMap(),
 	DebugName(),
@@ -41,41 +37,3 @@ void FWwiseLocalizedAuxBusCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-void FWwiseLocalizedAuxBusCookedData::SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& InOptions)
-{
-	for (auto& AuxBus: AuxBusLanguageMap)
-	{
-		auto Options(InOptions);
-		if(AuxBus.Key != AuxBus.Key.Sfx)
-		{
-			Options.bOptional = true;
-		}
-		AuxBus.Value.SerializeBulkData(Ar, Options);
-	}
-}
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseLocalizedAuxBusCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "LocABs";
-	Writer.BeginObject();
-	Writer << "AuxBusId" << AuxBusId;
-
-	{
-		Writer << "Langs";
-		Writer.BeginArray();
-		TArray<FWwiseLanguageCookedData> Languages;
-		AuxBusLanguageMap.GetKeys(Languages);
-		Languages.Sort();
-	
-		for (const auto& Language : Languages)
-		{
-			AuxBusLanguageMap[Language].PreSave(SaveContext, Writer);
-		}
-		Writer.EndArray();
-	}
-	
-	Writer.EndObject();
-}
-#endif

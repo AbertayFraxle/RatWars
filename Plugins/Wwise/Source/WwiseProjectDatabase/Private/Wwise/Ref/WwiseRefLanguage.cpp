@@ -16,16 +16,18 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefLanguage.h"
+#include "Wwise/Stats/ProjectDatabase.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
 #include "Wwise/Metadata/WwiseMetadataLanguage.h"
 #include "Wwise/Metadata/WwiseMetadataProjectInfo.h"
 
-const WwiseDBString WwiseRefLanguage::NAME = "Language"_wwise_db;
+const TCHAR* const FWwiseRefLanguage::NAME = TEXT("Language");
 
-const WwiseMetadataLanguage* WwiseRefLanguage::GetLanguage() const
+const FWwiseMetadataLanguage* FWwiseRefLanguage::GetLanguage() const
 {
 	const auto* ProjectInfo = GetProjectInfo();
-	if (!ProjectInfo) [[unlikely]]
+	if (UNLIKELY(!ProjectInfo))
 	{
 		return nullptr;
 	}
@@ -36,44 +38,44 @@ const WwiseMetadataLanguage* WwiseRefLanguage::GetLanguage() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Language index #%zu", LanguageIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Language index #%zu"), LanguageIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefLanguage::LanguageId() const
+uint32 FWwiseRefLanguage::LanguageId() const
 {
 	const auto* Language = GetLanguage();
-	if (!Language) [[unlikely]]
+	if (UNLIKELY(!Language))
 	{
 		return 0;
 	}
 	return Language->Id;
 }
 
-WwiseDBGuid WwiseRefLanguage::LanguageGuid() const
+FGuid FWwiseRefLanguage::LanguageGuid() const
 {
 	const auto* Language = GetLanguage();
-	if (!Language) [[unlikely]]
+	if (UNLIKELY(!Language))
 	{
 		return {};
 	}
 	return Language->GUID;
 }
 
-WwiseDBString WwiseRefLanguage::LanguageName() const
+FName FWwiseRefLanguage::LanguageName() const
 {
 	const auto* Language = GetLanguage();
-	if (!Language) [[unlikely]]
+	if (UNLIKELY(!Language))
 	{
 		return {};
 	}
 	return Language->Name;
 }
 
-WwiseDBShortId WwiseRefLanguage::Hash() const
+uint32 FWwiseRefLanguage::Hash() const
 {
-	auto Result = WwiseRefProjectInfo::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(LanguageIndex));
+	auto Result = FWwiseRefProjectInfo::Hash();
+	Result = HashCombine(Result, GetTypeHash(LanguageIndex));
 	return Result;
 }

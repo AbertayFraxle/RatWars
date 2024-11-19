@@ -28,7 +28,7 @@ FWwiseProcessingModule::FWwiseProcessingModule()
 
 void FWwiseProcessingModule::StartupModule()
 {
-	UE_LOG(LogWwiseProcessing, Log, TEXT("Initializing default Processing."));
+	UE_LOG(LogWwiseProcessing, Display, TEXT("Initializing default Processing."));
 
 	GlobalCallbacksLock.WriteLock();
 	if (!GlobalCallbacks)
@@ -42,7 +42,7 @@ void FWwiseProcessingModule::StartupModule()
 
 void FWwiseProcessingModule::ShutdownModule()
 {
-	UE_LOG(LogWwiseProcessing, Log, TEXT("Shutting down default Processing."));
+	UE_LOG(LogWwiseProcessing, Display, TEXT("Shutting down default Processing."));
 	GlobalCallbacksLock.WriteLock();
 	TerminateGlobalCallbacks();
 	GlobalCallbacksLock.WriteUnlock();

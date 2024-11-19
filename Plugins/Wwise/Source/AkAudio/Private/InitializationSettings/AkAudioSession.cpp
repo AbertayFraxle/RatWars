@@ -24,10 +24,6 @@ void FAkAudioSession::FillInitializationStructure(FAkInitializationStructure& In
     InitializationStructure.PlatformInitSettings.audioSession.eCategory = (AkAudioSessionCategory)AudioSessionCategory;
     InitializationStructure.PlatformInitSettings.audioSession.eCategoryOptions = (AkAudioSessionCategoryOptions)AudioSessionCategoryOptions;
     InitializationStructure.PlatformInitSettings.audioSession.eMode = (AkAudioSessionMode)AudioSessionMode;
-
-#if WWISE_2024_1_OR_LATER
-    InitializationStructure.PlatformInitSettings.audioSession.eRouteSharingPolicy = (AkAudioSessionRouteSharingPolicy)AudioSessionRouteSharingPolicy;
-#endif
 #endif
 }
 

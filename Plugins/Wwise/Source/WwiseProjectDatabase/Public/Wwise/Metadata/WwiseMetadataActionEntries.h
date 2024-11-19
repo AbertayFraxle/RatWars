@@ -19,27 +19,27 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataGroupValueReference.h"
 
-struct WwiseMetadataActionPostEventEntry : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataActionPostEventEntry : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataActionPostEventEntry(WwiseMetadataLoader& Loader);
+	FWwiseMetadataActionPostEventEntry(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataActionSetFXEntry : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataActionSetFXEntry : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataActionSetFXEntry(WwiseMetadataLoader& Loader);
+	FWwiseMetadataActionSetFXEntry(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataActionSetStateEntry : public WwiseMetadataGroupValueReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataActionSetStateEntry : public FWwiseMetadataGroupValueReference
 {
-	WwiseMetadataActionSetStateEntry(WwiseMetadataLoader& Loader);
+	FWwiseMetadataActionSetStateEntry(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataActionSetSwitchEntry : public WwiseMetadataGroupValueReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataActionSetSwitchEntry : public FWwiseMetadataGroupValueReference
 {
-	WwiseMetadataActionSetSwitchEntry(WwiseMetadataLoader& Loader);
+	FWwiseMetadataActionSetSwitchEntry(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataActionTriggerEntry : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataActionTriggerEntry : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataActionTriggerEntry(WwiseMetadataLoader& Loader);
+	FWwiseMetadataActionTriggerEntry(FWwiseMetadataLoader& Loader);
 };

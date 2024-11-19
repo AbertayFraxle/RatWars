@@ -216,7 +216,7 @@ void UAkAcousticTextureSetComponent::SendGeometryToWwise(const AkGeometryParams&
 	}
 }
 
-void UAkAcousticTextureSetComponent::SendGeometryInstanceToWwise(const FRotator& rotation, const FVector& location, const FVector& scale, bool useForReflectionAndDiffraction, bool solid, bool bypassPortalSubtraction)
+void UAkAcousticTextureSetComponent::SendGeometryInstanceToWwise(const FRotator& rotation, const FVector& location, const FVector& scale, const AkRoomID roomID, bool useForReflectionAndDiffraction)
 {
 	if (ShouldSendGeometry() && GeometryHasBeenSent)
 	{
@@ -230,10 +230,7 @@ void UAkAcousticTextureSetComponent::SendGeometryInstanceToWwise(const FRotator&
 		params.PositionAndOrientation.Set(position, front, up);
 		FAkAudioDevice::FVectorToAKVector(scale, params.Scale);
 		params.GeometrySetID = GetGeometrySetID();
-#if WWISE_2024_1_OR_LATER
-		params.BypassPortalSubtraction = bypassPortalSubtraction;
-		params.IsSolid = solid;
-#endif
+		params.RoomID = roomID;
 #if WWISE_2023_1_OR_LATER
 		params.UseForReflectionAndDiffraction = useForReflectionAndDiffraction;
 #endif
@@ -262,7 +259,7 @@ void UAkAcousticTextureSetComponent::RemoveGeometryInstanceFromWwise()
 	if (GeometryInstanceHasBeenSent)
 	{
 		FAkAudioDevice* AkAudioDevice = FAkAudioDevice::Get();
-		if (AkAudioDevice != nullptr && AkAudioDevice->RemoveGeometryInstance(GetGeometrySetID()) == AK_Success)
+		if (AkAudioDevice != nullptr && AkAudioDevice->RemoveGeometrySet(GetGeometrySetID()) == AK_Success)
 			GeometryInstanceHasBeenSent = false;
 	}
 }

@@ -22,7 +22,7 @@ struct FAkInitializationStructure;
 
 struct AKAUDIO_API FAkPlatformBase
 {
-	static FString GetWwiseSoundEnginePluginDirectory();
+	static FString GetWwisePluginDirectory();
 	static FString GetDSPPluginsDirectory(const FString& PlatformArchitecture);
 	static void PreInitialize(const FAkInitializationStructure& InitSettings) {}
 };

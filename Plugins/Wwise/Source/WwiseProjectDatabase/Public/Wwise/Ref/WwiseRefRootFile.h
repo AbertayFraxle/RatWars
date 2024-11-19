@@ -19,44 +19,36 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataCollections.h"
 #include "Wwise/Ref/WwiseRefCollections.h"
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
-#include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
 #include "Wwise/Ref/WwiseRefType.h"
 
-class WwiseRefRootFile
+class WWISEPROJECTDATABASE_API FWwiseRefRootFile
 {
 public:
-	inline static const WwiseDBString emptyString = TEXT("");
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::RootFile;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::RootFile;
 
 	WwiseMetadataSharedRootFileConstPtr RootFileRef;
-	WwiseDBString JsonFilePath;
+	FName JsonFilePath;
 
-	WwiseRefRootFile() {}
-	WwiseRefRootFile(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath) :
+	FWwiseRefRootFile() {}
+	FWwiseRefRootFile(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath) :
 		RootFileRef(InRootMediaRef),
 		JsonFilePath(InJsonFilePath)
 	{}
-	virtual ~WwiseRefRootFile() {}
-	virtual WwiseDBShortId Hash() const;
-	virtual WwiseRefType Type() const { return TYPE; }
-	bool operator==(const WwiseRefRootFile& Rhs) const
+	virtual ~FWwiseRefRootFile() {}
+	virtual uint32 Hash() const;
+	virtual EWwiseRefType Type() const { return TYPE; }
+	bool operator==(const FWwiseRefRootFile& Rhs) const
 	{
 		return JsonFilePath == Rhs.JsonFilePath;
 	}
-	bool operator!=(const WwiseRefRootFile& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefRootFile& Rhs) const { return !operator==(Rhs); }
 
-	bool operator<(const WwiseRefRootFile& Rhs) const
-	{
-		return JsonFilePath < Rhs.JsonFilePath;
-	}
-	
 	bool IsValid() const;
-	const WwiseMetadataRootFile* GetRootFile() const;
+	const FWwiseMetadataRootFile* GetRootFile() const;
 };
 
-inline WwiseDBShortId GetTypeHash(const WwiseRefRootFile& Type)
+inline uint32 GetTypeHash(const FWwiseRefRootFile& Type)
 {
 	return Type.Hash();
 }

@@ -56,99 +56,39 @@ public:
 	/** Enable Surface Reflector Set to send the geometry for reflection and diffraction use. Additional properties are available in the Surface Reflector Set and Surface Properties categories.
 	* Disable Surface Reflector Set to send a geometry that is not used for reflection and diffraction. The complete Surface Reflector Set category and the Transmission Loss property of the Surface Properties category are removed from the details panel.
 	* When Surface Reflector Set is re-enabled after being disabled, the previously set values are restored. */
-	UPROPERTY(EditAnywhere, BlueprintSetter = SetEnable, Category = "EnableComponent", meta = (DisplayName = "Enable Surface Reflector Set"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EnableComponent", meta = (DisplayName = "Enable Surface Reflector Set"))
 	bool bEnableSurfaceReflectors = false;
-
-	UFUNCTION(BlueprintSetter, Category = "Audiokinetic|AkSurfaceReflectorSet")
-	void SetEnable(bool bInEnable);
 	
 	/** The surface properties of each face on the brush geometry. */
 	UPROPERTY(EditAnywhere, Category = "SurfaceReflectorSet", BlueprintSetter = UpdateAcousticProperties)
 	TArray<FAkSurfacePoly> AcousticPolys;
-
-	/** 
-	 * Set the surface properties of this geometry.
-	 * @param InSurfaceIndexesToEdit - Array containing the indexes of each surface to edit.
-	 * @param InSurfaceProperties - A structure of FAkSurfacePoly specifying the acoustic texture, transmission loss value and enable flag to set on each surface.
-	**/
-	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkSurfaceReflectorSet")
-	void SetSurfaceProperties(
-		UPARAM(ref) TArray<int>& InSurfaceIndexesToEdit,
-		FAkSurfacePoly InSurfaceProperties
-	);
-
-	/** 
-	 * Enable or disable surfaces of this geometry.
-	 * @param InSurfaceIndexesToEdit - Array containing the indexes of each surface to edit.
-	 * @param bInEnableSurface - Set to true to enable each surface.
-	**/
-	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkSurfaceReflectorSet")
-	void SetEnableSurface(
-		UPARAM(ref) TArray<int>& InSurfaceIndexesToEdit,
-		bool bInEnableSurface
-	);
-
-	/**
-	 * Set the transmission loss value of surfaces of this geometry.
-	 * @param InSurfaceIndexesToEdit - Array containing the indexes of each surface to edit.
-	 * @param InTransmissionLoss - Transmission loss value to set on each surface. Valid range between 0 and 1.
-	 * @param bInEnableSurface - Set to true to enable each surface.
-	**/
-	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkSurfaceReflectorSet")
-	void SetTransmissionLoss(
-		UPARAM(ref) TArray<int>& InSurfaceIndexesToEdit,
-		float InTransmissionLoss,
-		bool bInEnableSurface
-	);
-
-	/**
-	 * Update the AcousticTexture (Texture) of some of the faces on the brush geometry.
-	 * @param InSurfaceIndexesToEdit - Array containing the indexes of each surface to edit.
-	 * @param InAcousticTexture - New AcousticTexture assigned to each surface.
-	**/
-	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkSurfaceReflectorSet")
-	void SetAcousticTexture(
-		UPARAM(ref) TArray<int>& InSurfaceIndexesToEdit,
-		UAkAcousticTexture* InAcousticTexture,
-		bool bInEnableSurface
-	);
 
 	/** Set AcousticPolys with an input array, compute the surface areas of each poly and notify damping needs updating. */
 	UFUNCTION(BlueprintSetter, Category = "Audiokinetic|AkSurfaceReflectorSet")
 	void UpdateAcousticProperties(TArray<FAkSurfacePoly> in_AcousticPolys);
 
 	/** Enable or disable geometric diffraction for this mesh. Check this box to have Wwise Spatial Audio generate diffraction edges on the geometry. The diffraction edges will be visible in the Wwise game object viewer when connected to the game. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SurfaceReflectorSet")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfaceReflectorSet")
 	bool bEnableDiffraction = false;
 
 	/** Enable or disable geometric diffraction on boundary edges for this Geometry. Boundary edges are edges that are connected to only one triangle. Depending on the specific shape of the geometry, boundary edges may or may not be useful and it is beneficial to reduce the total number of diffraction edges to process.  */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SurfaceReflectorSet", meta = (EditCondition = "bEnableDiffraction"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfaceReflectorSet", meta = (EditCondition = "bEnableDiffraction"))
 	bool bEnableDiffractionOnBoundaryEdges = false;
 
-	/**
-	* Enable or disable geometric diffraction for this mesh.
-	* @param bInEnableDiffraction - Set to true to have Wwise Spatial Audio generate diffraction edges on the geometry.
-	* @param bInEnableDiffractionOnBoundaryEdges - Set to true to enable geometric diffraction on boundary edges for this Geometry. Boundary edges are edges that are connected to only one triangle.
-	*/
-	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkSurfaceReflectorSet")
-	void SetEnableDiffraction(bool bInEnableDiffraction, bool bInEnableDiffractionOnBoundaryEdges);
-
-	/**
-	* When set to false (default), the intersection of the geometry instance with any portal bounding box is subtracted from the geometry.In effect, an opening is created at the portal location through which sound can pass.
-	* When set to true, portals cannot create openings in the geometry instance. Enable this to allow the geometry instance to be an obstacle to paths going into or through portal bounds.
-	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfaceReflectorSet", DisplayName = "Bypass Portal Subtraction [Experimental]")
-	bool bBypassPortalSubtraction = false;
-
-	/** A solid geometry instance applies transmission loss once for each time a transmission path enters and exits its volume, using the max transmission loss between each hit surface. A non-solid geometry instance is one where each surface is infinitely thin, applying transmission loss at each surface. This option has no effect if the Transmission Operation is set to Max. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SurfaceReflectorSet")
-	bool bSolid = false;
+	/** (Deprecated) Associate this Surface Reflector Set component with a Room.
+	* This property is deprecated and will be removed in a future version. We recommend not using it by leaving it set to None.
+	* Associating a Surface Reflector Set component with a particular Room limits the scope in which the geometry is accessible. Doing so reduces the search space for ray casting performed by reflection and diffraction calculations.
+	* When set to None, this geometry has a global scope.
+	* Note if one or more geometry sets are associated with a room, that room can no longer access geometry that is in the global scope.
+	*/ 
+	UPROPERTY(EditAnywhere, AdvancedDisplay, BlueprintReadWrite, Category = "SurfaceReflectorSet")
+	AActor* AssociatedRoom = nullptr;
 
 	UModel* ParentBrush;
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(SkipSerialization, NonTransactional)
-	mutable TArray<TObjectPtr<UTextRenderComponent>> TextVisualizers;
+	mutable TArray<UTextRenderComponent*> TextVisualizers;
 
 	FText GetPolyText(int32 PolyIdx) const;
 
@@ -166,7 +106,7 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void PostEditUndo() override;
 	virtual void PreEditUndo() override;
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction);
 
 	/** Tracks whether the user is interacting with a UI element in the details panel (e.g. a slider) */
 	bool UserInteractionInProgress = false;
@@ -178,12 +118,15 @@ public:
 	void UpdateText(bool Visible);
 	/** Align all of the text components (1 for each face) along one of the edges on the face */
 	void UpdateTextPositions() const;
-	virtual void SurfacePropertiesChanged() override;
+	void SurfacePropertiesChanged();
 	void DestroyTextVisualizers();
 
 	bool WasSelected;
 
-	TSet<int> GetSelectedFaceIndices() const;
+	// Return indices of the selected BSP Nodes based on currently selected FPoly faces
+	// The number of selected BSP Nodes may be higher than the number of faces, if the slected faces are split by the BSP
+	TSet<int> GetSelectedFaceIndices(int & outNumSelectedFaces) const;
+
 	bool TexturesDiffer() const;
 
 	/** Used to delay the polys update by one frame when editing geometry */
@@ -220,8 +163,6 @@ public:
 private:
 	virtual bool ShouldSendGeometry() const override;
 	void InitializeParentBrush(bool fromTick = false);
-
-	bool bSurfaceAreaNeedsUpdate = false;
 
 #if WITH_EDITOR
 	/** Used to keep track of the surfaces and their acoustic properties so that we can

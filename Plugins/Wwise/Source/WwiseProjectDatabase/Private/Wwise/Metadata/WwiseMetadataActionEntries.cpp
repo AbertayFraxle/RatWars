@@ -18,32 +18,32 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataActionEntries.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
-WwiseMetadataActionPostEventEntry::WwiseMetadataActionPostEventEntry(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader)
+FWwiseMetadataActionPostEventEntry::FWwiseMetadataActionPostEventEntry(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader)
 {
-	Loader.LogParsed("ActionPostEventEntry"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("ActionPostEventEntry"), Id, Name);
 }
 
-WwiseMetadataActionSetFXEntry::WwiseMetadataActionSetFXEntry(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader)
+FWwiseMetadataActionSetFXEntry::FWwiseMetadataActionSetFXEntry(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader)
 {
-	Loader.LogParsed("ActionSetFXEntry"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("ActionSetFXEntry"), Id, Name);
 }
 
-WwiseMetadataActionSetStateEntry::WwiseMetadataActionSetStateEntry(WwiseMetadataLoader& Loader) :
-	WwiseMetadataGroupValueReference(Loader)
+FWwiseMetadataActionSetStateEntry::FWwiseMetadataActionSetStateEntry(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataGroupValueReference(Loader)
 {
-	Loader.LogParsed("ActionSetStateEntry"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("ActionSetStateEntry"), Id, Name);
 }
 
-WwiseMetadataActionSetSwitchEntry::WwiseMetadataActionSetSwitchEntry(WwiseMetadataLoader& Loader) :
-	WwiseMetadataGroupValueReference(Loader)
+FWwiseMetadataActionSetSwitchEntry::FWwiseMetadataActionSetSwitchEntry(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataGroupValueReference(Loader)
 {
-	Loader.LogParsed("ActionSetSwitchEntry"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("ActionSetSwitchEntry"), Id, Name);
 }
 
-WwiseMetadataActionTriggerEntry::WwiseMetadataActionTriggerEntry(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader)
+FWwiseMetadataActionTriggerEntry::FWwiseMetadataActionTriggerEntry(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader)
 {
-	Loader.LogParsed("ActionTriggerEntry"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("ActionTriggerEntry"), Id, Name);
 }

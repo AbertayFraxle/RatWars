@@ -54,8 +54,4 @@ public:
 	virtual bool ObjectIsInSoundBanks() override;
 	virtual void FillInfo() override;
 #endif
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
-#endif
 };

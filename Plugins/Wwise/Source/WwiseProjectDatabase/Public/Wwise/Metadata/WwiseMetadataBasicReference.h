@@ -18,52 +18,39 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
-#include "Wwise/Ref/WwiseRefCollections.h"
 
-struct WwiseMetadataBasicReference : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataBasicReference : public FWwiseMetadataLoadable
 {
-	WwiseDBShortId Id;
-	WwiseDBString Name;
-	WwiseDBString ObjectPath;
-	WwiseDBGuid GUID;
+	uint32 Id;
+	FName Name;
+	FName ObjectPath;
+	FGuid GUID;
 
-	WwiseMetadataBasicReference();
-	WwiseMetadataBasicReference(WwiseDBShortId InId, WwiseDBString&& InName,
-								 WwiseDBString&& InObjectPath, WwiseDBGuid&& InGUID) :
-		Id(std::move(InId)),
-		Name(std::move(InName)),
-		ObjectPath(std::move(InObjectPath)),
-		GUID(std::move(InGUID))
+	FWwiseMetadataBasicReference();
+	FWwiseMetadataBasicReference(uint32 InId, FName&& InName, FName&& InObjectPath, FGuid&& InGUID) :
+		Id(MoveTemp(InId)),
+		Name(MoveTemp(InName)),
+		ObjectPath(MoveTemp(InObjectPath)),
+		GUID(MoveTemp(InGUID))
 	{}
-	WwiseMetadataBasicReference(WwiseDBShortId InId, const WwiseDBString& InName,
-								 const WwiseDBString& InObjectPath, const WwiseDBGuid& InGUID) :
+	FWwiseMetadataBasicReference(uint32 InId, const FName& InName, const FName& InObjectPath, const FGuid& InGUID) :
 		Id(InId),
 		Name(InName),
 		ObjectPath(InObjectPath),
 		GUID(InGUID)
 	{}
-	WwiseMetadataBasicReference(WwiseMetadataLoader& Loader);
-
-	bool operator<(const WwiseMetadataBasicReference& Rhs)
-	{
-		return Id < Rhs.Id;
-	}
-
-	bool operator==(const WwiseMetadataBasicReference& Rhs)
-	{
-		return Id == Rhs.Id;
-	}
+	FWwiseMetadataBasicReference(FWwiseMetadataLoader& Loader);
 };
 
-inline WwiseDBShortId GetTypeHash(const WwiseMetadataBasicReference& Ref)
+inline uint32 GetTypeHash(const FWwiseMetadataBasicReference& Ref)
 {
 	return GetTypeHash(Ref.Id);
 }
-inline bool operator==(const WwiseMetadataBasicReference& Lhs, const WwiseMetadataBasicReference& Rhs)
+inline bool operator==(const FWwiseMetadataBasicReference& Lhs, const FWwiseMetadataBasicReference& Rhs)
 {
 	return Lhs.Id == Rhs.Id;
 }
-inline bool operator<(const WwiseMetadataBasicReference& Lhs, const WwiseMetadataBasicReference& Rhs)
+inline bool operator<(const FWwiseMetadataBasicReference& Lhs, const FWwiseMetadataBasicReference& Rhs)
 {
 	return Lhs.Id < Rhs.Id;
 }

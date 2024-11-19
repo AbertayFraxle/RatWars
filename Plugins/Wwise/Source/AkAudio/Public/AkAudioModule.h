@@ -66,9 +66,8 @@ public:
 
 	FAkAudioDevice* GetAkAudioDevice() const;
 	void ReloadWwiseAssetData() const;
-	static void UpdateWwiseResourceCookerSettings();
+	static void UpdateWwiseResourceLoaderSettings();
 #if WITH_EDITORONLY_DATA
-	static void CreateResourceCookerForPlatform(const ITargetPlatform* TargetPlatform);
 	static void ParseGeneratedSoundBankData();
 #endif
 	FAkAudioDevice* AkAudioDevice;

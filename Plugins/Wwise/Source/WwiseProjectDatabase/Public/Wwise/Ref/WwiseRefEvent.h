@@ -20,23 +20,23 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataEvent.h"
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefEvent : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefEvent : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::Event;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::Event;
 	struct FGlobalIdsMap;
 
-	WwiseRefIndexType EventIndex = 0;
+	WwiseRefIndexType EventIndex;
 
-	WwiseRefEvent() {}
-	WwiseRefEvent(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefEvent() {}
+	FWwiseRefEvent(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InEventIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		EventIndex(InEventIndex)
 	{}
-	const WwiseMetadataEvent* GetEvent() const;
+	const FWwiseMetadataEvent* GetEvent() const;
 	WwiseMediaIdsMap GetEventMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const;
 	WwiseMediaIdsMap GetAllMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const;
 	WwiseExternalSourceIdsMap GetEventExternalSources(const WwiseExternalSourceGlobalIdsMap& GlobalMap) const;
@@ -54,25 +54,24 @@ public:
 	WwiseTriggerIdsMap GetActionTrigger(const WwiseTriggerGlobalIdsMap& GlobalMap) const;
 	WwiseAuxBusIdsMap GetEventAuxBusses(const WwiseAuxBusGlobalIdsMap& GlobalMap) const;
 
-	WwiseDBShortId EventId() const;
-	const WwiseDBGuid* EventGuid() const;
-	const WwiseDBString* EventName() const;
-	const WwiseDBString* EventObjectPath() const;
+	uint32 EventId() const;
+	FGuid EventGuid() const;
+	FName EventName() const;
+	FName EventObjectPath() const;
 	float MaxAttenuation() const;
-	bool GetDuration(WwiseMetadataEventDurationType& OutDurationType, float& OutDurationMin, float& OutDurationMax) const;
+	bool GetDuration(EWwiseMetadataEventDurationType& OutDurationType, float& OutDurationMin, float& OutDurationMax) const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefEvent& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefEvent& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& EventIndex == Rhs.EventIndex;
 	}
-	
-	bool operator!=(const WwiseRefEvent& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefEvent& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefEvent::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefEvent::FGlobalIdsMap
 {
 	WwiseEventGlobalIdsMap GlobalIdsMap;
 };

@@ -17,10 +17,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/CookedData/WwiseLocalizedEventCookedData.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 FWwiseLocalizedEventCookedData::FWwiseLocalizedEventCookedData():
 	EventLanguageMap(),
 	DebugName(),
@@ -41,41 +37,3 @@ void FWwiseLocalizedEventCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-void FWwiseLocalizedEventCookedData::SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& InOptions)
-{
-	for (auto& Event : EventLanguageMap)
-	{
-		auto Options(InOptions);
-		if(Event.Key != Event.Key.Sfx)
-		{
-			Options.bOptional = true;
-		}
-		Event.Value.SerializeBulkData(Ar, Options);
-	}
-}
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseLocalizedEventCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "LocEvents";
-	Writer.BeginObject();
-	Writer << "EventId" << EventId;
-
-	{
-		Writer << "Langs";
-		Writer.BeginArray();
-		TArray<FWwiseLanguageCookedData> Languages;
-		EventLanguageMap.GetKeys(Languages);
-		Languages.Sort();
-	
-		for (const auto& Language : Languages)
-		{
-			EventLanguageMap[Language].PreSave(SaveContext, Writer);
-		}
-		Writer.EndArray();
-	}
-
-	Writer.EndObject();
-}
-#endif

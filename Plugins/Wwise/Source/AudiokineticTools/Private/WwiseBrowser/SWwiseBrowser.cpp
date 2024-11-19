@@ -66,6 +66,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "WwiseStatusColumn.h"
 #include "WwiseUEAssetStatusColumn.h"
 #include "DataSource/WwiseBrowserDataSource.h"
+#include "AkWaapiUMG/Components/AkBoolPropertyToControlCustomization.h"
 #include "Wwise/WwiseReconcile.h"
 #include "Widgets/SWwiseReconcile.h"
 
@@ -627,6 +628,7 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 		SAssignNew(TreeViewPtr, SWwiseBrowserTreeView, StaticCastSharedRef<SWwiseBrowser>(AsShared()))
 		.TreeItemsSource(&RootItems).Visibility(this, &SWwiseBrowser::IsWarningNotVisible)
 		.OnGenerateRow(this, &SWwiseBrowser::GenerateRow)
+		.ItemHeight(18)
 		.SelectionMode(InArgs._SelectionMode)
 		.OnSelectionChanged(this, &SWwiseBrowser::TreeSelectionChanged)
 		.OnExpansionChanged(this, &SWwiseBrowser::TreeExpansionChanged)

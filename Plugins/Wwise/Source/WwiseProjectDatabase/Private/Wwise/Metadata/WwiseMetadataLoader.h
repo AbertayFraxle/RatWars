@@ -17,71 +17,72 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
+#include "Dom/JsonObject.h"
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 #include "Wwise/Metadata/WwiseMetadataGameParameter.h"
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
-#include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
-#include "Wwise/Metadata/IWwiseMetadataLoader.h"
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
 
-struct WwiseMetadataLoader : public IWwiseMetadataLoader
+enum class EWwiseRequiredMetadata
 {
-	bool bResult = true;
-	const WwiseDBJsonObject& JsonObject;
-	
-	WwiseMetadataLoader(const WwiseDBJsonObject& InJsonObject) :
-	    JsonObject(InJsonObject)
+	Optional,
+	Mandatory
+};
+
+struct FWwiseMetadataLoader
+{
+	bool bResult;
+	const TSharedRef<FJsonObject>& JsonObject;
+
+	FWwiseMetadataLoader(const TSharedRef<FJsonObject>& InJsonObject) :
+		bResult(true),
+		JsonObject(InJsonObject)
 	{
 	}
 
-	void Fail(const WwiseDBString& FieldName) override;
-	void LogParsed(const WwiseDBString& FieldName, const WwiseDBShortId Id = 0, const WwiseDBString& Name = WwiseDBString()) override;
+	void Fail(const TCHAR* FieldName);
+	void LogParsed(const TCHAR* FieldName, const uint32 Id = 0, const FName Name = FName());
 
-	bool GetBool(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required = WwiseRequiredMetadata::Mandatory) override;
-	float GetFloat(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required = WwiseRequiredMetadata::Mandatory) override;
-	WwiseDBGuid GetGuid(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required = WwiseRequiredMetadata::Mandatory) override;
-	WwiseDBString GetString(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required = WwiseRequiredMetadata::Mandatory) override;
-	WwiseDBShortId GetWwiseShortId(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName, WwiseRequiredMetadata Required = WwiseRequiredMetadata::Mandatory) override;
+	bool GetBool(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required = EWwiseRequiredMetadata::Mandatory);
+	float GetFloat(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required = EWwiseRequiredMetadata::Mandatory);
+	FGuid GetGuid(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required = EWwiseRequiredMetadata::Mandatory);
+	FName GetString(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required = EWwiseRequiredMetadata::Mandatory);
+	uint32 GetUint32(FWwiseMetadataLoadable* Object, const FString& FieldName, EWwiseRequiredMetadata Required = EWwiseRequiredMetadata::Mandatory);
 
-	template<typename T>
-	T GetLoaderObject(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName);
+	template <typename T>
+	T GetObject(FWwiseMetadataLoadable* Object, const FString& FieldName);
 
-	template<typename T>
-	T* GetObjectPtr(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName);
-
-	template<typename T>
-	WwiseDBArray<T> GetArray(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName);
+	template <typename T>
+	T* GetObjectPtr(FWwiseMetadataLoadable* Object, const FString& FieldName);
 
 	template<typename T>
-	void GetPropertyArray(T* Object, const WwiseDBMap<WwiseDBString, size_t>& FloatProperties);
+	TArray<T> GetArray(FWwiseMetadataLoadable* Object, const FString& FieldName);
+
+	template<typename T>
+	void GetPropertyArray(T* Object, const TMap<FName, size_t>& FloatProperties);
 };
 
 template<typename T>
-T WwiseMetadataLoader::GetLoaderObject(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName)
+T FWwiseMetadataLoader::GetObject(FWwiseMetadataLoadable* Object, const FString& FieldName)
 {
-	if (!Object)
-	{
-		return {};
-	}
-	Object->AddRequestedValue(WwiseDBString("object"), FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("object"), FieldName);
 
-	WwiseDBJsonObject InnerObject;
-	if (!JsonObject.TryGetObjectField(FieldName, InnerObject))
+	const TSharedPtr<FJsonObject>* InnerObject;
+	if (!JsonObject->TryGetObjectField(FieldName, InnerObject))
 	{
-		Fail(FieldName);
+		Fail(*FieldName);
 		return T{};
 	}
-	
-	WwiseMetadataLoader ObjectLoader(InnerObject);
+	auto SharedRef(InnerObject->ToSharedRef());
+	FWwiseMetadataLoader ObjectLoader(SharedRef);
 	T Result(ObjectLoader);
 	if (ObjectLoader.bResult)
 	{
-		Result.CheckRequestedValues(InnerObject);
+		Result.CheckRequestedValues(SharedRef);
 	}
 	else
 	{
 		bResult = false;
-		LogParsed(FieldName);
+		LogParsed(*FieldName);
 	}
 
 	return Result;
@@ -89,33 +90,31 @@ T WwiseMetadataLoader::GetLoaderObject(WwiseMetadataLoadable* Object, const Wwis
 
 
 template <typename T>
-T* WwiseMetadataLoader::GetObjectPtr(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName)
+T* FWwiseMetadataLoader::GetObjectPtr(FWwiseMetadataLoadable* Object, const FString& FieldName)
 {
-	if (!Object)
-	{
-		return {};
-	}
-	Object->AddRequestedValue(WwiseDBString("optional object"), FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("optional object"), FieldName);
 
-	WwiseDBJsonObject InnerObject;
-	if (!JsonObject.TryGetObjectField(FieldName, InnerObject))
+	const TSharedPtr<FJsonObject>* InnerObject;
+	if (!JsonObject->TryGetObjectField(FieldName, InnerObject))
 	{
 		return nullptr;
 	}
-	
-	WwiseMetadataLoader ObjectLoader(InnerObject);
+
+	auto SharedRef(InnerObject->ToSharedRef());
+	FWwiseMetadataLoader ObjectLoader(SharedRef);
 	T* Result = new T(ObjectLoader);
 	if (ObjectLoader.bResult)
 	{
 		if (Result)
 		{
-			Result->CheckRequestedValues(InnerObject);
+			Result->CheckRequestedValues(SharedRef);
 		}
 	}
 	else
 	{
 		bResult = false;
-		LogParsed(FieldName);
+		LogParsed(*FieldName);
 		delete Result;
 		return nullptr;
 	}
@@ -124,94 +123,103 @@ T* WwiseMetadataLoader::GetObjectPtr(WwiseMetadataLoadable* Object, const WwiseD
 }
 
 template <typename T>
-WwiseDBArray<T> WwiseMetadataLoader::GetArray(WwiseMetadataLoadable* Object, const WwiseDBString& FieldName)
+TArray<T> FWwiseMetadataLoader::GetArray(FWwiseMetadataLoadable* Object, const FString& FieldName)
 {
-	if (!Object)
-	{
-		return {};
-	}
-	Object->AddRequestedValue(WwiseDBString("array"), FieldName);
+	check(Object);
+	Object->AddRequestedValue(TEXT("array"), FieldName);
 
-	WwiseDBArray< WwiseDBJsonObject > Array;
-	if (!JsonObject.TryGetArrayField(FieldName, Array))
+	const TArray< TSharedPtr<FJsonValue> >* Array;
+	if (!JsonObject->TryGetArrayField(FieldName, Array))
 	{
 		// No data. Not a fail, valid!
-		Object->IncLoadedSize(sizeof(WwiseDBArray<T>));
-		return WwiseDBArray<T>{};
+		Object->IncLoadedSize(sizeof(TArray<T>));
+		return TArray<T>{};
 	}
-	
-	WwiseDBArray<T> Result;
-	Result.Empty(Array.Size());
 
-	for (auto& InnerObject : Array)
+	TArray<T> Result;
+	Result.Empty(Array->Num());
+
+	for (auto& InnerObject : *Array)
 	{
-		WwiseMetadataLoader ArrayLoader(InnerObject);
+		const TSharedPtr<FJsonObject>* InnerJsonObjectPtr;
+		if (!InnerObject->TryGetObject(InnerJsonObjectPtr))
+		{
+			LogParsed(*FieldName);
+			continue;
+		}
+		
+		auto SharedRef(InnerJsonObjectPtr->ToSharedRef());
+		FWwiseMetadataLoader ArrayLoader(SharedRef);
 		T ResultObject(ArrayLoader);
 
 		if (ArrayLoader.bResult)
 		{
-			ResultObject.CheckRequestedValues(InnerObject);
+			ResultObject.CheckRequestedValues(SharedRef);
 		}
 		else
 		{
 			bResult = false;
-			ArrayLoader.LogParsed(FieldName);
+			ArrayLoader.LogParsed(*FieldName);
 			Result.Empty();
 			break;
 		}
 
-		Result.Add(std::move(ResultObject));
+		Result.Add(MoveTemp(ResultObject));
 	}
 
-	Object->IncLoadedSize(sizeof(WwiseDBArray<T>));
+	Object->IncLoadedSize(sizeof(TArray<T>));
 	return Result;
 }
 
 template <typename T>
-void WwiseMetadataLoader::GetPropertyArray(T* Object, const WwiseDBMap<WwiseDBString, size_t>& FloatProperties)
+void FWwiseMetadataLoader::GetPropertyArray(T* Object, const TMap<FName, size_t>& FloatProperties)
 {
-	if (!Object)
-	{
-		return;
-	}
-	Object->AddRequestedValue("propertyarray"_wwise_db, "Properties"_wwise_db);
+	check(Object);
+	Object->AddRequestedValue(TEXT("propertyarray"), TEXT("Properties"));
 
-	Object->IncLoadedSize(FloatProperties.Size() * sizeof(float));
+	Object->IncLoadedSize(FloatProperties.Num() * sizeof(float));
 
-	WwiseDBArray<WwiseDBJsonObject> Array;
-	if (!JsonObject.TryGetArrayField("Properties"_wwise_db, Array))
+	const TArray< TSharedPtr<FJsonValue> >* Array;
+	if (!JsonObject->TryGetArrayField(TEXT("Properties"), Array))
 	{
 		// No data. Not a fail, valid!
 		return;
 	}
 
-	for (auto& InnerObject : Array)
+	for (auto& InnerObject : *Array)
 	{
-		WwiseDBString Name;
-		if (!InnerObject.TryGetStringField("Name"_wwise_db, Name))
+		const TSharedPtr<FJsonObject>* InnerJsonObjectPtr;
+		if (!InnerObject->TryGetObject(InnerJsonObjectPtr))
 		{
-			Fail("Property::Name"_wwise_db);
 			continue;
 		}
-		WwiseDBString Type;
-		if (!InnerObject.TryGetStringField("Type"_wwise_db, Type) || Type != "Real32"_wwise_db)
+
+		const auto SharedRef(InnerJsonObjectPtr->ToSharedRef());
+		FString Name;
+		if (!SharedRef->TryGetStringField(TEXT("Name"), Name))
 		{
-			Fail("Property::Type"_wwise_db);
+			Fail(TEXT("Property::Name"));
+			continue;
+		}
+		FString Type;
+		if (!SharedRef->TryGetStringField(TEXT("Type"), Type) || Type != TEXT("Real32"))
+		{
+			Fail(TEXT("Property::Type"));
 			continue;
 		}
 		double Value;
-		if (!InnerObject.TryGetDoubleField("Value"_wwise_db, Value))
+		if (!SharedRef->TryGetNumberField(TEXT("Value"), Value))
 		{
-			Fail("Property::Value"_wwise_db);
+			Fail(TEXT("Property::Value"));
 			continue;
 		}
-		if (const auto* Property = FloatProperties.Find(WwiseDBString(WwiseDBString(Name))))
+		if (const auto* Property = FloatProperties.Find(FName(Name)))
 		{
-			*(float*)((intptr_t)Object + *Property) = (float)Value;
+			*(float*)((intptr_t)Object + *Property) = Value;
 		}
 		else
 		{
-			Fail(Name);
+			Fail(*Name);
 			continue;
 		}
 	}

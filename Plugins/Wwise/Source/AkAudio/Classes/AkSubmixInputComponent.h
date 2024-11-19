@@ -43,20 +43,16 @@ struct FAkSubmixBufferListener : public ISubmixBufferListener
 /*------------------------------------------------------------------------------------
 UAkSubmixInputComponent
 ------------------------------------------------------------------------------------*/
-UCLASS(Deprecated,
-	DisplayName="AkSubmixInput ( DEPRECATED )",
-	ClassGroup = Audiokinetic, BlueprintType,
-	hidecategories = (Transform, Rendering, Mobility, LOD, Component, Activation),
-	meta = (BlueprintSpawnableComponent, Tooltip = "(DEPRECATED) See AudioLink: https://www.audiokinetic.com/en/library/edge/?source=UE4&id=using_audio_link.html)"))
-class AKAUDIO_API UDEPRECATED_UAkSubmixInputComponent
+UCLASS(ClassGroup = Audiokinetic, BlueprintType, hidecategories = (Transform, Rendering, Mobility, LOD, Component, Activation), meta = (BlueprintSpawnableComponent))
+class AKAUDIO_API UAkSubmixInputComponent 
 	: public UAkAudioInputComponent
 {
     GENERATED_BODY()
 public:
-	UDEPRECATED_UAkSubmixInputComponent(const class FObjectInitializer& ObjectInitializer);
+	UAkSubmixInputComponent(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SubmixInput")
-	TObjectPtr<USoundSubmix> SubmixToRecord = nullptr;
+	USoundSubmix* SubmixToRecord = nullptr;
 
 	virtual int32 PostAssociatedAudioInputEvent();
 	virtual void Stop();

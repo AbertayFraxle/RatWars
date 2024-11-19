@@ -19,13 +19,13 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 
-struct WwiseMetadataLoader;
-struct WwiseMetadataProject : public WwiseMetadataLoadable
+struct FWwiseMetadataLoader;
+struct WWISEPROJECTDATABASE_API FWwiseMetadataProject : public FWwiseMetadataLoadable
 {
-	WwiseDBString Name;
-	WwiseDBGuid GUID;
-	WwiseDBString Generator;
+	FName Name;
+	FGuid GUID;
+	FName Generator;
 
-	WwiseMetadataProject();
-	WwiseMetadataProject(WwiseMetadataLoader& Loader);
+	FWwiseMetadataProject();
+	FWwiseMetadataProject(FWwiseMetadataLoader& Loader);
 };

@@ -20,7 +20,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Stats/Reconcile.h"
 #include "Wwise/WwiseReconcileImpl.h"
 
-IMPLEMENT_MODULE(FWwiseReconcileModule, WwiseReconcile)
+IMPLEMENT_MODULE(FWwiseReconcileModule, WwiseReconcileModule)
 
 IWwiseReconcile* FWwiseReconcileModule::GetReconcile()
 {
@@ -35,7 +35,7 @@ IWwiseReconcile* FWwiseReconcileModule::GetReconcile()
 		Lock.WriteLock();
 		if (LIKELY(!Reconcile))
 		{
-			UE_LOG(LogWwiseReconcile, Log, TEXT("Initializing default Reconcile."));
+			UE_LOG(LogWwiseReconcile, Display, TEXT("Initializing default Reconcile."));
 			Reconcile.Reset(InstantiateReconcile());
 		}
 		Lock.WriteUnlock();
@@ -54,7 +54,7 @@ void FWwiseReconcileModule::ShutdownModule()
 	Lock.WriteLock();
 	if (Reconcile.IsValid())
 	{
-		UE_LOG(LogWwiseReconcile, Log, TEXT("Shutting down default Reconcile."));
+		UE_LOG(LogWwiseReconcile, Display, TEXT("Shutting down default Reconcile."));
 		Reconcile.Reset();
 	}
 	Lock.WriteUnlock();

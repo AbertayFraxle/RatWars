@@ -17,33 +17,32 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 
-enum class WwiseMetadataSwitchValueGroupType : WwiseDBShortId
+enum class EWwiseMetadataSwitchValueGroupType : uint32
 {
 	Switch,
 	State,
-	Unknown = (WwiseDBShortId)-1
+	Unknown = (uint32)-1
 };
 
-struct WwiseMetadataSwitchValueAttributes : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSwitchValueAttributes : public FWwiseMetadataLoadable
 {
-	WwiseMetadataSwitchValueGroupType GroupType;
-	WwiseDBShortId GroupId;
-	WwiseDBShortId Id;
-	WwiseDBGuid GUID;
+	EWwiseMetadataSwitchValueGroupType GroupType;
+	uint32 GroupId;
+	uint32 Id;
+	FGuid GUID;
 	bool bDefault;
 
-	WwiseMetadataSwitchValueAttributes();
-	WwiseMetadataSwitchValueAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSwitchValueAttributes();
+	FWwiseMetadataSwitchValueAttributes(FWwiseMetadataLoader& Loader);
 
 private:
-	static WwiseMetadataSwitchValueGroupType GroupTypeFromString(const WwiseDBString& TypeString);
+	static EWwiseMetadataSwitchValueGroupType GroupTypeFromString(const FName& TypeString);
 };
 
-struct WwiseMetadataSwitchValue : public WwiseMetadataSwitchValueAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSwitchValue : public FWwiseMetadataSwitchValueAttributes
 {
-	WwiseMetadataSwitchValue();
-	WwiseMetadataSwitchValue(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSwitchValue();
+	FWwiseMetadataSwitchValue(FWwiseMetadataLoader& Loader);
 };

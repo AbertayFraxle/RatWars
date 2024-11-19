@@ -19,10 +19,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Stats/ResourceLoader.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 #include <inttypes.h>
 
 FWwiseShareSetCookedData::FWwiseShareSetCookedData():
@@ -46,33 +42,6 @@ void FWwiseShareSetCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseShareSetCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "SS";
-	Writer.BeginObject();
-
-	Writer << "Id" << ShareSetId;
-
-	Writer << "SBs";
-	Writer.BeginArray();
-	for (auto& SoundBank : SoundBanks)
-	{
-		SoundBank.PreSave(SaveContext, Writer);
-	}
-	Writer.EndArray();
-
-	Writer << "Ms";
-	Writer.BeginArray();
-	for (auto& MediaItem : Media)
-	{
-		MediaItem.PreSave(SaveContext, Writer);
-	}
-	Writer.EndArray();
-	Writer.EndObject();
-}
-#endif
 
 FString FWwiseShareSetCookedData::GetDebugString() const
 {

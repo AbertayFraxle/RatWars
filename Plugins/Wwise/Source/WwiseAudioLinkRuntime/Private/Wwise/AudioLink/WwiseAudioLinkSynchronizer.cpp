@@ -47,7 +47,7 @@ void FWwiseAudioLinkSynchronizer::ExecuteEndRender(AK::IAkGlobalPluginContext* I
 	OnEndRender.Broadcast(Params);
 }
 
-bool FWwiseAudioLinkSynchronizer::ExecuteOpenStream()
+void FWwiseAudioLinkSynchronizer::ExecuteOpenStream()
 {
 	UE_LOG(LogWwiseAudioLink, Verbose, TEXT("FWwiseAudioLinkSynchronizer::ExecuteOpenStream: Opening stream between Unreal and Wwise."));
 
@@ -55,7 +55,7 @@ bool FWwiseAudioLinkSynchronizer::ExecuteOpenStream()
 	if (UNLIKELY(!SoundEngine))
 	{
 		UE_LOG(LogWwiseAudioLink, Error, TEXT("FWwiseAudioLinkSynchronizer::ExecuteOpenStream: No Sound Engine."));
-		return false;
+		return;
 	}
 
 	AkAudioSettings Settings;
@@ -63,55 +63,40 @@ bool FWwiseAudioLinkSynchronizer::ExecuteOpenStream()
 	const AkChannelConfig SinkConfig = SoundEngine->GetSpeakerConfiguration();
 
 	FOnOpenStreamParams Params;
-	if (!SinkConfig.IsValid())
-	{
-		UE_LOG(LogWwiseAudioLink, Warning, TEXT("FWwiseAudioLinkSynchronizer::ExecuteOpenStream: Cannot get SpeakerConfiguration. Is Sound Engine Loaded / are SoundBanks generated and available?."));
-		Params.NumChannels = INDEX_NONE;
-		Params.SampleRate = INDEX_NONE;
-		Params.NumFrames = INDEX_NONE;
-		Params.Name = TEXT("AudioLink for Wwise (Invalid)");
-		return false;
-	}
-
 	Params.NumChannels = SinkConfig.uNumChannels;
 	Params.SampleRate = Settings.uNumSamplesPerSecond;
 	Params.NumFrames = Settings.uNumSamplesPerFrame;
 	Params.Name = TEXT("AudioLink for Wwise");
-
 	OnOpenStream.Broadcast(Params);
-
-	return true;
 }
 
-bool FWwiseAudioLinkSynchronizer::ExecuteCloseStream()
+void FWwiseAudioLinkSynchronizer::ExecuteCloseStream()
 {
 	UE_LOG(LogWwiseAudioLink, Verbose, TEXT("FWwiseAudioLinkSynchronizer::ExecuteCloseStream: Closing stream between Unreal and Wwise."));
 
 	OnCloseStream.Broadcast();
-
-	return true;
 }
 
-bool FWwiseAudioLinkSynchronizer::Bind()
+void FWwiseAudioLinkSynchronizer::Bind()
 {
 	if (UNLIKELY(bIsBound))
 	{
 		UE_LOG(LogWwiseAudioLink, Error, TEXT("FWwiseAudioLinkSynchronizer::Bind: Binding an already bound SoundEngine."));
-		return false;
+		return;
 	}
 
 	auto* Callbacks = FWwiseGlobalCallbacks::Get();
 	if (UNLIKELY(!Callbacks))
 	{
 		UE_LOG(LogWwiseAudioLink, Error, TEXT("FWwiseAudioLinkSynchronizer::Bind: No Callbacks."));
-		return false;
+		return;
 	}
 
 	auto* SoundEngine = IWwiseSoundEngineModule::SoundEngine;
 	if (UNLIKELY(!SoundEngine))
 	{
 		UE_LOG(LogWwiseAudioLink, Error, TEXT("FWwiseAudioLinkSynchronizer::ExecuteOpenStream: No Sound Engine."));
-		return false;
+		return;
 	}
 
 	UE_LOG(LogWwiseAudioLink, Verbose, TEXT("FWwiseAudioLinkSynchronizer::Bind: Binding SoundEngine."));
@@ -141,10 +126,7 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 
 	if (SoundEngine->IsInitialized())
 	{
-		if (!ExecuteOpenStream())
-		{
-			return false;
-		}
+		ExecuteOpenStream();
 	}
 	Callbacks->InitAsync([WeakThis = AsWeak()]() mutable
 	{
@@ -170,23 +152,17 @@ bool FWwiseAudioLinkSynchronizer::Bind()
 		return EWwiseDeferredAsyncResult::KeepRunning;
 	});
 	bIsBound = true;
-	return true;
 }
 
-bool FWwiseAudioLinkSynchronizer::Unbind()
+void FWwiseAudioLinkSynchronizer::Unbind()
 {
 	if (UNLIKELY(!bIsBound))
 	{
-		return false;
+		return;
 	}
 
 	UE_LOG(LogWwiseAudioLink, Verbose, TEXT("FWwiseAudioLinkSynchronizer::Bind: Unbinding SoundEngine."));
 	bIsBound = false;
 
-	if (!ExecuteCloseStream())
-	{
-		return false;
-	}
-
-	return true;
+	ExecuteCloseStream();
 }

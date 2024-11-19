@@ -18,42 +18,31 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "Wwise/Metadata/WwiseMetadataForwardDeclarations.h"
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
-#include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
 
-struct WWISEPROJECTDATABASE_API WwiseMetadataLoadable
+#include "CoreMinimal.h"
+
+class FJsonObject;
+class FJsonValue;
+
+struct WWISEPROJECTDATABASE_API FWwiseMetadataLoadable
 {
 protected:
-
-	WwiseDBSet<WwiseDBString> RequestedValues;
+	TSet<FString> RequestedValues;
 	size_t LoadedSize;
 
-	inline WwiseMetadataLoadable() :
+	inline FWwiseMetadataLoadable() :
 		RequestedValues(),
 		LoadedSize(0)
 	{}
 
-	inline ~WwiseMetadataLoadable()
+	inline ~FWwiseMetadataLoadable()
 	{
-		if (LoadedSize != 0)
-		{
-			UnloadLoadedSize();
-		}
+		UnloadLoadedSize();
 	}
-
-	WwiseMetadataLoadable(WwiseMetadataLoadable&& Other)
-	: LoadedSize(Other.LoadedSize)
-	{
-		Other.LoadedSize = 0;
-	}
-
-	WwiseMetadataLoadable(const WwiseMetadataLoadable& other) = default;
-	WwiseMetadataLoadable& operator=(const WwiseMetadataLoadable& Other) = default;
-	WwiseMetadataLoadable& operator=(const WwiseMetadataLoadable&& Other) = delete;
 
 public:
-	void AddRequestedValue(const WwiseDBString& Type, const WwiseDBString& Value);
-	void CheckRequestedValues(WwiseDBJsonObject& JsonObject) const;
+	void AddRequestedValue(const FString& Type, const FString& Value);
+	void CheckRequestedValues(TSharedRef<FJsonObject>& JsonObject);
 	void IncLoadedSize(size_t Size);
 	void DecLoadedSize(size_t Size);
 	void UnloadLoadedSize();

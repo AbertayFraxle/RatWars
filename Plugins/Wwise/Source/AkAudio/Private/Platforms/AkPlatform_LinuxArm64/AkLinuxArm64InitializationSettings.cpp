@@ -34,7 +34,7 @@ void UAkLinuxArm64InitializationSettings::FillInitializationStructure(FAkInitial
 	CommunicationSettings.FillInitializationStructure(InitializationStructure);
 	AdvancedSettings.FillInitializationStructure(InitializationStructure);
 
-#if defined(PLATFORM_LINUXARM64) && PLATFORM_LINUXARM64
+#if (defined(PLATFORM_LINUXARM64) && PLATFORM_LINUXARM64) || (defined(PLATFORM_LINUXAARCH64) && PLATFORM_LINUXAARCH64)
 	InitializationStructure.PlatformInitSettings.uSampleRate = CommonSettings.SampleRate;
 #endif
 }

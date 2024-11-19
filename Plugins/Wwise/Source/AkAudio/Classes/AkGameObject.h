@@ -35,27 +35,13 @@ class AKAUDIO_API UAkGameObject: public USceneComponent
 public:
 	UAkGameObject(const class FObjectInitializer& ObjectInitializer);
 
-	virtual void PostLoad() override;
-
-	/** Allows the modification of the attenuation computations on this game object. Uses the default AttenuationScalingFactor otherwise. */
-	UPROPERTY(EditAnywhere, BlueprintSetter = SetOverrideAttenuationScalingFactor, Category = "AkEvent")
-	bool bOverrideAttenuationScalingFactor = false;
-
-	/** Allows overriding the attenuation scaling factor. */
-	UFUNCTION(BlueprintSetter, Category = "Audiokinetic|AkEvent")
-	void SetOverrideAttenuationScalingFactor(bool bInOverrideAttenuationScalingFactor);
-
 	/** Modifies the attenuation computations on this game object to simulate sounds with a larger or smaller area of effect. */
-	UPROPERTY(EditAnywhere, BlueprintSetter = SetAttenuationScalingFactor, Category = "AkEvent", meta = (ClampMin = 0.f, EditCondition="bOverrideAttenuationScalingFactor"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AkEvent", meta = (ClampMin = 0.f))
 	float AttenuationScalingFactor = 1.0f;
-
-	/** Sets the attenuation scaling factor, which modifies the attenuation computations on this game object to simulate sounds with a a larger or smaller area of effect. */
-	UFUNCTION(BlueprintSetter, Category = "Audiokinetic|AkEvent")
-	void SetAttenuationScalingFactor(float InAttenuationScalingFactor);
 
 	/** Associated Wwise Event to be posted on this game object */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AkEvent")
-	TObjectPtr<UAkAudioEvent> AkAudioEvent = nullptr;
+	UAkAudioEvent* AkAudioEvent = nullptr;
 
 	/**
 	 * Posts this game object's AkAudioEvent to Wwise, using this as the game object source
@@ -134,12 +120,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkGameObject", meta = (AdvancedDisplay = "RTPC"))
 	void GetRTPCValue(class UAkRtpc const* RTPCValue, ERTPCValueType InputValueType, float& Value, ERTPCValueType& OutputValueType, FString RTPC, int32 PlayingID = 0) const;
 
-
-#if WITH_EDITOR
-	virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-#endif
-
 #if CPP
 	bool VerifyEventName(const FString& InEventName) const;
 	bool AllowAudioPlayback() const;
@@ -157,10 +137,5 @@ protected:
 	bool bIsRegisteredWithWwise = false;
 	bool SetAttenuationScalingFactor();
 
-#if WITH_EDITOR
 	float PreviousAttenuationScalingFactor = 1.0f;
-#endif
-
-	UPROPERTY()
-	bool bAttenuationScalingMigrated = false;
 };

@@ -17,90 +17,89 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/WwiseDirectoryVisitor.h"
 
+#include "WwiseUnrealHelper.h"
 #include "Wwise/Metadata/WwiseMetadataRootFile.h"
 #include "Wwise/Metadata/WwiseMetadataProjectInfo.h"
 #include "Wwise/Metadata/WwiseMetadataPlatform.h"
 #include "Wwise/Metadata/WwiseMetadataLanguage.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-#include "Wwise/AdapterTypes/IWwiseDirectoryVisitor.h"
-#include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
-
-class WwisePlatformVisitor
-{
-public:
-	virtual ~WwisePlatformVisitor() = default;
-	virtual WwiseGeneratedFiles::FPlatformFiles& Get() = 0;
-};
+#include "Async/Async.h"
+#include "Misc/Paths.h"
 
 //
 // FPlatformRootDirectoryVisitor
 //
-class WwiseDirectoryVisitor::FPlatformRootDirectoryVisitor : public WwisePlatformVisitor
+class FWwiseDirectoryVisitor::FPlatformRootDirectoryVisitor : public IPlatformFile::FDirectoryVisitor, public FWwiseDirectoryVisitor::IGettableVisitor
 {
 public:
 	FPlatformRootDirectoryVisitor(
-		const WwiseDBSharedPlatformId& InPlatform) :
-		Platform(InPlatform)
+		const FWwiseSharedPlatformId& InPlatform,
+		IPlatformFile& InFileInterface) :
+		Platform(InPlatform),
+		FileInterface(InFileInterface)
 	{}
-	bool Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory);
+	bool Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory) override;
 	bool StartJobIfValid();
-	WwiseGeneratedFiles::FPlatformFiles& Get();
+	FWwiseGeneratedFiles::FPlatformFiles& Get() override;
 
-	const WwiseDBSharedPlatformId Platform;
+	const FWwiseSharedPlatformId Platform;
+	IPlatformFile& FileInterface;
 
-	WwiseGeneratedFiles::FPlatformFiles PlatformFiles;
-	WwiseDBArray<WwiseDBFuture<WwisePlatformVisitor*>> Futures;
+	FWwiseGeneratedFiles::FPlatformFiles PlatformFiles;
+	TArray<TFuture<FWwiseDirectoryVisitor::IGettableVisitor*>> Futures;
 };
 
 //
 // FSoundBankVisitor
 //
-class WwiseDirectoryVisitor::FSoundBankVisitor : public WwisePlatformVisitor
+class FWwiseDirectoryVisitor::FSoundBankVisitor : public IPlatformFile::FDirectoryVisitor, public FWwiseDirectoryVisitor::IGettableVisitor
 {
 public:
-	FSoundBankVisitor()
-	{
-	}
+	FSoundBankVisitor(IPlatformFile& InFileInterface) :
+		FileInterface(InFileInterface)
+	{}
+	virtual bool Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory);
+	FWwiseGeneratedFiles::FPlatformFiles& Get() override;
 
-	bool Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory);
-	WwiseGeneratedFiles::FPlatformFiles& Get() override;
-
-	WwiseGeneratedFiles::FPlatformFiles Result;
+	IPlatformFile& FileInterface;
+	FWwiseGeneratedFiles::FPlatformFiles Result;
 };
 
 //
 // FMediaVisitor
 //
-class WwiseDirectoryVisitor::FMediaVisitor : public WwisePlatformVisitor
+class FWwiseDirectoryVisitor::FMediaVisitor : public IPlatformFile::FDirectoryVisitor, public FWwiseDirectoryVisitor::IGettableVisitor
 {
 public:
-	FMediaVisitor()
-	{
-	}
+	FMediaVisitor(IPlatformFile& InFileInterface) :
+		FileInterface(InFileInterface)
+	{}
+	virtual bool Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory);
+	FWwiseGeneratedFiles::FPlatformFiles& Get() override;
 
-	bool Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory);
-	WwiseGeneratedFiles::FPlatformFiles& Get() override;
-
-	WwiseGeneratedFiles::FPlatformFiles Result;
+	IPlatformFile& FileInterface;
+	FWwiseGeneratedFiles::FPlatformFiles Result;
 };
 
 //
-// WwiseDirectoryVisitor
+// FWwiseDirectoryVisitor
 //
-bool WwiseDirectoryVisitor::Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory)
+bool FWwiseDirectoryVisitor::Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory)
 {
+	SCOPED_WWISEPROJECTDATABASE_EVENT_2(TEXT("FWwiseDirectoryVisitor::Visit"));
 	// make sure all paths are "standardized" so the other end can match up with it's own standardized paths
-	WwiseDBString RelativeFilename = FilenameOrDirectory;
-	RelativeFilename.MakeStandardFilename();
-	const auto Filename = RelativeFilename.GetFileName();
+	FString RelativeFilename = FilenameOrDirectory;
+	FPaths::MakeStandardFilename(RelativeFilename);
+	const auto Filename = FPaths::GetCleanFilename(RelativeFilename);
 
-	if (Filename.StartsWith("."_wwise_db))
+	if (Filename.StartsWith(TEXT(".")))
 	{
-		WWISE_DB_LOG(Verbose, "[WwiseDirectoryVisitor] Skipping: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("[WwiseDirectoryVisitor] Skipping: %s"), *RelativeFilename);
 		return true;
 	}
 
-	WWISE_DB_LOG(VeryVerbose, "[WwiseDirectoryVisitor] Visiting %s", *RelativeFilename);
+	UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("[WwiseDirectoryVisitor] Visiting %s"), *RelativeFilename);
 
 	if (bIsDirectory)
 	{
@@ -108,110 +107,123 @@ bool WwiseDirectoryVisitor::Visit(const WwiseDBString& FilenameOrDirectory, bool
 		return true;
 	}
 
-	WwiseGeneratedFiles::FileTuple FileToAdd(*RelativeFilename, IWwiseDirectoryVisitor<WwiseDirectoryVisitor>::GetTimeStamp(FilenameOrDirectory));
-	const auto Extension = RelativeFilename.GetExtension();
+	FWwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, FileInterface.GetTimeStamp(FilenameOrDirectory));
+	const auto Extension = FPaths::GetExtension(RelativeFilename);
 
-	if (Filename.Equals("ProjectInfo.json"_wwise_db, EStringCompareType::IgnoreCase))
+	if (Filename.Equals(TEXT("ProjectInfo.json"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(Verbose, "Found ProjectInfo: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found ProjectInfo: %s"), *RelativeFilename);
 
 		// We need to retrieve the Path from ProjectInfo. Parse this file immediately
 		// (will be parsed twice. Now once, and officially later - since the file is small, it's not a big worry)
-		auto Root = WwiseMetadataRootFile::LoadFile(WwiseDBString(*RelativeFilename));
+		auto Root = FWwiseMetadataRootFile::LoadFile(RelativeFilename);
 		if (!Root || !Root->ProjectInfo)
 		{
-			WWISE_DB_LOG(Error, "Could not read ProjectInfo to retrieve paths.", *RelativeFilename);
+			UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not read ProjectInfo to retrieve paths."), *RelativeFilename);
 			return true;
 		}
 
 		GeneratedDirectory.ProjectInfo = Root;
 
-		const auto Path = WwiseDBString(FilenameOrDirectory).GetPath();
+		const auto Path = FPaths::GetPath(FilenameOrDirectory);
 
 		auto& Platforms = Root->ProjectInfo->Platforms;
 		bool bFoundPlatform = false;
 		if (!PlatformName)
 		{
-			WWISE_DB_LOG(Log, "Skipping loading all platforms");
+			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("Skipping loading all platforms"));
 		}
 		else
 		{
 			for (auto& Platform : Platforms)
 			{
-				if (PlatformName->Equals(Platform.Name, EStringCompareType::IgnoreCase))
+				if (PlatformName->ToString().Equals(Platform.Name.ToString(), ESearchCase::IgnoreCase))
 				{
 					bFoundPlatform = true;
 					break;
 				}
 			}
 
-			WWISE_DB_CLOG(!bFoundPlatform, Log, "Requested platform not found: %s", **PlatformName);
+			UE_CLOG(UNLIKELY(!bFoundPlatform), LogWwiseProjectDatabase, Log, TEXT("Requested platform not found: %s"), *PlatformName->ToString());
 		}
 
 		if (bFoundPlatform)
 		{
 			for (auto& Platform : Platforms)
 			{
-				const auto PlatformPath = Path / Platform.Path;
+				const FString PlatformPath = Platform.Path.ToString();
 
-				WwiseDBString RequestedPlatformPath = ""_wwise_db; 
+				FString RequestedPlatformPath = ""; 
 
-				if (PlatformPath.IsRelative())
+				if (FPaths::IsRelative(PlatformPath))
 				{
-					RequestedPlatformPath = Path / Platform.Path;
+					RequestedPlatformPath = Path / Platform.Path.ToString();
 				}
 				else
 				{
 					RequestedPlatformPath = PlatformPath;
 				}
 
-				if (!PlatformName->Equals(Platform.Name, EStringCompareType::IgnoreCase))
+				if (!PlatformName->ToString().Equals(Platform.Name.ToString(), ESearchCase::IgnoreCase))
 				{
-					WWISE_DB_LOG(Verbose, "Skipping platform %s", *Platform.Name);
+					UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Skipping platform %s"), *Platform.Name.ToString());
+					continue;
+				}
+				if (PlatformGuid && *PlatformGuid != Platform.BasePlatformGUID)
+				{
+					UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Skipping platform %s (Base %s)"), *Platform.Name.ToString(), *Platform.BasePlatform.ToString());
 					continue;
 				}
 
-				WWISE_DB_LOG(Verbose, "Visiting platform %s at: %s", *Platform.Name, *Platform.Path);
-				
-				Futures.Add(WwiseAsync([this, Platform, PlatformPath] {
-					WwiseDBSharedPlatformId PlatformRef;
-					PlatformRef.Platform = WwiseDBSharedPtr<WwiseDBPlatformId>(new WwiseDBPlatformId(Platform.GUID, *Platform.Name, *Platform.Path));
-					auto RootVisitor = IWwiseDirectoryVisitor<FPlatformRootDirectoryVisitor>(new FPlatformRootDirectoryVisitor(PlatformRef));
-					if (!RootVisitor.IterateDirectory(PlatformPath) ||
-						!RootVisitor.DirectoryVisitor->StartJobIfValid())
+				UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Visiting platform %s at: %s"), *Platform.Name.ToString(), *Platform.Path.ToString());
+
+				FWwisePlatformId CurrentPlatform;
+				CurrentPlatform.PlatformGuid = Platform.GUID;
+				CurrentPlatform.PlatformName = Platform.Name;
+				FString RelativePlatformPath(RequestedPlatformPath);
+				FPaths::MakePathRelativeTo(RelativePlatformPath, *WwiseUnrealHelper::GetSoundBankDirectory());
+				CurrentPlatform.PathRelativeToGeneratedSoundBanks = FName(RelativePlatformPath);
+				FWwiseSharedPlatformId PlatformRef;
+				PlatformRef.Platform = MakeShared<FWwisePlatformId, ESPMode::ThreadSafe>(CurrentPlatform);
+
+				Futures.Add(Async(EAsyncExecution::TaskGraph, [this, PlatformRef, RequestedPlatformPath] {
+					auto* RootVisitor = new FPlatformRootDirectoryVisitor(PlatformRef, FileInterface);
+					if (!FileInterface.IterateDirectory(*RequestedPlatformPath, *RootVisitor) ||
+						!RootVisitor->StartJobIfValid())
 					{
-						delete RootVisitor.DirectoryVisitor;
-						RootVisitor.DirectoryVisitor = nullptr;
-						WWISE_DB_LOG(Warning, "Could not find generated platform %s at: %s", *PlatformRef.GetPlatformName(), *PlatformPath);
+						UE_LOG(LogWwiseProjectDatabase, Warning, TEXT("Could not find generated platform %s at: %s"), *PlatformRef.GetPlatformName().ToString(), *PlatformRef.Platform->PathRelativeToGeneratedSoundBanks.ToString());
+						delete RootVisitor;
+						RootVisitor = nullptr;
 					}
-					return RootVisitor.DirectoryVisitor;
+					return RootVisitor;
 				}));
 			}
 		}
 
-		GeneratedDirectory.GeneratedRootFiles.ProjectInfoFile = std::move(FileToAdd.Tuple);
+		GeneratedDirectory.GeneratedRootFiles.ProjectInfoFile = MoveTemp(FileToAdd);
 	}
-	else if (Filename.Equals("Wwise_IDs.h"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Filename.Equals(TEXT("Wwise_IDs.h"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(Verbose, "Found Wwise IDs: %s", *RelativeFilename);
-		GeneratedDirectory.GeneratedRootFiles.WwiseIDsFile = std::move(FileToAdd.Tuple);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found Wwise IDs: %s"), *RelativeFilename);
+		GeneratedDirectory.GeneratedRootFiles.WwiseIDsFile = MoveTemp(FileToAdd);
 	}
-	else if (Filename.Equals("SoundBanksGeneration.log"_wwise_db, EStringCompareType::IgnoreCase)
-		|| Extension.Equals("xml"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Filename.Equals(TEXT("SoundBanksGeneration.log"), ESearchCase::IgnoreCase)
+		|| Extension.Equals(TEXT("xml"), ESearchCase::IgnoreCase))
 	{
 		// Nothing to do
 	}
 	else
 	{
-		WWISE_DB_LOG(Log, "Unknown file. Not in a platform. Will be ignored: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, Log, TEXT("Unknown file. Not in a platform. Will be ignored: %s"), *RelativeFilename);
 	}
 
 	return true;
 }
 
-WwiseGeneratedFiles& WwiseDirectoryVisitor::Get()
+FWwiseGeneratedFiles& FWwiseDirectoryVisitor::Get()
 {
-	for (auto& Future : Futures)
+	SCOPED_WWISEPROJECTDATABASE_EVENT_4(TEXT("FWwiseDirectoryVisitor::Get"));
+	for (const auto& Future : Futures)
 	{
 		auto* Result = Future.Get();
 		if (Result)
@@ -233,94 +245,95 @@ WwiseGeneratedFiles& WwiseDirectoryVisitor::Get()
 //
 // FPlatformRootDirectoryVisitor
 //
-bool WwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory)
+bool FWwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory)
 {
+	SCOPED_WWISEPROJECTDATABASE_EVENT_2(TEXT("FPlatformRootDirectoryVisitor::Visit"));
 	// make sure all paths are "standardized" so the other end can match up with it's own standardized paths
-	WwiseDBString RelativeFilename = WwiseDBString(FilenameOrDirectory);
-	RelativeFilename.MakeStandardFilename();
-	const auto Filename = RelativeFilename.GetFileName();
+	FString RelativeFilename = FilenameOrDirectory;
+	FPaths::MakeStandardFilename(RelativeFilename);
+	const auto Filename = FPaths::GetCleanFilename(RelativeFilename);
 
-	if (Filename.StartsWith("."_wwise_db))
+	if (Filename.StartsWith(TEXT(".")))
 	{
-		WWISE_DB_LOG(Verbose, "[RootFilesVisitor] Skipping: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("[RootFilesVisitor] Skipping: %s"), *RelativeFilename);
 		return true;
 	}
 
-	WWISE_DB_LOG(VeryVerbose, "[RootFilesVisitor] Visiting %s", *RelativeFilename);
+	UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("[RootFilesVisitor] Visiting %s"), *RelativeFilename);
 
 	if (bIsDirectory)
 	{
 		PlatformFiles.DirectoriesToWatch.Add(RelativeFilename);
 
-		if (Filename.Equals("Media"_wwise_db, EStringCompareType::IgnoreCase))
+		if (Filename.Equals(TEXT("Media"), ESearchCase::IgnoreCase))
 		{
-			WWISE_DB_LOG(Verbose, "Found media directory: %s", *RelativeFilename);
-			PlatformFiles.MediaDirectory = WwiseDBString(FilenameOrDirectory);
+			UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found media directory: %s"), *RelativeFilename);
+			PlatformFiles.MediaDirectory = FilenameOrDirectory;
 		}
-		else if (Filename.Equals("Bus"_wwise_db, EStringCompareType::IgnoreCase)
-			|| Filename.Equals("Event"_wwise_db, EStringCompareType::IgnoreCase))
+		else if (Filename.Equals(TEXT("Bus"), ESearchCase::IgnoreCase)
+			|| Filename.Equals(TEXT("Event"), ESearchCase::IgnoreCase))
 		{
-			WWISE_DB_LOG(Verbose, "Found auto SoundBank directory: %s", *RelativeFilename);
-			PlatformFiles.AutoSoundBankDirectories.Add(WwiseDBString(FilenameOrDirectory));
+			UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found auto SoundBank directory: %s"), *RelativeFilename);
+			PlatformFiles.AutoSoundBankDirectories.Add(FilenameOrDirectory);
 		}
 		else {
-			WWISE_DB_LOG(Verbose, "Found language directory: %s", *RelativeFilename);
-			PlatformFiles.LanguageDirectories.Add(WwiseDBString(FilenameOrDirectory));
+			UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found language directory: %s"), *RelativeFilename);
+			PlatformFiles.LanguageDirectories.Add(FilenameOrDirectory);
 		}
 
 		return true;
 	}
 
-	WwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, IWwiseDirectoryVisitor<WwiseDirectoryVisitor>::GetTimeStamp(FilenameOrDirectory));
-	const auto Extension = RelativeFilename.GetExtension();
+	FWwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, FileInterface.GetTimeStamp(FilenameOrDirectory));
+	const auto Extension = FPaths::GetExtension(RelativeFilename);
 
-	if (!Extension.Equals("json"_wwise_db, EStringCompareType::IgnoreCase) 
-		&& !Extension.Equals("txt"_wwise_db, EStringCompareType::IgnoreCase)
-		&& !Extension.Equals("bnk"_wwise_db, EStringCompareType::IgnoreCase)
-		&& !Extension.Equals("xml"_wwise_db, EStringCompareType::IgnoreCase))
+	if (!Extension.Equals(TEXT("json"), ESearchCase::IgnoreCase) 
+		&& !Extension.Equals(TEXT("txt"), ESearchCase::IgnoreCase)
+		&& !Extension.Equals(TEXT("bnk"), ESearchCase::IgnoreCase)
+		&& !Extension.Equals(TEXT("xml"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(VeryVerbose, "Adding extra file: %s", *RelativeFilename);
-		PlatformFiles.ExtraFiles.Add(std::move(FileToAdd));
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding extra file: %s"), *RelativeFilename);
+		PlatformFiles.ExtraFiles.Add(MoveTemp(FileToAdd));
 		return true;
 	}
 
-	if (Extension.Equals("bnk"_wwise_db, EStringCompareType::IgnoreCase))
+	if (Extension.Equals(TEXT("bnk"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(VeryVerbose, "Adding SoundBank file: %s", *RelativeFilename);
-		PlatformFiles.SoundBankFiles.Add(std::move(FileToAdd));
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding SoundBank file: %s"), *RelativeFilename);
+		PlatformFiles.SoundBankFiles.Add(MoveTemp(FileToAdd));
 		return true;
 	}
-	else if (Extension.Equals("xml"_wwise_db, EStringCompareType::IgnoreCase)
-		|| Extension.Equals("txt"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Extension.Equals(TEXT("xml"), ESearchCase::IgnoreCase)
+		|| Extension.Equals(TEXT("txt"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(VeryVerbose, "Skipping file: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Skipping file: %s"), *RelativeFilename);
 		return true;
 	}
-	else if (Filename.Equals("SoundbanksInfo.json"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Filename.Equals(TEXT("SoundbanksInfo.json"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(Verbose, "Found monolithic SoundBank info: %s", *RelativeFilename);
-		PlatformFiles.SoundbanksInfoFile = std::move(FileToAdd);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found monolithic SoundBank info: %s"), *RelativeFilename);
+		PlatformFiles.SoundbanksInfoFile = MoveTemp(FileToAdd);
 	}
-	else if (Filename.Equals("PlatformInfo.json"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Filename.Equals(TEXT("PlatformInfo.json"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(Verbose, "Found platform info: %s", *RelativeFilename);
-		PlatformFiles.PlatformInfoFile = std::move(FileToAdd);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found platform info: %s"), *RelativeFilename);
+		PlatformFiles.PlatformInfoFile = MoveTemp(FileToAdd);
 	}
-	else if (Filename.Equals("PluginInfo.json"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Filename.Equals(TEXT("PluginInfo.json"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(Verbose, "Found plugin info: %s", *RelativeFilename);
-		PlatformFiles.PluginInfoFile = std::move(FileToAdd);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Found plugin info: %s"), *RelativeFilename);
+		PlatformFiles.PluginInfoFile = MoveTemp(FileToAdd);
 	}
 	else
 	{
-		WWISE_DB_LOG(VeryVerbose, "Adding metadata file: %s", *RelativeFilename);
-		PlatformFiles.MetadataFiles.Add(std::move(FileToAdd));
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding metadata file: %s"), *RelativeFilename);
+		PlatformFiles.MetadataFiles.Add(MoveTemp(FileToAdd));
 	}
 
 	return true;
 }
 
-bool WwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::StartJobIfValid()
+bool FWwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::StartJobIfValid()
 {
 	if (!PlatformFiles.IsValid())
 	{
@@ -330,44 +343,46 @@ bool WwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::StartJobIfValid()
 	if (!PlatformFiles.MediaDirectory.IsEmpty())
 	{
 		const auto& Elem = PlatformFiles.MediaDirectory;
-		Futures.Add(WwiseAsync([this, Elem] {
-			WWISE_DB_LOG(Verbose, "Visiting media directory: %s", *Elem);
-			auto MediaVisitor = IWwiseDirectoryVisitor<FMediaVisitor>(new FMediaVisitor());
-			MediaVisitor.IterateDirectory(Elem);
-			return (WwisePlatformVisitor*)MediaVisitor.DirectoryVisitor;
+		Futures.Add(Async(EAsyncExecution::TaskGraph, [this, Elem] {
+			UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Visiting media directory: %s"), *Elem);
+			auto* MediaVisitor = new FMediaVisitor(FileInterface);
+			FileInterface.IterateDirectory(*Elem, *MediaVisitor);
+			return static_cast<FWwiseDirectoryVisitor::IGettableVisitor*>(MediaVisitor);
 		}));
 	}
+
 	for (const auto& Elem : PlatformFiles.AutoSoundBankDirectories)
 	{
-		Futures.Add(WwiseAsync([this, Elem] {
-			WWISE_DB_LOG(Verbose, "Visiting auto SoundBank directory: %s", *Elem);
-			auto SoundBankVisitor = IWwiseDirectoryVisitor<FSoundBankVisitor>(new FSoundBankVisitor());
-			SoundBankVisitor.IterateDirectory(Elem);
-			return (WwisePlatformVisitor*)SoundBankVisitor.DirectoryVisitor;
+		Futures.Add(Async(EAsyncExecution::TaskGraph, [this, Elem] {
+			UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Visiting auto SoundBank directory: %s"), *Elem);
+			auto* SoundBankVisitor = new FSoundBankVisitor(FileInterface);
+			FileInterface.IterateDirectory(*Elem, *SoundBankVisitor);
+			return static_cast<FWwiseDirectoryVisitor::IGettableVisitor*>(SoundBankVisitor);
 		}));
 	}
 
 	for (const auto& Elem : PlatformFiles.LanguageDirectories)
 	{
-		Futures.Add(WwiseAsync([this, Elem] {
-			WWISE_DB_LOG(Verbose, "Visiting language directory: %s", *Elem);
-			auto SoundBankVisitor = IWwiseDirectoryVisitor<FSoundBankVisitor>(new FSoundBankVisitor());
-			SoundBankVisitor.IterateDirectory(Elem);
-			return (WwisePlatformVisitor*)SoundBankVisitor.DirectoryVisitor;
+		Futures.Add(Async(EAsyncExecution::TaskGraph, [this, Elem] {
+			UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("Visiting language directory: %s"), *Elem);
+			auto* SoundBankVisitor = new FSoundBankVisitor(FileInterface);
+			FileInterface.IterateDirectory(*Elem, *SoundBankVisitor);
+			return static_cast<FWwiseDirectoryVisitor::IGettableVisitor*>(SoundBankVisitor);
 		}));
 	}
 
 	return true;
 }
 
-WwiseGeneratedFiles::FPlatformFiles& WwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::Get()
+FWwiseGeneratedFiles::FPlatformFiles& FWwiseDirectoryVisitor::FPlatformRootDirectoryVisitor::Get()
 {
-	for (auto& Future : Futures)
+	SCOPED_WWISEPROJECTDATABASE_EVENT_4(TEXT("FPlatformRootDirectoryVisitor::Get"));
+	for (const auto& Future : Futures)
 	{
-		auto Result = Future.Get();
+		auto* Result = Future.Get();
 		if (Result)
 		{
-			PlatformFiles.Append(std::move(Result->Get()));
+			PlatformFiles.Append(MoveTemp(Result->Get()));
 			delete Result;
 		}
 	}
@@ -378,61 +393,59 @@ WwiseGeneratedFiles::FPlatformFiles& WwiseDirectoryVisitor::FPlatformRootDirecto
 //
 // FSoundBankVisitor
 //
-bool WwiseDirectoryVisitor::FSoundBankVisitor::Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory)
+bool FWwiseDirectoryVisitor::FSoundBankVisitor::Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory)
 {
 	// make sure all paths are "standardized" so the other end can match up with it's own standardized paths
-	WwiseDBString RelativeFilename = FilenameOrDirectory;
-	RelativeFilename.MakeStandardFilename();
+	FString RelativeFilename = FilenameOrDirectory;
+	FPaths::MakeStandardFilename(RelativeFilename);
+	const auto Filename = FPaths::GetCleanFilename(RelativeFilename);
+	const auto Extension = FPaths::GetExtension(RelativeFilename);
 
-	const auto Filename = RelativeFilename.GetFileName();
-	const auto Extension = RelativeFilename.GetExtension();
-
-	if (Filename.StartsWith("."_wwise_db))
+	if (Filename.StartsWith(TEXT(".")))
 	{
-		WWISE_DB_LOG(Verbose, "[SoundBankVisitor] Skipping: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, Verbose, TEXT("[SoundBankVisitor] Skipping: %s"), *RelativeFilename);
 		return true;
 	}
 
-	WWISE_DB_LOG(VeryVerbose, "[SoundBankVisitor] Visiting %s", *RelativeFilename);
+	UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("[SoundBankVisitor] Visiting %s"), *RelativeFilename);
 
 	if (bIsDirectory)
 	{
-		WWISE_DB_LOG(VeryVerbose, "Iterating folder: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Iterating folder: %s"), *RelativeFilename);
 		Result.DirectoriesToWatch.Add(RelativeFilename);
-		auto DirectoryVisitor = IWwiseDirectoryVisitor<FSoundBankVisitor>(this);
-		DirectoryVisitor.IterateDirectory(FilenameOrDirectory);
+		FileInterface.IterateDirectory(FilenameOrDirectory, *this);
 		return true;
 	}
 
-	WwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, IWwiseDirectoryVisitor<WwiseDirectoryVisitor>::GetTimeStamp(FilenameOrDirectory));
+	FWwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, FileInterface.GetTimeStamp(FilenameOrDirectory));
 
-	if (Extension.Equals("json"_wwise_db, EStringCompareType::IgnoreCase))
+	if (Extension.Equals(TEXT("json"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(VeryVerbose, "Adding metadata file: %s", *RelativeFilename);
-		Result.MetadataFiles.Add(std::move(FileToAdd));
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding metadata file: %s"), *RelativeFilename);
+		Result.MetadataFiles.Add(MoveTemp(FileToAdd));
 		return true;
 	}
-	else if (Extension.Equals("bnk"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Extension.Equals(TEXT("bnk"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(VeryVerbose, "Adding SoundBank file: %s", *RelativeFilename);
-		Result.SoundBankFiles.Add(std::move(FileToAdd));
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding SoundBank file: %s"), *RelativeFilename);
+		Result.SoundBankFiles.Add(MoveTemp(FileToAdd));
 		return true;
 	}
-	else if (Extension.Equals("xml"_wwise_db, EStringCompareType::IgnoreCase)
-		|| Extension.Equals("txt"_wwise_db, EStringCompareType::IgnoreCase))
+	else if (Extension.Equals(TEXT("xml"), ESearchCase::IgnoreCase)
+		|| Extension.Equals(TEXT("txt"), ESearchCase::IgnoreCase))
 	{
-		WWISE_DB_LOG(VeryVerbose, "Skipping file: %s", *RelativeFilename);
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Skipping file: %s"), *RelativeFilename);
 		return true;
 	}
 	else
 	{
-		WWISE_DB_LOG(VeryVerbose, "Adding extra file: %s", *RelativeFilename);
-		Result.ExtraFiles.Add(std::move(FileToAdd));
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding extra file: %s"), *RelativeFilename);
+		Result.ExtraFiles.Add(MoveTemp(FileToAdd));
 		return true;
 	}
 }
 
-WwiseGeneratedFiles::FPlatformFiles& WwiseDirectoryVisitor::FSoundBankVisitor::Get()
+FWwiseGeneratedFiles::FPlatformFiles& FWwiseDirectoryVisitor::FSoundBankVisitor::Get()
 {
 	return Result;
 }
@@ -440,38 +453,39 @@ WwiseGeneratedFiles::FPlatformFiles& WwiseDirectoryVisitor::FSoundBankVisitor::G
 //
 // FMediaVisitor
 //
-bool WwiseDirectoryVisitor::FMediaVisitor::Visit(const WwiseDBString& FilenameOrDirectory, bool bIsDirectory)
+bool FWwiseDirectoryVisitor::FMediaVisitor::Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory)
 {
 	// make sure all paths are "standardized" so the other end can match up with it's own standardized paths
-	WwiseDBString RelativeFilename = FilenameOrDirectory;
-	RelativeFilename.MakeStandardFilename();
+	FString RelativeFilename = FilenameOrDirectory;
+	FPaths::MakeStandardFilename(RelativeFilename);
 
-	WWISE_DB_LOG(VeryVerbose, "[MediaVisitor] Visiting %s", *RelativeFilename);
+	UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("[MediaVisitor] Visiting %s"), *RelativeFilename);
 
 	if (bIsDirectory)
 	{
 		Result.DirectoriesToWatch.Add(RelativeFilename);
-		auto MediaVisitor = IWwiseDirectoryVisitor<FMediaVisitor>(this);
-		MediaVisitor.IterateDirectory(FilenameOrDirectory);
-		return true;
-	}
-	WwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, IWwiseDirectoryVisitor<WwiseDirectoryVisitor>::GetTimeStamp(FilenameOrDirectory));
-	const auto Extension = RelativeFilename.GetExtension();
-
-	if (Extension.Equals("wem"_wwise_db, EStringCompareType::IgnoreCase))
-	{
-		WWISE_DB_LOG(VeryVerbose, "Adding media file: %s", *RelativeFilename);
-		Result.MediaFiles.Add(std::move(FileToAdd));
+		FileInterface.IterateDirectory(FilenameOrDirectory, *this);
 	}
 	else
 	{
-		WWISE_DB_LOG(Log, "Adding unexpected extra file: %s", *RelativeFilename);
-		Result.ExtraFiles.Add(std::move(FileToAdd));
+		FWwiseGeneratedFiles::FileTuple FileToAdd(RelativeFilename, FileInterface.GetTimeStamp(FilenameOrDirectory));
+		const auto Extension = FPaths::GetExtension(RelativeFilename);
+
+		if (Extension.Equals(TEXT("wem"), ESearchCase::IgnoreCase))
+		{
+			UE_LOG(LogWwiseProjectDatabase, VeryVerbose, TEXT("Adding media file: %s"), *RelativeFilename);
+			Result.MediaFiles.Add(MoveTemp(FileToAdd));
+		}
+		else
+		{
+			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("Adding unexpected extra file: %s"), *RelativeFilename);
+			Result.ExtraFiles.Add(MoveTemp(FileToAdd));
+		}
 	}
 	return true;
 }
 
-WwiseGeneratedFiles::FPlatformFiles& WwiseDirectoryVisitor::FMediaVisitor::Get()
+FWwiseGeneratedFiles::FPlatformFiles& FWwiseDirectoryVisitor::FMediaVisitor::Get()
 {
 	return Result;
 }

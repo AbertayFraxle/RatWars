@@ -27,12 +27,12 @@ FWwiseNiagaraModule::FWwiseNiagaraModule()
 
 void FWwiseNiagaraModule::StartupModule()
 {
-	UE_LOG(LogWwiseNiagara, Log, TEXT("Initializing default Niagara."));
+	UE_LOG(LogWwiseNiagara, Display, TEXT("Initializing default Niagara."));
 	IWwiseNiagaraModule::StartupModule();
 }
 
 void FWwiseNiagaraModule::ShutdownModule()
 {
-	UE_LOG(LogWwiseNiagara, Log, TEXT("Shutting down default Niagara."));
+	UE_LOG(LogWwiseNiagara, Display, TEXT("Shutting down default Niagara."));
 	IWwiseNiagaraModule::ShutdownModule();
 }

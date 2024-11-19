@@ -18,59 +18,57 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
-#include "Wwise/WwiseDatabaseIdentifiers.h"
 
-struct WwiseMetadataMediaReference : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataMediaReference : public FWwiseMetadataLoadable
 {
-	WwiseDBShortId Id;
+	uint32 Id;
 
-	WwiseMetadataMediaReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataMediaReference(FWwiseMetadataLoader& Loader);
 };
 
-inline WwiseDBShortId GetTypeHash(const WwiseMetadataMediaReference& Media)
+inline uint32 GetTypeHash(const FWwiseMetadataMediaReference& Media)
 {
 	return GetTypeHash(Media.Id);
 }
-inline bool operator ==(const WwiseMetadataMediaReference& Lhs, const WwiseMetadataMediaReference& Rhs)
+inline bool operator ==(const FWwiseMetadataMediaReference& Lhs, const FWwiseMetadataMediaReference& Rhs)
 {
 	return Lhs.Id == Rhs.Id;
 }
-inline bool operator <(const WwiseMetadataMediaReference& Lhs, const WwiseMetadataMediaReference& Rhs)
+inline bool operator <(const FWwiseMetadataMediaReference& Lhs, const FWwiseMetadataMediaReference& Rhs)
 {
 	return Lhs.Id < Rhs.Id;
 }
 
-enum class WwiseMetadataMediaLocation : WwiseDBShortId
+enum class EWwiseMetadataMediaLocation : uint32
 {
 	Memory,
 	Loose,
 	OtherBank,
 
-	Unknown = (WwiseDBShortId)-1
+	Unknown = (uint32)-1
 };
 
-struct WwiseMetadataMediaAttributes : public WwiseMetadataMediaReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataMediaAttributes : public FWwiseMetadataMediaReference
 {
-	WwiseDBString Language;
+	FName Language;
 	bool bStreaming;
-	WwiseMetadataMediaLocation Location;
+	EWwiseMetadataMediaLocation Location;
 	bool bUsingReferenceLanguage;
-	WwiseDBShortId Align;
+	uint32 Align;
 	bool bDeviceMemory;
 
-	WwiseMetadataMediaAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataMediaAttributes(FWwiseMetadataLoader& Loader);
 
 private:
-	static WwiseMetadataMediaLocation LocationFromString(const WwiseDBString& LocationString);
+	static EWwiseMetadataMediaLocation LocationFromString(const FName& LocationString);
 };
 
-struct WwiseMetadataMedia : public WwiseMetadataMediaAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataMedia : public FWwiseMetadataMediaAttributes
 {
-	WwiseDBString ShortName;
-	WwiseDBString Path;
-	WwiseDBString CachePath;
-	WwiseDBShortId PrefetchSize;
+	FName ShortName;
+	FName Path;
+	FName CachePath;
+	uint32 PrefetchSize;
 
-	WwiseMetadataMedia(WwiseMetadataLoader& Loader);
+	FWwiseMetadataMedia(FWwiseMetadataLoader& Loader);
 };

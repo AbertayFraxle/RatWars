@@ -65,7 +65,7 @@ namespace AkAudioEventSectionHelper
 void UMovieSceneAkAudioEventSection::Initialize()
 {
 #if WITH_EDITOR
-	if (Event && InitState != AkEventSectionState::EUnrecognized)
+	if ((Event != nullptr || EventName != "") && InitState != AkEventSectionState::EUnrecognized)
 	{
 		UpdateAudioSourceInfo();
 		SubscribeToEventChildAddedRemoved();
@@ -77,7 +77,7 @@ void UMovieSceneAkAudioEventSection::Initialize()
 			{
 				UE_LOG(LogAkAudio, Warning,
 					TEXT("Failed to initialize Section for Event: %s"),
-					*(Event->GetName()));
+					Event == nullptr ? *EventName : *(Event->GetName()));
 
 				//===========================================================
 				// Callback 
@@ -134,7 +134,8 @@ void UMovieSceneAkAudioEventSection::BeginDestroy()
 void UMovieSceneAkAudioEventSection::PostEditChangeProperty(struct FPropertyChangedEvent& e)
 {
 	FName PropertyName = (e.Property != nullptr) ? e.Property->GetFName() : NAME_None;
-	if (PropertyName == GET_MEMBER_NAME_CHECKED(UMovieSceneAkAudioEventSection, Event))
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(UMovieSceneAkAudioEventSection, Event)
+	 || PropertyName == GET_MEMBER_NAME_CHECKED(UMovieSceneAkAudioEventSection, EventName))
 	{
 		UpdateAkEventInfo();
 	}
@@ -417,7 +418,13 @@ FGuid UMovieSceneAkAudioEventSection::GetEventWwiseGUID() const
 	{
 		return Event->GetWwiseGuid();
 	}
-	return FGuid();
+	else
+	{
+		UE_LOG(LogAkAudio, Log, TEXT("UMovieSceneAkAudioEventSection: Using deprecated event name to find GUID. Please set the \"Event\" property to a valid AkAudioEvent asset."));
+		FGuid EventGUID;
+		FAkWaapiClient::GetGUIDForObjectOfTypeWithName(EventGUID, "Event", EventName);
+		return EventGUID;
+	}
 }
 
 FString UMovieSceneAkAudioEventSection::GetEventWwiseName() const { return Event->GetWwiseName().ToString(); }
@@ -465,13 +472,18 @@ FMovieSceneEvalTemplatePtr UMovieSceneAkAudioEventSection::GenerateTemplate() co
 
 #if WITH_EDITOR
 /** Associate a new AK audio event with this section. Also updates section time and audio source info. */
-bool UMovieSceneAkAudioEventSection::SetEvent(UAkAudioEvent* AudioEvent)
+bool UMovieSceneAkAudioEventSection::SetEvent(UAkAudioEvent* AudioEvent, const FString& Name)
 {
 	bool dataLoaded = true;
 	// Update the event details.
 	if (AudioEvent != nullptr)
 	{
 		Event = AudioEvent;
+		EventName = Name;
+	}
+	else
+	{
+		EventName = Name;
 	}
 	return UpdateAkEventInfo();
 }
@@ -569,8 +581,8 @@ void UMovieSceneAkAudioEventSection::UpdateAudioSourceInfo()
 {
 	UE_LOG(LogAkAudio, Verbose,
 		TEXT("UMovieSceneAkAudioEventSection::UpdateAudioSourceInfo: Updating section %s source info (Event %s)"),
-		*GetName(),
-		Event ? *Event->GetName(): TEXT("None"));
+		Event == nullptr ? *EventName : *(Event->GetName()),
+		*GetName());
 
 	// Invalidate all audio source info data.
 	InvalidateAudioSourceInfo();
@@ -606,16 +618,16 @@ void UMovieSceneAkAudioEventSection::UpdateAudioSourceInfo()
 		UnsubscribeWAAPICallback(iChildAddedInitializeSubscriptionID);
 		UE_LOG(LogAkAudio, Verbose,
 			TEXT("UMovieSceneAkAudioEventSection::UpdateAudioSourceInfo: Updated section %s source info (Event %s)"),
-			*GetName(),
-			Event ? *Event->GetName(): TEXT("None"));
+			Event == nullptr ? *EventName : *(Event->GetName()),
+			*GetName());
 	}
 	else
 	{
 		InitState = AkEventSectionState::EUnrecognized;
 		UE_LOG(LogAkAudio, Verbose,
 			TEXT("UMovieSceneAkAudioEventSection::UpdateAudioSourceInfo: Failed to update section %s source info (Event %s)"),
-			*GetName(),
-			Event ? *Event->GetName(): TEXT("None"));
+			Event == nullptr ? *EventName : *(Event->GetName()),
+			*GetName());
 	}
 
 	CheckForWorkunitChanges(true);

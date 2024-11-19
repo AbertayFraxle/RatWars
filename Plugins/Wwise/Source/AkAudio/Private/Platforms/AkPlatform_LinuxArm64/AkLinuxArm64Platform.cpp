@@ -15,7 +15,7 @@ in a written agreement between you and Audiokinetic Inc.
 Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
-#if defined(PLATFORM_LINUXARM64) && PLATFORM_LINUXARM64
+#if (defined(PLATFORM_LINUXARM64) && PLATFORM_LINUXARM64) || (defined(PLATFORM_LINUXAARCH64) && PLATFORM_LINUXAARCH64)
 
 #include "Platforms/AkPlatform_LinuxArm64/AkLinuxArm64Platform.h"
 #include "WwiseUnrealHelper.h"

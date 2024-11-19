@@ -209,7 +209,6 @@ public:
     void ConnectionEstablished();
     void BroadcastConnectionLost();
     static bool IsProjectLoaded();
-    static void ConvertProjectPath(FString& Path);
 
     /**
      *  Indicates that the connection to WAAPI should be stopped and shouldn't be reconnected.

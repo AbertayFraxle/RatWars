@@ -32,9 +32,9 @@ public class WwiseResourceLoader : ModuleRules
 			"CoreUObject",
 			"Engine",
 			"WwiseConcurrency",
-			"WwiseLowLevelUtils",
 			"WwiseProcessing",
 			"WwiseSoundEngine",
+			"WwiseUtils"
 		});
 
 #if UE_5_3_OR_LATER

@@ -25,7 +25,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkAudioEvent.h"
 #include "AkAudioDevice.h"
 #include "WwiseUnrealHelper.h"
-#include "Wwise/WwiseAllowShrinking.h"
 #include "Wwise/API/WwiseSoundEngineAPI.h"
 #include "Wwise/Stats/AudioLink.h"
 #include "Wwise/Stats/Global.h"
@@ -330,11 +329,6 @@ bool FWwiseAudioLinkInputClient::GetSamples(uint32 InNumChannels, uint32 InNumFr
 {
 	SCOPED_NAMED_EVENT(WwiseAudioLink_GetSamples, FColor::Red);
 
-	if (!WeakProducer.IsValid())
-	{
-		return false;
-	}
-
 	FSharedBufferedOutputPtr StrongBufferProducer{ WeakProducer.Pin() };
 	if (!StrongBufferProducer.IsValid())
 	{
@@ -377,7 +371,7 @@ bool FWwiseAudioLinkInputClient::GetSamples(uint32 InNumChannels, uint32 InNumFr
 		{
 			InterleavedBuffer.SetNumUninitialized(
 				NumInterleavedSamplesNeeded,
-				EWwiseAllowShrinking::Yes
+				true		// bAllowShrinking
 			);
 		}
 
@@ -470,12 +464,7 @@ bool FWwiseAudioLinkInputClient::GetSamples(uint32 InNumChannels, uint32 InNumFr
 void FWwiseAudioLinkInputClient::GetFormat(AkAudioFormat& io_AudioFormat)
 {
 	SCOPED_NAMED_EVENT(WwiseAudioLink_GetFormat, FColor::Red);
-
-	if (!WeakProducer.IsValid())
-	{
-		return;
-	}
-
+	
 	// Ensure we're still listening to a sub mix that exists.
 	FSharedBufferedOutputPtr StrongPtr{ WeakProducer.Pin() };
 	if (!StrongPtr.IsValid())

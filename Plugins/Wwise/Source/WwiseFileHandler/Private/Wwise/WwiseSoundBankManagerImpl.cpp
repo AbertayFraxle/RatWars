@@ -29,20 +29,20 @@ FWwiseSoundBankManagerImpl::~FWwiseSoundBankManagerImpl()
 {
 }
 
-void FWwiseSoundBankManagerImpl::LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FLoadSoundBankCallback&& InCallback)
+void FWwiseSoundBankManagerImpl::LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, const FString& InRootPath, FLoadSoundBankCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseSoundBankManagerImpl::LoadSoundBank"));
-	IncrementFileStateUseAsync(InSoundBankCookedData.SoundBankId, EWwiseFileStateOperationOrigin::Loading, [this, InSoundBankCookedData]() mutable
+	IncrementFileStateUseAsync(InSoundBankCookedData.SoundBankId, EWwiseFileStateOperationOrigin::Loading, [this, InSoundBankCookedData, InRootPath]() mutable
 	{
 		LLM_SCOPE_BYTAG(Audio_Wwise_FileHandler_SoundBanks);
-		return CreateOp(InSoundBankCookedData);
+		return CreateOp(InSoundBankCookedData, InRootPath);
 	}, [InCallback = MoveTemp(InCallback)](const FWwiseFileStateSharedPtr, bool bInResult)
 	{
 		InCallback(bInResult);
 	});
 }
 
-void FWwiseSoundBankManagerImpl::UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FUnloadSoundBankCallback&& InCallback)
+void FWwiseSoundBankManagerImpl::UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, const FString& InRootPath, FUnloadSoundBankCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseSoundBankManagerImpl::UnloadSoundBank"));
 	DecrementFileStateUseAsync(InSoundBankCookedData.SoundBankId, nullptr, EWwiseFileStateOperationOrigin::Loading, MoveTemp(InCallback));
@@ -54,7 +54,7 @@ void FWwiseSoundBankManagerImpl::SetGranularity(uint32 InStreamingGranularity)
 	StreamingGranularity = InStreamingGranularity;
 }
 
-FWwiseFileStateSharedPtr FWwiseSoundBankManagerImpl::CreateOp(const FWwiseSoundBankCookedData& InSoundBankCookedData)
+FWwiseFileStateSharedPtr FWwiseSoundBankManagerImpl::CreateOp(const FWwiseSoundBankCookedData& InSoundBankCookedData, const FString& InRootPath)
 {
-	return FWwiseFileStateSharedPtr(new FWwiseInMemorySoundBankFileState(InSoundBankCookedData));
+	return FWwiseFileStateSharedPtr(new FWwiseInMemorySoundBankFileState(InSoundBankCookedData, InRootPath));
 }

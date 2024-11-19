@@ -23,29 +23,21 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Async/Async.h"
 #include "Misc/ScopedSlowTask.h"
-#include "Wwise/WwiseStringConverter.h"
-#include "Wwise/Metadata/WwiseMetadataLanguage.h"
 #include "Wwise/Metadata/WwiseMetadataPlatformInfo.h"
 #include "Wwise/Stats/Global.h"
 
 #define LOCTEXT_NAMESPACE "WwiseProjectDatabase"
 
-WwiseDataStructureScopeLock::WwiseDataStructureScopeLock(const FWwiseProjectDatabase& InProjectDatabase) :
-	Lock(InProjectDatabase.GetLockedDataStructure()->Lock),
+FWwiseDataStructureScopeLock::FWwiseDataStructureScopeLock(const FWwiseProjectDatabase& InProjectDatabase) :
+	FRWScopeLock(const_cast<FRWLock&>(InProjectDatabase.GetLockedDataStructure()->Lock), SLT_ReadOnly),
 	DataStructure(*InProjectDatabase.GetLockedDataStructure()),
+	CurrentLanguage(InProjectDatabase.GetCurrentLanguage()),
+	CurrentPlatform(InProjectDatabase.GetCurrentPlatform()),
 	bDisableDefaultPlatforms(InProjectDatabase.DisableDefaultPlatforms())
 {
-	auto Language = InProjectDatabase.GetCurrentLanguage();
-	auto Platform = InProjectDatabase.GetCurrentPlatform();
-	CurrentLanguage = WwiseDBSharedLanguageId(Language.GetLanguageId(), FWwiseStringConverter::ToWwiseDBString(Language.GetLanguageName().ToString()), (WwiseDBLanguageRequirement)Language.LanguageRequirement);
-	FGuid Guid = Platform.GetPlatformGuid();
-	CurrentPlatform = WwiseDBSharedPlatformId(WwiseDBGuid(Guid.A, Guid.B, Guid.C, Guid.D),
-		FWwiseStringConverter::ToWwiseDBString(Platform.Platform->PlatformName.ToString()), FWwiseStringConverter::ToWwiseDBString(Platform.Platform->PathRelativeToGeneratedSoundBanks.ToString()));
-	CurrentPlatform.Platform->ExternalSourceRootPath = FWwiseStringConverter::ToWwiseDBString(Platform.Platform->PathRelativeToGeneratedSoundBanks.ToString());
-	Lock.mutex()->lock_shared();
 }
 
-const WwiseAcousticTextureGlobalIdsMap& WwiseDataStructureScopeLock::GetAcousticTextures() const
+const WwiseAcousticTextureGlobalIdsMap& FWwiseDataStructureScopeLock::GetAcousticTextures() const
 {
 	static const auto Empty = WwiseAcousticTextureGlobalIdsMap();
 
@@ -55,17 +47,17 @@ const WwiseAcousticTextureGlobalIdsMap& WwiseDataStructureScopeLock::GetAcoustic
 	return PlatformData->AcousticTextures;
 }
 
-WwiseRefAcousticTexture WwiseDataStructureScopeLock::GetAcousticTexture(const FWwiseObjectInfo& InInfo) const
+FWwiseRefAcousticTexture FWwiseDataStructureScopeLock::GetAcousticTexture(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefAcousticTexture Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefAcousticTexture Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseAudioDeviceGlobalIdsMap& WwiseDataStructureScopeLock::GetAudioDevices() const
+const WwiseAudioDeviceGlobalIdsMap& FWwiseDataStructureScopeLock::GetAudioDevices() const
 {
 	static const auto Empty = WwiseAudioDeviceGlobalIdsMap();
 
@@ -75,17 +67,17 @@ const WwiseAudioDeviceGlobalIdsMap& WwiseDataStructureScopeLock::GetAudioDevices
 	return PlatformData->AudioDevices;
 }
 
-WwiseRefAudioDevice WwiseDataStructureScopeLock::GetAudioDevice(const FWwiseObjectInfo& InInfo) const
+FWwiseRefAudioDevice FWwiseDataStructureScopeLock::GetAudioDevice(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefAudioDevice Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefAudioDevice Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseAuxBusGlobalIdsMap& WwiseDataStructureScopeLock::GetAuxBusses() const
+const WwiseAuxBusGlobalIdsMap& FWwiseDataStructureScopeLock::GetAuxBusses() const
 {
 	static const auto Empty = WwiseAuxBusGlobalIdsMap();
 
@@ -95,17 +87,17 @@ const WwiseAuxBusGlobalIdsMap& WwiseDataStructureScopeLock::GetAuxBusses() const
 	return PlatformData->AuxBusses;
 }
 
-WwiseRefAuxBus WwiseDataStructureScopeLock::GetAuxBus(const FWwiseObjectInfo& InInfo) const
+FWwiseRefAuxBus FWwiseDataStructureScopeLock::GetAuxBus(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefAuxBus Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefAuxBus Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseBusGlobalIdsMap& WwiseDataStructureScopeLock::GetBusses() const
+const WwiseBusGlobalIdsMap& FWwiseDataStructureScopeLock::GetBusses() const
 {
 	static const auto Empty = WwiseBusGlobalIdsMap();
 
@@ -115,17 +107,17 @@ const WwiseBusGlobalIdsMap& WwiseDataStructureScopeLock::GetBusses() const
 	return PlatformData->Busses;
 }
 
-WwiseRefBus WwiseDataStructureScopeLock::GetBus(const FWwiseObjectInfo& InInfo) const
+FWwiseRefBus FWwiseDataStructureScopeLock::GetBus(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefBus Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefBus Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseCustomPluginGlobalIdsMap& WwiseDataStructureScopeLock::GetCustomPlugins() const
+const WwiseCustomPluginGlobalIdsMap& FWwiseDataStructureScopeLock::GetCustomPlugins() const
 {
 	static const auto Empty = WwiseCustomPluginGlobalIdsMap();
 
@@ -135,17 +127,17 @@ const WwiseCustomPluginGlobalIdsMap& WwiseDataStructureScopeLock::GetCustomPlugi
 	return PlatformData->CustomPlugins;
 }
 
-WwiseRefCustomPlugin WwiseDataStructureScopeLock::GetCustomPlugin(const FWwiseObjectInfo& InInfo) const
+FWwiseRefCustomPlugin FWwiseDataStructureScopeLock::GetCustomPlugin(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefCustomPlugin Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefCustomPlugin Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseDialogueArgumentGlobalIdsMap& WwiseDataStructureScopeLock::GetDialogueArguments() const
+const WwiseDialogueArgumentGlobalIdsMap& FWwiseDataStructureScopeLock::GetDialogueArguments() const
 {
 	static const auto Empty = WwiseDialogueArgumentGlobalIdsMap();
 
@@ -155,17 +147,17 @@ const WwiseDialogueArgumentGlobalIdsMap& WwiseDataStructureScopeLock::GetDialogu
 	return PlatformData->DialogueArguments;
 }
 
-WwiseRefDialogueArgument WwiseDataStructureScopeLock::GetDialogueArgument(const FWwiseObjectInfo& InInfo) const
+FWwiseRefDialogueArgument FWwiseDataStructureScopeLock::GetDialogueArgument(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefDialogueArgument Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefDialogueArgument Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseDialogueEventGlobalIdsMap& WwiseDataStructureScopeLock::GetDialogueEvents() const
+const WwiseDialogueEventGlobalIdsMap& FWwiseDataStructureScopeLock::GetDialogueEvents() const
 {
 	static const auto Empty = WwiseDialogueEventGlobalIdsMap();
 
@@ -175,17 +167,17 @@ const WwiseDialogueEventGlobalIdsMap& WwiseDataStructureScopeLock::GetDialogueEv
 	return PlatformData->DialogueEvents;
 }
 
-WwiseRefDialogueEvent WwiseDataStructureScopeLock::GetDialogueEvent(const FWwiseObjectInfo& InInfo) const
+FWwiseRefDialogueEvent FWwiseDataStructureScopeLock::GetDialogueEvent(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefDialogueEvent Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefDialogueEvent Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseEventGlobalIdsMap& WwiseDataStructureScopeLock::GetEvents() const
+const WwiseEventGlobalIdsMap& FWwiseDataStructureScopeLock::GetEvents() const
 {
 	static const auto Empty = WwiseEventGlobalIdsMap();
 
@@ -195,17 +187,17 @@ const WwiseEventGlobalIdsMap& WwiseDataStructureScopeLock::GetEvents() const
 	return PlatformData->Events;
 }
 
-WwiseDBSet<WwiseRefEvent> WwiseDataStructureScopeLock::GetEvent(const FWwiseEventInfo& InInfo) const
+TSet<FWwiseRefEvent> FWwiseDataStructureScopeLock::GetEvent(const FWwiseEventInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseDBSet<WwiseRefEvent> Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	TSet<FWwiseRefEvent> Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseExternalSourceGlobalIdsMap& WwiseDataStructureScopeLock::GetExternalSources() const
+const WwiseExternalSourceGlobalIdsMap& FWwiseDataStructureScopeLock::GetExternalSources() const
 {
 	static const auto Empty = WwiseExternalSourceGlobalIdsMap();
 
@@ -215,17 +207,17 @@ const WwiseExternalSourceGlobalIdsMap& WwiseDataStructureScopeLock::GetExternalS
 	return PlatformData->ExternalSources;
 }
 
-WwiseRefExternalSource WwiseDataStructureScopeLock::GetExternalSource(const FWwiseObjectInfo& InInfo) const
+FWwiseRefExternalSource FWwiseDataStructureScopeLock::GetExternalSource(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefExternalSource Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefExternalSource Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseGameParameterGlobalIdsMap& WwiseDataStructureScopeLock::GetGameParameters() const
+const WwiseGameParameterGlobalIdsMap& FWwiseDataStructureScopeLock::GetGameParameters() const
 {
 	static const auto Empty = WwiseGameParameterGlobalIdsMap();
 
@@ -235,17 +227,17 @@ const WwiseGameParameterGlobalIdsMap& WwiseDataStructureScopeLock::GetGameParame
 	return PlatformData->GameParameters;
 }
 
-WwiseRefGameParameter WwiseDataStructureScopeLock::GetGameParameter(const FWwiseObjectInfo& InInfo) const
+FWwiseRefGameParameter FWwiseDataStructureScopeLock::GetGameParameter(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefGameParameter Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefGameParameter Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseMediaGlobalIdsMap& WwiseDataStructureScopeLock::GetMediaFiles() const
+const WwiseMediaGlobalIdsMap& FWwiseDataStructureScopeLock::GetMediaFiles() const
 {
 	static const auto Empty = WwiseMediaGlobalIdsMap();
 
@@ -255,17 +247,17 @@ const WwiseMediaGlobalIdsMap& WwiseDataStructureScopeLock::GetMediaFiles() const
 	return PlatformData->MediaFiles;
 }
 
-WwiseRefMedia WwiseDataStructureScopeLock::GetMediaFile(const FWwiseObjectInfo& InInfo) const
+FWwiseRefMedia FWwiseDataStructureScopeLock::GetMediaFile(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefMedia Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefMedia Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwisePluginLibGlobalIdsMap& WwiseDataStructureScopeLock::GetPluginLibs() const
+const WwisePluginLibGlobalIdsMap& FWwiseDataStructureScopeLock::GetPluginLibs() const
 {
 	static const auto Empty = WwisePluginLibGlobalIdsMap();
 
@@ -275,17 +267,17 @@ const WwisePluginLibGlobalIdsMap& WwiseDataStructureScopeLock::GetPluginLibs() c
 	return PlatformData->PluginLibs;
 }
 
-WwiseRefPluginLib WwiseDataStructureScopeLock::GetPluginLib(const FWwiseObjectInfo& InInfo) const
+FWwiseRefPluginLib FWwiseDataStructureScopeLock::GetPluginLib(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefPluginLib Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefPluginLib Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwisePluginShareSetGlobalIdsMap& WwiseDataStructureScopeLock::GetPluginShareSets() const
+const WwisePluginShareSetGlobalIdsMap& FWwiseDataStructureScopeLock::GetPluginShareSets() const
 {
 	static const auto Empty = WwisePluginShareSetGlobalIdsMap();
 
@@ -295,17 +287,17 @@ const WwisePluginShareSetGlobalIdsMap& WwiseDataStructureScopeLock::GetPluginSha
 	return PlatformData->PluginShareSets;
 }
 
-WwiseRefPluginShareSet WwiseDataStructureScopeLock::GetPluginShareSet(const FWwiseObjectInfo& InInfo) const
+FWwiseRefPluginShareSet FWwiseDataStructureScopeLock::GetPluginShareSet(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefPluginShareSet Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefPluginShareSet Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseSoundBankGlobalIdsMap& WwiseDataStructureScopeLock::GetSoundBanks() const
+const WwiseSoundBankGlobalIdsMap& FWwiseDataStructureScopeLock::GetSoundBanks() const
 {
 	static const auto Empty = WwiseSoundBankGlobalIdsMap();
 
@@ -315,31 +307,17 @@ const WwiseSoundBankGlobalIdsMap& WwiseDataStructureScopeLock::GetSoundBanks() c
 	return PlatformData->SoundBanks;
 }
 
-WwiseRefSoundBank WwiseDataStructureScopeLock::GetSoundBank(const FWwiseObjectInfo& InInfo, uint32 LanguageId) const
+FWwiseRefSoundBank FWwiseDataStructureScopeLock::GetSoundBank(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefSoundBank Result;
-	const WwiseDBSharedLanguageId* LanguagePtr = &GetCurrentLanguage();
-	if (LanguageId != 0)
-	{
-		const auto& Languages{ GetLanguages() };
-		for (const auto& Language : Languages)
-		{
-			if (Language.GetLanguageId() == LanguageId)
-			{
-				LanguagePtr = &Language;
-				break;
-			}
-		}
-	}
-		
-	PlatformData->GetRef(Result, *LanguagePtr, ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefSoundBank Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseStateGlobalIdsMap& WwiseDataStructureScopeLock::GetStates() const
+const WwiseStateGlobalIdsMap& FWwiseDataStructureScopeLock::GetStates() const
 {
 	static const auto Empty = WwiseStateGlobalIdsMap();
 
@@ -349,17 +327,17 @@ const WwiseStateGlobalIdsMap& WwiseDataStructureScopeLock::GetStates() const
 	return PlatformData->States;
 }
 
-WwiseRefState WwiseDataStructureScopeLock::GetState(const FWwiseGroupValueInfo& InInfo) const
+FWwiseRefState FWwiseDataStructureScopeLock::GetState(const FWwiseGroupValueInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefState Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseGroupValueInfo(InInfo));
+	FWwiseRefState Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseStateGroupGlobalIdsMap& WwiseDataStructureScopeLock::GetStateGroups() const
+const WwiseStateGroupGlobalIdsMap& FWwiseDataStructureScopeLock::GetStateGroups() const
 {
 	static const auto Empty = WwiseStateGroupGlobalIdsMap();
 
@@ -369,17 +347,17 @@ const WwiseStateGroupGlobalIdsMap& WwiseDataStructureScopeLock::GetStateGroups()
 	return PlatformData->StateGroups;
 }
 
-WwiseRefStateGroup WwiseDataStructureScopeLock::GetStateGroup(const FWwiseObjectInfo& InInfo) const
+FWwiseRefStateGroup FWwiseDataStructureScopeLock::GetStateGroup(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefStateGroup Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefStateGroup Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseSwitchGlobalIdsMap& WwiseDataStructureScopeLock::GetSwitches() const
+const WwiseSwitchGlobalIdsMap& FWwiseDataStructureScopeLock::GetSwitches() const
 {
 	static const auto Empty = WwiseSwitchGlobalIdsMap();
 
@@ -389,17 +367,17 @@ const WwiseSwitchGlobalIdsMap& WwiseDataStructureScopeLock::GetSwitches() const
 	return PlatformData->Switches;
 }
 
-WwiseRefSwitch WwiseDataStructureScopeLock::GetSwitch(const FWwiseGroupValueInfo& InInfo) const
+FWwiseRefSwitch FWwiseDataStructureScopeLock::GetSwitch(const FWwiseGroupValueInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefSwitch Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseGroupValueInfo(InInfo));
+	FWwiseRefSwitch Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseSwitchGroupGlobalIdsMap& WwiseDataStructureScopeLock::GetSwitchGroups() const
+const WwiseSwitchGroupGlobalIdsMap& FWwiseDataStructureScopeLock::GetSwitchGroups() const
 {
 	static const auto Empty = WwiseSwitchGroupGlobalIdsMap();
 
@@ -409,17 +387,17 @@ const WwiseSwitchGroupGlobalIdsMap& WwiseDataStructureScopeLock::GetSwitchGroups
 	return PlatformData->SwitchGroups;
 }
 
-WwiseRefSwitchGroup WwiseDataStructureScopeLock::GetSwitchGroup(const FWwiseObjectInfo& InInfo) const
+FWwiseRefSwitchGroup FWwiseDataStructureScopeLock::GetSwitchGroup(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefSwitchGroup Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefSwitchGroup Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwiseTriggerGlobalIdsMap& WwiseDataStructureScopeLock::GetTriggers() const
+const WwiseTriggerGlobalIdsMap& FWwiseDataStructureScopeLock::GetTriggers() const
 {
 	static const auto Empty = WwiseTriggerGlobalIdsMap();
 
@@ -429,21 +407,22 @@ const WwiseTriggerGlobalIdsMap& WwiseDataStructureScopeLock::GetTriggers() const
 	return PlatformData->Triggers;
 }
 
-WwiseRefTrigger WwiseDataStructureScopeLock::GetTrigger(const FWwiseObjectInfo& InInfo) const
+FWwiseRefTrigger FWwiseDataStructureScopeLock::GetTrigger(const FWwiseObjectInfo& InInfo) const
 {
 	const auto* PlatformData = GetCurrentPlatformData();
 	if (UNLIKELY(!PlatformData)) return {};
 
-	WwiseRefTrigger Result;
-	PlatformData->GetRef(Result, GetCurrentLanguage(), ConvertWwiseObjectInfo(InInfo));
+	FWwiseRefTrigger Result;
+	PlatformData->GetRef(Result, GetCurrentLanguage(), InInfo);
 	return Result;
 }
 
-const WwisePlatformDataStructure* WwiseDataStructureScopeLock::GetCurrentPlatformData() const
+const FWwisePlatformDataStructure* FWwiseDataStructureScopeLock::GetCurrentPlatformData() const
 {
 	if (DisableDefaultPlatforms())
 	{
-		WWISE_DB_LOG(VeryVerbose, "Trying to access current platform data when none is loaded by design (cooking)");
+		UE_LOG(LogWwiseProjectDatabase, VeryVerbose,
+		       TEXT("Trying to access current platform data when none is loaded by design (cooking)"));
 		return nullptr;
 	}
 
@@ -452,13 +431,20 @@ const WwisePlatformDataStructure* WwiseDataStructureScopeLock::GetCurrentPlatfor
 
 	if (UNLIKELY(!PlatformData))
 	{
-		if(Platform.GetPlatformName() != "None"_wwise_db)
+		if(Platform.GetPlatformName().ToString() != TEXT("None"))
 		{
-			UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Current platform %s not found."), *FWwiseStringConverter::ToFString(Platform.GetPlatformName()));
+			UE_LOG(LogWwiseProjectDatabase, Error,
+				TEXT(
+					"Current platform %s not found."
+				),
+            	*Platform.GetPlatformName().ToString());
 		}
 		else
 		{
-			UE_LOG(LogWwiseProjectDatabase, Error, TEXT("No JSON Metadata file found. Have SoundBanks been generated?"));
+			UE_LOG(LogWwiseProjectDatabase, Error,
+				TEXT(
+					"No JSON Metadata file found. Have SoundBanks been generated?"
+				));
 		}
 
 
@@ -466,16 +452,16 @@ const WwisePlatformDataStructure* WwiseDataStructureScopeLock::GetCurrentPlatfor
 		{
 			UE_LOG(LogWwiseHints, Warning,
 			       TEXT("Enable Verbose or VeryVerbose logs for LogWwiseProjectDatabase for more details on why %s is missing from your current platforms."),
-			       *FWwiseStringConverter::ToFString(Platform.GetPlatformName()));
+			       *Platform.GetPlatformName().ToString());
 		}
 
-		if (DataStructure.RootData.JsonFiles.Size() == 0 &&  Platform.GetPlatformName() != "None"_wwise_db)
+		if (DataStructure.RootData.JsonFiles.Num() == 0 &&  Platform.GetPlatformName().ToString() != TEXT("None"))
 		{
-			FString SoundBankPath = WwiseUnrealHelper::GetSoundBankDirectory() / *Platform.Platform->PathRelativeToGeneratedSoundBanks;
+			FString SoundBankPath = WwiseUnrealHelper::GetSoundBankDirectory() /  Platform.Platform->PathRelativeToGeneratedSoundBanks.ToString();
 			UE_LOG(LogWwiseProjectDatabase, Error,
 			       TEXT("No JSON Metadata file found for platform %s at %s. Have SoundBanks been generated?"),
 			       *SoundBankPath,
-			       *FWwiseStringConverter::ToFString(Platform.GetPlatformName()));
+			       *Platform.GetPlatformName().ToString());
 		}
 
 		return nullptr;
@@ -483,76 +469,19 @@ const WwisePlatformDataStructure* WwiseDataStructureScopeLock::GetCurrentPlatfor
 	return PlatformData;
 }
 
-bool WwiseDataStructureScopeLock::IsSingleUser(const WwiseAnyRef& Asset) const
-{
-	if (Asset.GetType() == WwiseRefType::Media)
-	{
-		return IsSingleUserMedia(Asset.GetId());
-	}
-	else if (Asset.GetType() == WwiseRefType::SoundBank)
-	{
-		const auto Language = Asset.GetLanguage();
-		return IsSingleUserSoundBank(Asset.GetId(), Language ? Language->Id : 0);
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool WwiseDataStructureScopeLock::IsSingleUserMedia(uint32 InId) const
-{
-	const auto* PlatformData = GetCurrentPlatformData();
-	if (UNLIKELY(!PlatformData)) return false;		// Cannot say. Err to safety.
-
-	if (const auto* UsageCount = PlatformData->MediaUsageCount.Find(WwiseDatabaseMediaIdKey(InId, 0)))
-	{
-		return *UsageCount <= 1;
-	}
-	return true;
-}
-
-bool WwiseDataStructureScopeLock::IsSingleUserSoundBank(uint32 InId, uint32 InLanguageId) const
-{
-	const auto* PlatformData = GetCurrentPlatformData();
-	if (UNLIKELY(!PlatformData)) return false;		// Cannot say. Err to safety.
-
-	if (const auto* UsageCount = PlatformData->SoundBankUsageCount.Find(WwiseDatabaseLocalizableIdKey(InId, InLanguageId)))
-	{
-		return *UsageCount <= 1;
-	}
-	return true;
-}
-
-bool WwiseDataStructureScopeLock::IsSingleUserSoundBank(uint32 InId, const WwiseDBString& InLanguage) const
-{
-	return IsSingleUserSoundBank(InId, GetLanguageId(InLanguage));
-}
-
-uint32 WwiseDataStructureScopeLock::GetLanguageId(const WwiseDBString& Name) const
-{
-	return DataStructure.RootData.GetLanguageId(Name);
-}
-
-WwiseDBString WwiseDataStructureScopeLock::GetLanguageName(uint32 InId) const
-{
-	return DataStructure.RootData.GetLanguageName(InId);
-}
-
-const WwiseDBSet<WwiseDBSharedLanguageId>& WwiseDataStructureScopeLock::GetLanguages() const
+const TSet<FWwiseSharedLanguageId>& FWwiseDataStructureScopeLock::GetLanguages() const
 {
 	return DataStructure.RootData.Languages;
 }
 
-const WwiseDBSet<WwiseDBSharedPlatformId>& WwiseDataStructureScopeLock::GetPlatforms() const
+const TSet<FWwiseSharedPlatformId>& FWwiseDataStructureScopeLock::GetPlatforms() const
 {
 	return DataStructure.RootData.Platforms;
 }
 
-WwiseRefPlatform WwiseDataStructureScopeLock::GetPlatform(const FWwiseSharedPlatformId& InPlatformId) const
+FWwiseRefPlatform FWwiseDataStructureScopeLock::GetPlatform(const FWwiseSharedPlatformId& InPlatformId) const
 {
-	FGuid Guid = InPlatformId.GetPlatformGuid();
-	if (const auto* Platform = DataStructure.RootData.PlatformGuids.Find(WwiseDBGuid(Guid.A, Guid.B, Guid.C, Guid.D)))
+	if (const auto* Platform = DataStructure.RootData.PlatformGuids.Find(InPlatformId.GetPlatformGuid()))
 	{
 		return *Platform;
 	}
@@ -560,19 +489,18 @@ WwiseRefPlatform WwiseDataStructureScopeLock::GetPlatform(const FWwiseSharedPlat
 }
 
 
-WwiseDataStructureWriteScopeLock::WwiseDataStructureWriteScopeLock(FWwiseProjectDatabase& InProjectDatabase) :
-	Lock(InProjectDatabase.GetLockedDataStructure()->Lock),
+FWwiseDataStructureWriteScopeLock::FWwiseDataStructureWriteScopeLock(FWwiseProjectDatabase& InProjectDatabase) :
+	FRWScopeLock(InProjectDatabase.GetLockedDataStructure()->Lock, SLT_Write),
 	DataStructure(*InProjectDatabase.GetLockedDataStructure())
 {
-	Lock.lock();
 }
 
 #if PLATFORM_LINUX
-const WwiseDBGuid FWwiseProjectDatabase::BasePlatformGuid(0xbd0bdf13, 0x3125454f, 0x8bfd3195, 0x37169f81);
+const FGuid FWwiseProjectDatabase::BasePlatformGuid(0xbd0bdf13, 0x3125454f, 0x8bfd3195, 0x37169f81);
 #elif PLATFORM_MAC
-const WwiseDBGuid FWwiseProjectDatabase::BasePlatformGuid(0x9c6217d5, 0xdd114795, 0x87c16ce0, 0x2853c540);
+const FGuid FWwiseProjectDatabase::BasePlatformGuid(0x9c6217d5, 0xdd114795, 0x87c16ce0, 0x2853c540);
 #elif PLATFORM_WINDOWS
-const WwiseDBGuid FWwiseProjectDatabase::BasePlatformGuid(0x6e0cb257, 0xc6c84c5c, 0x83662740, 0xdfc441eb);
+const FGuid FWwiseProjectDatabase::BasePlatformGuid(0x6e0cb257, 0xc6c84c5c, 0x83662740, 0xdfc441eb);
 #else
 static_assert(false);
 #endif
@@ -598,17 +526,6 @@ FWwiseSharedPlatformId FWwiseProjectDatabase::GetCurrentPlatform() const
 	}
 
 	return ResourceLoader->GetCurrentPlatform();
-}
-
-void FWwiseProjectDatabase::SetGeneratedSoundBanksPath(const FDirectoryPath& DirectoryPath)
-{
-	UE_CLOG(GeneratedSoundBanksPath.Path != DirectoryPath.Path, LogWwiseProjectDatabase, Display, TEXT("FWwiseProjectDatabase::SetGeneratedSoundBanksPath: Updating path to \"%s\""), *DirectoryPath.Path);
-	GeneratedSoundBanksPath = DirectoryPath;
-}
-
-void FWwiseProjectDatabase::InitForStaging(const FWwiseProjectDatabase& DefaultProjectDatabase)
-{
-	SetGeneratedSoundBanksPath(DefaultProjectDatabase.GetGeneratedSoundBanksPath());
 }
 
 bool FWwiseProjectDatabase::DisableDefaultPlatforms() const

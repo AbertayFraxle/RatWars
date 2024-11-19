@@ -221,8 +221,6 @@ TSharedRef<IDetailCustomization> FAkSettingsDetailsCustomization::MakeInstance()
 
 void FAkSettingsDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailLayout)
 {
-	FWwiseDetailsCustomization::CustomizeDetails(DetailLayout);
-	
 	IDetailCategoryBuilder& GeometryCategoryBuilder = DetailLayout.EditCategory("Geometry Surface Properties", FText::GetEmpty(), ECategoryPriority::Uncommon);
 	GeometryCategoryBuilder.AddCustomRow(FText::FromString("Update Geometry Map")).WholeRowContent()
 	[

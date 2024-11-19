@@ -23,10 +23,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkAudioDevice.h"
 #endif
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "UObject/ObjectSaveContext.h"
-#include "Serialization/CompactBinaryWriter.h"
-#endif
 
 void UAkRtpc::Serialize(FArchive& Ar)
 {
@@ -41,7 +37,7 @@ void UAkRtpc::Serialize(FArchive& Ar)
  	if (Ar.IsCooking() && Ar.IsSaving() && !Ar.CookingTarget()->IsServerOnly())
 	{
 		FWwiseGameParameterCookedData CookedDataToArchive;
-		if (auto* ResourceCooker = IWwiseResourceCooker::GetForArchive(Ar))
+		if (auto* ResourceCooker = FWwiseResourceCooker::GetForArchive(Ar))
 		{
 			ResourceCooker->PrepareCookedData(CookedDataToArchive, GetValidatedInfo(RtpcInfo));
 		}
@@ -67,29 +63,17 @@ void UAkRtpc::GetGameParameterCookedData()
 		UE_LOG(LogAkAudio, VeryVerbose, TEXT("UAkRtpc::GetGameParameterCookedData: Not loading '%s' because project database is not parsed."), *GetName())
 		return;
 	}
-	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
+	auto* ResourceCooker = FWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
 		return;
 	}
-	if(!ResourceCooker->PrepareCookedData(GameParameterCookedData, GetValidatedInfo(RtpcInfo)))
-	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
-		{
-			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Game Parameter %s, but Wwise profiler is connected. Previous errors can be ignored."),
-			*GetName());
-		}
-		else
-		{
-			return;
-		}
-	}
+	ResourceCooker->PrepareCookedData(GameParameterCookedData, GetValidatedInfo(RtpcInfo));
 }
 
 void UAkRtpc::FillInfo()
 {
-	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
+	auto* ResourceCooker = FWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
 		UE_LOG(LogAkAudio, Error, TEXT("UAkRtpc::FillInfo: ResourceCooker not initialized"));
@@ -103,24 +87,23 @@ void UAkRtpc::FillInfo()
 		return;
 	}
 	FWwiseObjectInfo* AudioTypeInfo = &RtpcInfo;
-	const WwiseRefGameParameter GameParameterRef = WwiseDataStructureScopeLock(*ProjectDatabase).GetGameParameter(
+	const FWwiseRefGameParameter GameParameterRef = FWwiseDataStructureScopeLock(*ProjectDatabase).GetGameParameter(
 		GetValidatedInfo(RtpcInfo));
 	
-	if (GameParameterRef.GameParameterName()->IsEmpty() || !GameParameterRef.GameParameterGuid().IsValid() || GameParameterRef.GameParameterId() == AK_INVALID_UNIQUE_ID)
+	if (GameParameterRef.GameParameterName().IsNone() || !GameParameterRef.GameParameterGuid().IsValid() || GameParameterRef.GameParameterId() == AK_INVALID_UNIQUE_ID)
 	{
 		UE_LOG(LogAkAudio, Warning, TEXT("UAkRtpc::FillInfo: Valid object not found in Project Database"));
 		return;
 	}
-	int A, B, C, D;
-	GameParameterRef.GameParameterGuid().GetGuidValues(A, B, C, D);
-	AudioTypeInfo->WwiseName = FName(**GameParameterRef.GameParameterName());
-	AudioTypeInfo->WwiseGuid = FGuid(A, B, C,D);
+
+	AudioTypeInfo->WwiseName = GameParameterRef.GameParameterName();
+	AudioTypeInfo->WwiseGuid = GameParameterRef.GameParameterGuid();
 	AudioTypeInfo->WwiseShortId = GameParameterRef.GameParameterId();
 }
 
 bool UAkRtpc::ObjectIsInSoundBanks()
 {
-	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
+	auto* ResourceCooker = FWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
 		UE_LOG(LogAkAudio, Error, TEXT("UAkRtpc::GetWwiseRef: ResourceCooker not initialized"));
@@ -135,45 +118,9 @@ bool UAkRtpc::ObjectIsInSoundBanks()
 	}
 
 	FWwiseObjectInfo* AudioTypeInfo = &RtpcInfo;
-	const WwiseRefGameParameter GameParameterRef = WwiseDataStructureScopeLock(*ProjectDatabase).GetGameParameter(
+	const FWwiseRefGameParameter GameParameterRef = FWwiseDataStructureScopeLock(*ProjectDatabase).GetGameParameter(
 		GetValidatedInfo(RtpcInfo));
 
 	return GameParameterRef.IsValid();
-}
-#endif
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-UE_COOK_DEPENDENCY_FUNCTION(HashWwiseRtpcDependenciesForCook, UAkAudioType::HashDependenciesForCook);
-
-void UAkRtpc::PreSave(FObjectPreSaveContext SaveContext)
-{
-	ON_SCOPE_EXIT
-	{
-		Super::PreSave(SaveContext);
-	};
-
-	if (!SaveContext.IsCooking())
-	{
-		return;
-	}
-
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
-	if (UNLIKELY(!ResourceCooker))
-	{
-		return;
-	}
-
-	FWwiseGameParameterCookedData CookedDataToArchive;
-	ResourceCooker->PrepareCookedData(CookedDataToArchive, GetValidatedInfo(RtpcInfo));
-	FillMetadata(ResourceCooker->GetProjectDatabase());
-
-	FCbWriter Writer;
-	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
-	Writer.EndObject();
-	
-	SaveContext.AddCookBuildDependency(
-		UE::Cook::FCookDependency::Function(
-			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseRtpcDependenciesForCook), Writer.Save()));
 }
 #endif

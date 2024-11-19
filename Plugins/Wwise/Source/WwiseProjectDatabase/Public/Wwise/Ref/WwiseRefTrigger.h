@@ -19,40 +19,40 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefTrigger : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefTrigger : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::Trigger;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::Trigger;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType TriggerIndex;
 
-	WwiseRefTrigger() {}
-	WwiseRefTrigger(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefTrigger() {}
+	FWwiseRefTrigger(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InTriggerIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		TriggerIndex(InTriggerIndex)
 	{}
-	const WwiseMetadataTrigger* GetTrigger() const;
+	const FWwiseMetadataTrigger* GetTrigger() const;
 
-	WwiseDBShortId TriggerId() const;
-	WwiseDBGuid TriggerGuid() const;
-	const WwiseDBString* TriggerName() const;
-	const WwiseDBString* TriggerObjectPath() const;
+	uint32 TriggerId() const;
+	FGuid TriggerGuid() const;
+	FName TriggerName() const;
+	FName TriggerObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefTrigger& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefTrigger& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& TriggerIndex == Rhs.TriggerIndex;
 	}
-	bool operator!=(const WwiseRefTrigger& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefTrigger& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefTrigger::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefTrigger::FGlobalIdsMap
 {
 	WwiseTriggerGlobalIdsMap GlobalIdsMap;
 };

@@ -19,40 +19,40 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefBus : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefBus : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::Bus;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::Bus;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType BusIndex;
 
-	WwiseRefBus() {}
-	WwiseRefBus(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefBus() {}
+	FWwiseRefBus(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InBusIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		BusIndex(InBusIndex)
 	{}
-	const WwiseMetadataBus* GetBus() const;
+	const FWwiseMetadataBus* GetBus() const;
 
-	WwiseDBShortId BusId() const;
-	WwiseDBGuid BusGuid() const;
-	const WwiseDBString* BusName() const;
-	const WwiseDBString* BusObjectPath() const;
+	uint32 BusId() const;
+	FGuid BusGuid() const;
+	FName BusName() const;
+	FName BusObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefBus& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefBus& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& BusIndex == Rhs.BusIndex;
 	}
-	bool operator!=(const WwiseRefBus& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefBus& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefBus::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefBus::FGlobalIdsMap
 {
 	WwiseBusGlobalIdsMap GlobalIdsMap;
 };

@@ -24,11 +24,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkAudioDevice.h"
 #endif
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "UObject/ObjectSaveContext.h"
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 void UAkTrigger::Serialize(FArchive& Ar)
 {
 	Super::Serialize(Ar);
@@ -43,7 +38,7 @@ void UAkTrigger::Serialize(FArchive& Ar)
  	if (Ar.IsCooking() && Ar.IsSaving() && !Ar.CookingTarget()->IsServerOnly())
 	{
 		FWwiseTriggerCookedData CookedDataToArchive;
-		if (auto* ResourceCooker = IWwiseResourceCooker::GetForArchive(Ar))
+		if (auto* ResourceCooker = FWwiseResourceCooker::GetForArchive(Ar))
 		{
 			ResourceCooker->PrepareCookedData(CookedDataToArchive, GetValidatedInfo(TriggerInfo));
 		}
@@ -66,7 +61,7 @@ void UAkTrigger::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEv
 #if WITH_EDITORONLY_DATA
 void UAkTrigger::FillInfo()
 {
-	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
+	auto* ResourceCooker = FWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
 		UE_LOG(LogAkAudio, Error, TEXT("UAkTrigger::FillInfo: ResourceCooker not initialized"));
@@ -81,25 +76,23 @@ void UAkTrigger::FillInfo()
 	}
 
 	FWwiseObjectInfo* AudioTypeInfo = &TriggerInfo;
-	WwiseRefTrigger TriggerRef = WwiseDataStructureScopeLock(*ProjectDatabase).GetTrigger(
+	FWwiseRefTrigger TriggerRef = FWwiseDataStructureScopeLock(*ProjectDatabase).GetTrigger(
 		GetValidatedInfo(TriggerInfo));
 
-	if (TriggerRef.TriggerName()->IsEmpty() || !TriggerRef.TriggerGuid().IsValid() || TriggerRef.TriggerId() == AK_INVALID_UNIQUE_ID)
+	if (TriggerRef.TriggerName().ToString().IsEmpty() || !TriggerRef.TriggerGuid().IsValid() || TriggerRef.TriggerId() == AK_INVALID_UNIQUE_ID)
 	{
 		UE_LOG(LogAkAudio, Warning, TEXT("UAkTrigger::FillInfo: Valid object not found in Project Database"));
 		return;
 	}
 
-	int A, B, C, D;
-	TriggerRef.TriggerGuid().GetGuidValues(A, B, C, D);
-	AudioTypeInfo->WwiseName = FName(**TriggerRef.TriggerName());
-	AudioTypeInfo->WwiseGuid = FGuid(A, B, C, D);
+	AudioTypeInfo->WwiseName = TriggerRef.TriggerName();
+	AudioTypeInfo->WwiseGuid = TriggerRef.TriggerGuid();
 	AudioTypeInfo->WwiseShortId = TriggerRef.TriggerId();
 }
 
 bool UAkTrigger::ObjectIsInSoundBanks()
 {
-	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
+	auto* ResourceCooker = FWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
 		UE_LOG(LogAkAudio, Error, TEXT("UAkTrigger::GetWwiseRef: ResourceCooker not initialized"));
@@ -114,7 +107,7 @@ bool UAkTrigger::ObjectIsInSoundBanks()
 	}
 
 	FWwiseObjectInfo* AudioTypeInfo = &TriggerInfo;
-	WwiseRefTrigger TriggerRef = WwiseDataStructureScopeLock(*ProjectDatabase).GetTrigger(
+	FWwiseRefTrigger TriggerRef = FWwiseDataStructureScopeLock(*ProjectDatabase).GetTrigger(
 		GetValidatedInfo(TriggerInfo));
 
 	return TriggerRef.IsValid();
@@ -133,59 +126,11 @@ void UAkTrigger::GetTriggerCookedData()
 		UE_LOG(LogAkAudio, VeryVerbose, TEXT("UAkTrigger::GetTriggerCookedData: Not loading '%s' because project database is not parsed."), *GetName())
 		return;
 	}
-	auto* ResourceCooker = IWwiseResourceCooker::GetDefault();
+	auto* ResourceCooker = FWwiseResourceCooker::GetDefault();
 	if (UNLIKELY(!ResourceCooker))
 	{
 		return;
 	}
-	if(!ResourceCooker->PrepareCookedData(TriggerCookedData, GetValidatedInfo(TriggerInfo)))
-	{
-		const auto* AudioDevice = FAkAudioDevice::Get();
-		if( AudioDevice && AudioDevice->IsWwiseProfilerConnected())
-		{
-			UE_LOG(LogAkAudio, Verbose, TEXT("Could not fetch CookedData for Trigger %s, but Wwise profiler is connected. Previous errors can be ignored."),
-			*GetName());
-		}
-		else
-		{
-			return;
-		}
-	}
-}
-#endif
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-UE_COOK_DEPENDENCY_FUNCTION(HashWwiseTriggerDependenciesForCook, UAkAudioType::HashDependenciesForCook);
-
-void UAkTrigger::PreSave(FObjectPreSaveContext SaveContext)
-{
-	ON_SCOPE_EXIT
-	{
-		Super::PreSave(SaveContext);
-	};
-
-	if (!SaveContext.IsCooking())
-	{
-		return;
-	}
-
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
-	if (UNLIKELY(!ResourceCooker))
-	{
-		return;
-	}
-
-	FWwiseTriggerCookedData CookedDataToArchive;
-	ResourceCooker->PrepareCookedData(CookedDataToArchive, GetValidatedInfo(TriggerInfo));
-	FillMetadata(ResourceCooker->GetProjectDatabase());
-
-	FCbWriter Writer;
-	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
-	Writer.EndObject();
-	
-	SaveContext.AddCookBuildDependency(
-		UE::Cook::FCookDependency::Function(
-			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseTriggerDependenciesForCook), Writer.Save()));
+	ResourceCooker->PrepareCookedData(TriggerCookedData, GetValidatedInfo(TriggerInfo));
 }
 #endif

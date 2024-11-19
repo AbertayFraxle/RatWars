@@ -17,19 +17,21 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefPluginShareSet.h"
 
+#include "Wwise/WwiseProjectDatabaseModule.h"
 #include "Wwise/Metadata/WwiseMetadataPlugin.h"
 #include "Wwise/Metadata/WwiseMetadataPluginGroup.h"
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
 #include "Wwise/Ref/WwiseRefAudioDevice.h"
 #include "Wwise/Ref/WwiseRefCustomPlugin.h"
 #include "Wwise/Ref/WwiseRefMedia.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-const WwiseDBString WwiseRefPluginShareSet::NAME = "PluginShareSet"_wwise_db;
+const TCHAR* const FWwiseRefPluginShareSet::NAME = TEXT("PluginShareSet");
 
-const WwiseMetadataPlugin* WwiseRefPluginShareSet::GetPlugin() const
+const FWwiseMetadataPlugin* FWwiseRefPluginShareSet::GetPlugin() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank || !SoundBank->Plugins) [[unlikely]]
+	if (UNLIKELY(!SoundBank || !SoundBank->Plugins))
 	{
 		return nullptr;
 	}
@@ -41,28 +43,28 @@ const WwiseMetadataPlugin* WwiseRefPluginShareSet::GetPlugin() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Plugin ShareSet index #%zu", PluginShareSetIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Plugin ShareSet index #%zu"), PluginShareSetIndex);
 		return nullptr;
 	}
 }
 
-WwiseMediaIdsMap WwiseRefPluginShareSet::GetPluginMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const
+WwiseMediaIdsMap FWwiseRefPluginShareSet::GetPluginMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const
 {
 	const auto* PluginShareSet = GetPlugin();
 	const auto* SoundBank = GetSoundBank();
-	if (!PluginShareSet || !SoundBank) [[unlikely]]
+	if (UNLIKELY(!PluginShareSet || !SoundBank))
 	{
 		return {};
 	}
 	const auto& Media = PluginShareSet->MediaRefs;
 
 	WwiseMediaIdsMap Result;
-	Result.Empty(Media.Size());
+	Result.Empty(Media.Num());
 	for (const auto& Elem : Media)
 	{
-		WwiseDatabaseMediaIdKey Id(Elem.Id, SoundBank->Id);
+		FWwiseDatabaseMediaIdKey Id(Elem.Id, SoundBank->Id);
 
-		const WwiseRefMedia* MediaInGlobalMap = GlobalMap.Find(Id);
+		const auto* MediaInGlobalMap = GlobalMap.Find(Id);
 		if (MediaInGlobalMap)
 		{
 			Result.Add(Elem.Id, *MediaInGlobalMap);
@@ -71,20 +73,20 @@ WwiseMediaIdsMap WwiseRefPluginShareSet::GetPluginMedia(const WwiseMediaGlobalId
 	return Result;
 }
 
-WwiseCustomPluginIdsMap WwiseRefPluginShareSet::GetPluginCustomPlugins(const WwiseCustomPluginGlobalIdsMap& GlobalMap) const
+WwiseCustomPluginIdsMap FWwiseRefPluginShareSet::GetPluginCustomPlugins(const WwiseCustomPluginGlobalIdsMap& GlobalMap) const
 {
 	const auto* Plugin = GetPlugin();
-	if (!Plugin || !Plugin->PluginRefs) [[unlikely]]
+	if (!Plugin || !Plugin->PluginRefs)
 	{
 		return {};
 	}
 	const auto& Plugins = Plugin->PluginRefs->Custom;
 	WwiseCustomPluginIdsMap Result;
-	Result.Empty(Plugins.Size());
+	Result.Empty(Plugins.Num());
 	for (const auto& Elem : Plugins)
 	{
-		WwiseDatabaseLocalizableIdKey Id(Elem.Id, LanguageId);
-		const WwiseRefCustomPlugin* GlobalRef = GlobalMap.Find(Id);
+		FWwiseDatabaseLocalizableIdKey Id(Elem.Id, LanguageId);
+		const auto* GlobalRef = GlobalMap.Find(Id);
 		if (GlobalRef)
 		{
 			Result.Add(Elem.Id, *GlobalRef);
@@ -93,20 +95,20 @@ WwiseCustomPluginIdsMap WwiseRefPluginShareSet::GetPluginCustomPlugins(const Wwi
 	return Result;
 }
 
-WwisePluginShareSetIdsMap WwiseRefPluginShareSet::GetPluginPluginShareSets(const WwisePluginShareSetGlobalIdsMap& GlobalMap) const
+WwisePluginShareSetIdsMap FWwiseRefPluginShareSet::GetPluginPluginShareSets(const WwisePluginShareSetGlobalIdsMap& GlobalMap) const
 {
 	const auto* Plugin = GetPlugin();
-	if (!Plugin || !Plugin->PluginRefs) [[unlikely]]
+	if (!Plugin || !Plugin->PluginRefs)
 	{
 		return {};
 	}
 	const auto& Plugins = Plugin->PluginRefs->ShareSets;
 	WwisePluginShareSetIdsMap Result;
-	Result.Empty(Plugins.Size());
+	Result.Empty(Plugins.Num());
 	for (const auto& Elem : Plugins)
 	{
-		WwiseDatabaseLocalizableIdKey Id(Elem.Id, LanguageId);
-		const WwiseRefPluginShareSet* GlobalRef = GlobalMap.Find(Id);
+		FWwiseDatabaseLocalizableIdKey Id(Elem.Id, LanguageId);
+		const auto* GlobalRef = GlobalMap.Find(Id);
 		if (GlobalRef)
 		{
 			Result.Add(Elem.Id, *GlobalRef);
@@ -115,20 +117,20 @@ WwisePluginShareSetIdsMap WwiseRefPluginShareSet::GetPluginPluginShareSets(const
 	return Result;
 }
 
-WwiseAudioDeviceIdsMap WwiseRefPluginShareSet::GetPluginAudioDevices(const WwiseAudioDeviceGlobalIdsMap& GlobalMap) const
+WwiseAudioDeviceIdsMap FWwiseRefPluginShareSet::GetPluginAudioDevices(const WwiseAudioDeviceGlobalIdsMap& GlobalMap) const
 {
 	const auto* Plugin = GetPlugin();
-	if (!Plugin || !Plugin->PluginRefs) [[unlikely]]
+	if (!Plugin || !Plugin->PluginRefs)
 	{
 		return {};
 	}
 	const auto& Plugins = Plugin->PluginRefs->AudioDevices;
 	WwiseAudioDeviceIdsMap Result;
-	Result.Empty(Plugins.Size());
+	Result.Empty(Plugins.Num());
 	for (const auto& Elem : Plugins)
 	{
-		WwiseDatabaseLocalizableIdKey Id(Elem.Id, LanguageId);
-		const WwiseRefAudioDevice* GlobalRef = GlobalMap.Find(Id);
+		FWwiseDatabaseLocalizableIdKey Id(Elem.Id, LanguageId);
+		const auto* GlobalRef = GlobalMap.Find(Id);
 		if (GlobalRef)
 		{
 			Result.Add(Elem.Id, *GlobalRef);
@@ -137,49 +139,49 @@ WwiseAudioDeviceIdsMap WwiseRefPluginShareSet::GetPluginAudioDevices(const Wwise
 	return Result;
 }
 
-WwiseDBShortId WwiseRefPluginShareSet::PluginShareSetId() const
+uint32 FWwiseRefPluginShareSet::PluginShareSetId() const
 {
 	const auto* PluginShareSet = GetPlugin();
-	if (!PluginShareSet) [[unlikely]]
+	if (UNLIKELY(!PluginShareSet))
 	{
 		return 0;
 	}
 	return PluginShareSet->Id;
 }
 
-WwiseDBGuid WwiseRefPluginShareSet::PluginShareSetGuid() const
+FGuid FWwiseRefPluginShareSet::PluginShareSetGuid() const
 {
 	const auto* PluginShareSet = GetPlugin();
-	if (!PluginShareSet) [[unlikely]]
+	if (UNLIKELY(!PluginShareSet))
 	{
 		return {};
 	}
 	return PluginShareSet->GUID;
 }
 
-const WwiseDBString* WwiseRefPluginShareSet::PluginShareSetName() const
+FName FWwiseRefPluginShareSet::PluginShareSetName() const
 {
 	const auto* PluginShareSet = GetPlugin();
-	if (!PluginShareSet) [[unlikely]]
+	if (UNLIKELY(!PluginShareSet))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &PluginShareSet->Name;
+	return PluginShareSet->Name;
 }
 
-const WwiseDBString* WwiseRefPluginShareSet::PluginShareSetObjectPath() const
+FName FWwiseRefPluginShareSet::PluginShareSetObjectPath() const
 {
 	const auto* PluginShareSet = GetPlugin();
-	if (!PluginShareSet) [[unlikely]]
+	if (UNLIKELY(!PluginShareSet))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &PluginShareSet->ObjectPath;
+	return PluginShareSet->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefPluginShareSet::Hash() const
+uint32 FWwiseRefPluginShareSet::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(PluginShareSetIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(PluginShareSetIndex));
 	return Result;
 }

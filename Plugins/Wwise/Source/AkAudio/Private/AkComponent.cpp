@@ -324,7 +324,7 @@ void UAkComponent::UpdateObstructionAndOcclusion()
 	}
 }
 
-void UAkComponent::PostTrigger(const UAkTrigger* TriggerValue)
+void UAkComponent::PostTrigger(const UAkTrigger* TriggerValue, FString Trigger)
 {
 	if (FAkAudioDevice::Get())
 	{
@@ -335,10 +335,14 @@ void UAkComponent::PostTrigger(const UAkTrigger* TriggerValue)
 		{
 			SoundEngine->PostTrigger(TriggerValue->TriggerCookedData.TriggerId, GetAkGameObjectID());
 		}
+		else
+		{
+			SoundEngine->PostTrigger(TCHAR_TO_AK(*Trigger), GetAkGameObjectID());
+		}
 	}
 }
 
-void UAkComponent::SetSwitch(const UAkSwitchValue* SwitchValue)
+void UAkComponent::SetSwitch(const UAkSwitchValue* SwitchValue, FString SwitchGroup, FString SwitchState)
 {
 	if (FAkAudioDevice::Get())
 	{
@@ -348,6 +352,13 @@ void UAkComponent::SetSwitch(const UAkSwitchValue* SwitchValue)
 		if (SwitchValue)
 		{
 			SoundEngine->SetSwitch(SwitchValue->GroupValueCookedData.GroupId, SwitchValue->GroupValueCookedData.Id, GetAkGameObjectID());
+		}
+		else
+		{
+			uint32 SwitchGroupID = SoundEngine->GetIDFromString(TCHAR_TO_AK(*SwitchGroup));
+			uint32 SwitchStateID = SoundEngine->GetIDFromString(TCHAR_TO_AK(*SwitchState));
+
+			SoundEngine->SetSwitch(SwitchGroupID, SwitchStateID, GetAkGameObjectID());
 		}
 	}
 }
@@ -479,7 +490,7 @@ void UAkComponent::OnUnregister()
 	// shot sounds.
 	AActor* Owner = GetOwner();
 	UWorld* CurrentWorld = GetWorld();
-	if( !Owner || !CurrentWorld || (StopWhenOwnerDestroyed && Owner->IsActorBeingDestroyed()) || CurrentWorld->bIsTearingDown || (Owner->GetClass() == APlayerController::StaticClass() && CurrentWorld->WorldType == EWorldType::PIE))
+	if( !Owner || !CurrentWorld || StopWhenOwnerDestroyed || CurrentWorld->bIsTearingDown || (Owner->GetClass() == APlayerController::StaticClass() && CurrentWorld->WorldType == EWorldType::PIE))
 	{
 		Stop();
 	}
@@ -629,14 +640,30 @@ void UAkComponent::BeginPlay()
 	// If spawned inside AkReverbVolume(s), we do not want the fade in effect to kick in.
 	UpdateAkLateReverbComponentList(GetComponentLocation());
 	for (auto& ReverbFadeControl : ReverbFadeControls)
-	{
 		ReverbFadeControl.ForceCurrentToTargetValue();
-	}
 
+	// Call SetAttenuationScalingFactor directly from the parent to make sure it is called at least once.
+	// No need to check the value. AttenuationScalingFactor should always be valid because it is guarded in PostEditChangeProperty.
 	Super::SetAttenuationScalingFactor();
 
 	if (EnableSpotReflectors)
 		AAkSpotReflector::UpdateSpotReflectors(this);
+}
+
+void UAkComponent::SetAttenuationScalingFactor(float Value)
+{
+	if (Value <= 0.f)
+	{
+		UE_LOG(LogAkAudio, Warning, TEXT("UAkComponent::SetAttenuationScalingFactor: Attenuation scaling factor for component %s is zero or a negative number."), *GetName());
+	}
+	else
+	{
+		if (AttenuationScalingFactor != Value)
+		{
+			AttenuationScalingFactor = Value;
+			Super::SetAttenuationScalingFactor();
+		}
+	}
 }
 
 void UAkComponent::OnUpdateTransform(EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport)
@@ -1041,6 +1068,19 @@ void UAkComponent::SetEnableSpotReflectors(bool in_enable)
 }
 
 #if WITH_EDITOR
+void UAkComponent::PreEditChange(FProperty* PropertyAboutToChange)
+{
+	if (PropertyAboutToChange != nullptr)
+	{
+		if (PropertyAboutToChange->NamePrivate == GET_MEMBER_NAME_CHECKED(UAkComponent, AttenuationScalingFactor))
+		{
+			PreviousAttenuationScalingFactor = AttenuationScalingFactor;
+		}
+	}
+
+	Super::PreEditChange(PropertyAboutToChange);
+}
+
 void UAkComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -1052,9 +1092,7 @@ void UAkComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 			PropertyChangedEvent.ChangeType == EPropertyChangeType::ValueSet)
 		{
 			if (innerRadius > outerRadius)
-			{
 				innerRadius = outerRadius;
-			}
 
 			SetGameObjectRadius(outerRadius, innerRadius);
 		}
@@ -1062,6 +1100,18 @@ void UAkComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 			PropertyChangedEvent.ChangeType == EPropertyChangeType::ValueSet)
 		{
 			AAkSpotReflector::UpdateSpotReflectors(this);
+		}
+		if (PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(UAkComponent, AttenuationScalingFactor))
+		{
+			if (AttenuationScalingFactor <= 0.f)
+			{
+				AttenuationScalingFactor = PreviousAttenuationScalingFactor;
+				UE_LOG(LogAkAudio, Warning, TEXT("UAkComponent::PostEditChangeProperty: Attenuation scaling factor for component %s is zero or a negative number."), *GetName());
+			}
+			else
+			{
+				Super::SetAttenuationScalingFactor();
+			}
 		}
 	}
 }

@@ -73,7 +73,4 @@ inline bool operator!=(const FWwiseLanguageCookedData& InLhs, const FWwiseLangua
 {
 	return (InLhs.LanguageId != InRhs.LanguageId) || (InLhs.LanguageName != InRhs.LanguageName);
 }
-inline bool operator<(const FWwiseLanguageCookedData& InLhs, const FWwiseLanguageCookedData& InRhs)
-{
-	return InLhs.LanguageId < InRhs.LanguageId;
-}
+

@@ -21,7 +21,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Misc/ConfigCacheIni.h"
 
 class FQueuedThreadPool;
-struct FWwiseExecutionQueue;
 
 class IWwiseConcurrencyModule : public IModuleInterface
 {
@@ -87,8 +86,6 @@ public:
 
 		return Module;
 	}
-
-	virtual FWwiseExecutionQueue* GetDefaultQueue() = 0;
 
 private:
 	static inline FName GetModuleNameFromConfig()

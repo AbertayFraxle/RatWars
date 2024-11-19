@@ -17,7 +17,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/WwiseResourceCookerModule.h"
 #include "Wwise/WwiseResourceCookerImpl.h"
-#include "WwiseUnrealDefines.h"
 #include "GameDelegates.h"
 
 FDelegateHandle IWwiseResourceCookerModule::ModifyCookDelegateHandle;

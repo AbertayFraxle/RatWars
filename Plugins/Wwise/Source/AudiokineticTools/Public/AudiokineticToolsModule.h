@@ -45,7 +45,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "ISettingsModule.h"
 #include "Internationalization/Culture.h"
 #include "Modules/ModuleManager.h"
-#include "Sequencer/MovieSceneWwiseGameParameterTrackEditor.h"
+#include "Sequencer/MovieSceneAkAudioRTPCTrackEditor.h"
 #include "EditorBuildUtils.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Input/SHyperlink.h"

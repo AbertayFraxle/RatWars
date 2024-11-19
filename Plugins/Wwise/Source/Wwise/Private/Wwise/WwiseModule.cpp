@@ -24,11 +24,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "WwiseDefines.h"
 #include "WwiseUnrealDefines.h"
 
-#include "Wwise/WwisePackagingRuntimeModuleImpl.h"
-#if WITH_EDITOR
-#include "Wwise/WwisePackagingEditorModuleImpl.h"
-#endif
-
 #if UE_5_1_OR_LATER
 #include "Wwise/WwiseAudioLinkRuntimeModule.h"
 #if WITH_EDITOR
@@ -52,29 +47,6 @@ public:
 	virtual void StartupModule() override
 	{
 		auto& ModuleManager = FModuleManager::Get();
-
-		bool bPackageAsBulkData = false;
-		GConfig->GetBool(TEXT("/Script/WwisePackaging.WwisePackagingSettings"), TEXT("bPackageAsBulkData"), bPackageAsBulkData, GGameIni);
-		if (bPackageAsBulkData || WITH_EDITOR)
-		{
-			{
-				SCOPED_WWISE_EVENT(TEXT("StartupModule: WwisePackaging Runtime"));
-				UE_LOG(LogWwise, Log, TEXT("WwiseModule: Loading WwisePackagingRuntime"));
-				IWwisePackagingRuntimeModule::GetModule();
-			}
-#if WITH_EDITOR
-			{
-				SCOPED_WWISE_EVENT(TEXT("StartupModule: WwisePackaging Editor"));
-				UE_LOG(LogWwise, Log, TEXT("WwiseModule: Loading WwisePackagingEditor"));
-				IWwisePackagingEditorModule::GetModule();
-			}
-#endif
-		}
-		else
-		{
-			UE_LOG(LogWwise, Verbose, TEXT("WwiseModule: WwisePackaging is disabled without Bulk Data Packaging. Ignoring."));
-		}
-
 		{
 			SCOPED_WWISE_EVENT(TEXT("StartupModule: AkAudio"));
 			UE_LOG(LogWwise, Log, TEXT("WwiseModule: Loading AkAudio"));

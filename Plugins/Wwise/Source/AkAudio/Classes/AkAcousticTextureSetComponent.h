@@ -64,7 +64,6 @@ protected:
 
 	FAkReverbDescriptor* ReverbDescriptor = nullptr;
 	bool DampingEstimationNeedsUpdate = false;
-	bool bGeometryNeedsUpdate = false;
 
 	virtual bool ShouldSendGeometry() const;
 	/* Add or update a geometry in Spatial Audio. It is necessary to create at least one geometry instance
@@ -72,7 +71,7 @@ protected:
 	void SendGeometryToWwise(const AkGeometryParams& params);
 	/* Add or update an instance of the geometry. A geometry instance is a unique instance of a geometry set with a specified transform (position, rotation and scale) and room association. 
 	* It is necessary to create at least one geometry instance for each geometry set that is to be used for diffraction and reflection simulation. */
-	void SendGeometryInstanceToWwise(const FRotator& rotation, const FVector& location, const FVector& scale, bool useForReflectionAndDiffraction, bool solid, bool bypassPortalSubtraction);
+	void SendGeometryInstanceToWwise(const FRotator& rotation, const FVector& location, const FVector& scale, const AkRoomID roomID, bool useForReflectionAndDiffraction);
 	/* Remove a geometry and the corresponding instance from Wwise. */
 	void RemoveGeometryFromWwise();
 	/* Remove a geometry instance from Wwise. */

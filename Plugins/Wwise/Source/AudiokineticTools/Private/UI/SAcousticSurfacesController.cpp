@@ -214,7 +214,8 @@ void SAcousticSurfacesController::Construct(const FArguments& InArgs, TArray<TWe
 			UAkSurfaceReflectorSetComponent* reflectorSetComponent = Cast<UAkSurfaceReflectorSetComponent>(ObjectBeingCustomized.Get());
 			if (reflectorSetComponent)
 			{
-				TSet<int> FacesToEdit = reflectorSetComponent->GetSelectedFaceIndices();
+				int NumSelectedFaces = 0;
+				TSet<int> FacesToEdit = reflectorSetComponent->GetSelectedFaceIndices(NumSelectedFaces);
 				if (FacesToEdit.Num() > 0)
 				{
 					individualSelection = true;
@@ -255,17 +256,21 @@ void SAcousticSurfacesController::InitReflectorSetsFacesToEdit()
 		UAkSurfaceReflectorSetComponent* reflectorSetComponent = Cast<UAkSurfaceReflectorSetComponent>(ObjectBeingCustomized.Get());
 		if (reflectorSetComponent)
 		{
+			int ObjectSelectedFaces = 0;
 			TSet<int> FacesToEdit;
 			if (ApplyToAllFaces)
 			{
 				for (int i = 0; i < reflectorSetComponent->AcousticPolys.Num(); ++i)
 					FacesToEdit.Add(i);
+
+				ObjectSelectedFaces = FacesToEdit.Num();
 			}
 			else
 			{
-				FacesToEdit = reflectorSetComponent->GetSelectedFaceIndices();
+				FacesToEdit = reflectorSetComponent->GetSelectedFaceIndices(ObjectSelectedFaces);
 			}
-			NumFacesSelected += FacesToEdit.Num();
+
+			NumFacesSelected += ObjectSelectedFaces;
 			if (FacesToEdit.Num() > 0)
 				ReflectorSetsFacesToEdit.Add(reflectorSetComponent, FacesToEdit);
 		}

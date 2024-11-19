@@ -20,12 +20,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/WwiseResourceLoader.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Wwise/WwiseResourceCooker.h"
-#include "UObject/ObjectSaveContext.h"
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 #include <inttypes.h>
 
 void UAkGroupValue::UnloadGroupValue(bool bAsync)
@@ -138,7 +132,6 @@ bool UAkGroupValue::SplitAssetName(FString& OutGroupName, FString& OutValueName)
 		Super::GetAssetRegistryTags(Context);
 		Context.AddTag(FAssetRegistryTag(GET_MEMBER_NAME_CHECKED(FWwiseGroupValueInfo, GroupShortId), FString::FromInt(GroupValueInfo.GroupShortId), FAssetRegistryTag::ETagType::TT_Hidden));
 	}
-
 #else
 	void UAkGroupValue::GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) const
 	{
@@ -147,39 +140,3 @@ bool UAkGroupValue::SplitAssetName(FString& OutGroupName, FString& OutValueName)
 	}
 #endif // UE_5_4_OR_LATER
 #endif // WITH_EDITOR
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-UE_COOK_DEPENDENCY_FUNCTION(HashWwiseGroupValueDependenciesForCook, UAkAudioType::HashDependenciesForCook);
-
-void UAkGroupValue::PreSave(FObjectPreSaveContext SaveContext)
-{
-	ON_SCOPE_EXIT
-	{
-		Super::PreSave(SaveContext);
-	};
-
-	if (!SaveContext.IsCooking())
-	{
-		return;
-	}
-
-	auto* ResourceCooker = IWwiseResourceCooker::GetForPlatform(SaveContext.GetTargetPlatform());
-	if (UNLIKELY(!ResourceCooker))
-	{
-		return;
-	}
-
-	FWwiseGroupValueCookedData CookedDataToArchive;
-	ResourceCooker->PrepareCookedData(CookedDataToArchive, GetValidatedInfo(GroupValueInfo), GetGroupType());
-	FillMetadata(ResourceCooker->GetProjectDatabase());
-
-	FCbWriter Writer;
-	Writer.BeginObject();
-	CookedDataToArchive.PreSave(SaveContext, Writer);
-	Writer.EndObject();
-	
-	SaveContext.AddCookBuildDependency(
-		UE::Cook::FCookDependency::Function(
-			UE_COOK_DEPENDENCY_FUNCTION_CALL(HashWwiseGroupValueDependenciesForCook), Writer.Save()));
-}
-#endif

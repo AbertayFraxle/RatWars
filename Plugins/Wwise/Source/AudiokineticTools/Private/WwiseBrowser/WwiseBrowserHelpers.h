@@ -20,7 +20,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "WwiseBrowserForwards.h"
 #include "Templates/SharedPointer.h"
 #include "AssetRegistry/AssetData.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 
 #include "WwiseBrowserHelpers.generated.h"
 

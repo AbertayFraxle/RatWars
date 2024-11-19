@@ -16,20 +16,20 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/WwiseResourceCookerModuleImpl.h"
+#include "Interfaces/ITargetPlatform.h"
 #include "Wwise/WwiseCookingCache.h"
 #include "Wwise/WwiseResourceCookerImpl.h"
-#include "Wwise/WwiseProjectDatabase.h"
-#include "Wwise/Stats/ResourceCooker.h"
-#include "WwiseUnrealDefines.h"
+
+#include "Wwise/WwiseResourceLoader.h"
 
 #include "CookOnTheSide/CookLog.h"
-#include "Interfaces/ITargetPlatform.h"
+#include "Wwise/Stats/ResourceCooker.h"
+
 #include "Misc/CommandLine.h"
-#include "Wwise/WwiseConcurrencyModuleImpl.h"
 
 IMPLEMENT_MODULE(FWwiseResourceCookerModule, WwiseResourceCooker)
 
-IWwiseResourceCooker* FWwiseResourceCookerModule::GetResourceCooker()
+FWwiseResourceCooker* FWwiseResourceCookerModule::GetResourceCooker()
 {
 	Lock.ReadLock();
 	if (LIKELY(ResourceCooker))
@@ -42,7 +42,7 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::GetResourceCooker()
 		Lock.WriteLock();
 		if (LIKELY(!ResourceCooker))
 		{
-			UE_LOG(LogWwiseResourceCooker, Log, TEXT("Initializing default Resource Cooker."));
+			UE_LOG(LogWwiseResourceCooker, Display, TEXT("Initializing default Resource Cooker."));
 			ResourceCooker.Reset(InstantiateResourceCooker());
 		}
 		Lock.WriteUnlock();
@@ -50,13 +50,13 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::GetResourceCooker()
 	return ResourceCooker.Get();
 }
 
-IWwiseResourceCooker* FWwiseResourceCookerModule::InstantiateResourceCooker()
+FWwiseResourceCooker* FWwiseResourceCookerModule::InstantiateResourceCooker()
 {
 	return new FWwiseResourceCookerImpl;
 }
 
-IWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const ITargetPlatform* TargetPlatform,
-	const FWwiseSharedPlatformId& InPlatform, EWwisePackagingStrategy InTargetPackagingStrategy, EWwiseExportDebugNameRule InExportDebugNameRule)
+FWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const ITargetPlatform* TargetPlatform,
+	const FWwiseSharedPlatformId& InPlatform, EWwiseExportDebugNameRule InExportDebugNameRule)
 {
 	if (TargetPlatform && TargetPlatform->IsServerOnly())
 	{
@@ -74,19 +74,7 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const 
 		if (UNLIKELY(!CookingPlatform))
 		{
 #if UE_5_0_OR_LATER
-#if !UE_5_4_OR_LATER
-			int32 MultiprocessId;
-#endif
-			// By The Book cooking needs to predefine the requested platforms. InEditor and OnTheFly should create them all the time.
-			if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase()
-				&& !FParse::Param(FCommandLine::Get(), TEXT("CookOnTheFly"))
-				&& !FParse::Param(FCommandLine::Get(), TEXT("CookSinglePackage"))
-#if UE_5_4_OR_LATER
-				&& UE::GetMultiprocessId() == 0
-#else
-				&& !FParse::Value(FCommandLine::Get(), TEXT("-MultiprocessId="), MultiprocessId)
-#endif
-				)
+			if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase() && !FParse::Param(FCommandLine::Get(), TEXT("CookOnTheFly")) && !FParse::Param(FCommandLine::Get(), TEXT("CookSinglePackage")))		// By The Book cooking needs to predefine the requested platforms. InEditor and OnTheFly should create them all the time.
 			{
 				UE_LOG(LogWwiseResourceCooker, Warning, TEXT("CreateCookerForPlatform: Not cooking for platform %s (UE: %s, Wwise: %s)"),
 					TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),
@@ -132,22 +120,51 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const 
 		return nullptr;
 	}
 
-	UE_LOG(LogWwiseResourceCooker, Display, TEXT("Starting cooking process for platform %s (UE: %s, Wwise: %s)"),
-		TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),
-		TargetPlatform ? *TargetPlatform->IniPlatformName() : TEXT("[nullptr]"),
-		*InPlatform.GetPlatformName().ToString());
-
-	auto* NewResourceLoader = FWwiseResourceLoader::Instantiate(*DefaultResourceLoader, InPlatform);
-	if (UNLIKELY(!NewResourceLoader))
+	const auto* DefaultResourceLoaderImpl = DefaultResourceLoader->ResourceLoaderImpl.Get();
+	if (UNLIKELY(!DefaultResourceLoader))
 	{
-		UE_LOG(LogWwiseResourceCooker, Error, TEXT("CreateCookerForPlatform: Could not instantiate ResourceLoader creating platform %s (UE: %s, Wwise: %s)"),
+		UE_LOG(LogWwiseResourceCooker, Warning, TEXT("CreateCookerForPlatform: No ResourceLoaderImpl available creating platform %s (UE: %s, Wwise: %s)"),
 			TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),
 			TargetPlatform ? *TargetPlatform->IniPlatformName() : TEXT("[nullptr]"),
 			*InPlatform.GetPlatformName().ToString());
 		return nullptr;
 	}
 
-	auto* NewProjectDatabase = FWwiseProjectDatabase::Instantiate(*DefaultProjectDatabase);
+	UE_LOG(LogWwiseResourceCooker, Display, TEXT("Starting cooking process for platform %s (UE: %s, Wwise: %s)"),
+		TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),
+		TargetPlatform ? *TargetPlatform->IniPlatformName() : TEXT("[nullptr]"),
+		*InPlatform.GetPlatformName().ToString());
+
+	auto* NewResourceLoaderImpl = FWwiseResourceLoaderImpl::Instantiate();
+	if (UNLIKELY(!NewResourceLoaderImpl))
+	{
+		UE_LOG(LogWwiseResourceCooker, Error, TEXT("CreateCookerForPlatform: Could not instantiate ResourceLoaderImpl creating platform %s (UE: %s, Wwise: %s)"),
+			TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),
+			TargetPlatform ? *TargetPlatform->IniPlatformName() : TEXT("[nullptr]"),
+			*InPlatform.GetPlatformName().ToString());
+		return nullptr;
+	}
+
+	NewResourceLoaderImpl->CurrentPlatform = InPlatform;
+	NewResourceLoaderImpl->StagePath = DefaultResourceLoaderImpl->StagePath;
+#if WITH_EDITORONLY_DATA
+	NewResourceLoaderImpl->GeneratedSoundBanksPath = DefaultResourceLoaderImpl->GeneratedSoundBanksPath;
+#endif
+
+	auto* NewResourceLoader = FWwiseResourceLoader::Instantiate();
+	if (UNLIKELY(!NewResourceLoader))
+	{
+		UE_LOG(LogWwiseResourceCooker, Error, TEXT("CreateCookerForPlatform: Could not instantiate ResourceLoader creating platform %s (UE: %s, Wwise: %s)"),
+			TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),
+			TargetPlatform ? *TargetPlatform->IniPlatformName() : TEXT("[nullptr]"),
+			*InPlatform.GetPlatformName().ToString());
+		delete NewResourceLoaderImpl;
+		return nullptr;
+	}
+	NewResourceLoader->ResourceLoaderImpl.Reset(NewResourceLoaderImpl);
+	NewResourceLoaderImpl->CurrentLanguage = NewResourceLoader->SystemLanguage();
+
+	auto* NewProjectDatabase = FWwiseProjectDatabase::Instantiate();
 	if (UNLIKELY(!NewProjectDatabase))
 	{
 		UE_LOG(LogWwiseResourceCooker, Error, TEXT("CreateCookerForPlatform: Could not instantiate ProjectDatabase creating platform %s (UE: %s, Wwise: %s)"),
@@ -158,9 +175,9 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const 
 		return nullptr;
 	}
 	NewProjectDatabase->PrepareProjectDatabaseForPlatform(MoveTemp(NewResourceLoader));
-	NewProjectDatabase->UpdateDataStructure(nullptr);
+	NewProjectDatabase->UpdateDataStructure(nullptr, nullptr);
 
-	auto* NewResourceCooker = IWwiseResourceCooker::Instantiate(*DefaultResourceCooker);
+	auto* NewResourceCooker = FWwiseResourceCooker::Instantiate();
 	if (UNLIKELY(!NewResourceCooker))
 	{
 		UE_LOG(LogWwiseResourceCooker, Error, TEXT("CreateCookerForPlatform: Could not instantiate ResourceCooker creating platform %s (UE: %s, Wwise: %s)"),
@@ -170,12 +187,9 @@ IWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const 
 		delete NewProjectDatabase;
 		return nullptr;
 	}
-	NewResourceCooker->PrepareResourceCookerForPlatform(MoveTemp(NewProjectDatabase), InTargetPackagingStrategy, InExportDebugNameRule);
+	NewResourceCooker->PrepareResourceCookerForPlatform(MoveTemp(NewProjectDatabase), InExportDebugNameRule);
 
-	// We need to ensure the following modules are loaded prior to using them
-	FWwiseConcurrencyModule::GetModule();
-
-	CookingPlatforms.Add(TargetPlatform, TUniquePtr<IWwiseResourceCooker>(NewResourceCooker));
+	CookingPlatforms.Add(TargetPlatform, TUniquePtr<FWwiseResourceCooker>(NewResourceCooker));
 	return NewResourceCooker;
 }
 
@@ -194,15 +208,17 @@ void FWwiseResourceCookerModule::DestroyCookerForPlatform(const ITargetPlatform*
 	CookingPlatforms.Remove(TargetPlatform);
 }
 
-IWwiseResourceCooker* FWwiseResourceCookerModule::GetCookerForPlatform(const ITargetPlatform* TargetPlatform)
+FWwiseResourceCooker* FWwiseResourceCookerModule::GetCookerForPlatform(const ITargetPlatform* TargetPlatform)
 {
 	if (TargetPlatform->IsServerOnly())
 	{
+		UE_LOG(LogWwiseResourceCooker, Verbose, TEXT("GetCookerForPlatform: Target %s is server-only."), *TargetPlatform->IniPlatformName());
 		return nullptr;
 	}
-	const auto* Result = CookingPlatforms.Find(TargetPlatform);
+	auto* Result = CookingPlatforms.Find(TargetPlatform);
 	if (UNLIKELY(!Result))
 	{
+		UE_LOG(LogWwiseResourceCooker, Error, TEXT("GetCookerForPlatform: Target %s not created"), *TargetPlatform->IniPlatformName());
 		return nullptr;
 	}
 	return Result->Get();
@@ -219,18 +235,13 @@ void FWwiseResourceCookerModule::DestroyAllCookerPlatforms()
 	}
 }
 
-void FWwiseResourceCookerModule::StartupModule()
-{
-	IWwiseResourceCookerModule::StartupModule();
-}
-
 void FWwiseResourceCookerModule::ShutdownModule()
 {
 	DestroyAllCookerPlatforms();
 	Lock.WriteLock();
 	if (ResourceCooker.IsValid())
 	{
-		UE_LOG(LogWwiseResourceCooker, Log, TEXT("Shutting down default Resource Cooker."));
+		UE_LOG(LogWwiseResourceCooker, Display, TEXT("Shutting down default Resource Cooker."));
 		ResourceCooker.Reset();
 	}
 	Lock.WriteUnlock();

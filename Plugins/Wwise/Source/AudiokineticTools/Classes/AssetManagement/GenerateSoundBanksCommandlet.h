@@ -24,13 +24,13 @@ Copyright (c) 2024 Audiokinetic Inc.
 /**
  * 
  */
-UCLASS(Deprecated)
-class AUDIOKINETICTOOLS_API UDEPRECATED_GenerateSoundBanksCommandlet : public UCommandlet
+UCLASS()
+class AUDIOKINETICTOOLS_API UGenerateSoundBanksCommandlet : public UCommandlet
 {
 	GENERATED_BODY()
 public:
 
-	UDEPRECATED_GenerateSoundBanksCommandlet();
+	UGenerateSoundBanksCommandlet();
 
 	// UCommandlet interface
 	virtual int32 Main(const FString& Params) override;

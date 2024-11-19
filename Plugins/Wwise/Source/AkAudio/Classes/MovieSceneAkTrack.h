@@ -53,7 +53,7 @@ protected:
 
 	/** All the sections in this track */
 	UPROPERTY()
-	TArray<TObjectPtr<UMovieSceneSection>> Sections;
+	TArray<UMovieSceneSection*> Sections;
 
 	UPROPERTY()
 	bool bIsAMasterTrack = false;

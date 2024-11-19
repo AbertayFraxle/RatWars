@@ -29,8 +29,8 @@ public:
 	~FWwiseSoundBankManagerImpl() override;
 
 	const TCHAR* GetManagingTypeName() const override { return TEXT("SoundBank"); }
-	void LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FLoadSoundBankCallback&& InCallback) override;
-	void UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, FUnloadSoundBankCallback&& InCallback) override;
+	void LoadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, const FString& InRootPath, FLoadSoundBankCallback&& InCallback) override;
+	void UnloadSoundBank(const FWwiseSoundBankCookedData& InSoundBankCookedData, const FString& InRootPath, FUnloadSoundBankCallback&& InCallback) override;
 	void SetGranularity(uint32 InStreamingGranularity) override;
 
 	IWwiseStreamingManagerHooks& GetStreamingHooks() final { return *this; }
@@ -38,5 +38,5 @@ public:
 protected:
 	uint32 StreamingGranularity;
 
-	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseSoundBankCookedData& InSoundBankCookedData);
+	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseSoundBankCookedData& InSoundBankCookedData, const FString& InRootPath);
 };

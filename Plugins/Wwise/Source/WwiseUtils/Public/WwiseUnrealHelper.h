@@ -24,12 +24,13 @@ Copyright (c) 2024 Audiokinetic Inc.
 namespace WwiseUnrealHelper
 {
 	WWISEUTILS_API void SetHelperFunctions(
-		FString(*GetWwiseSoundEnginePluginDirectoryImpl)(),
+		FString(*GetWwisePluginDirectoryImpl)(),
 		FString(*GetWwiseProjectPathImpl)(),
-		FString(*GetSoundBankDirectoryImpl)()
+		FString(*GetSoundBankDirectoryImpl)(),
+		FString(*GetStagePathImpl)()
 		);
 
-	WWISEUTILS_API FString GetWwiseSoundEnginePluginDirectory();
+	WWISEUTILS_API FString GetWwisePluginDirectory();
 	WWISEUTILS_API FString GetWwiseProjectPath();
 	WWISEUTILS_API FString GetSoundBankDirectory();
 	WWISEUTILS_API FString GetSoundBankProjectMetadataFile();
@@ -39,9 +40,15 @@ namespace WwiseUnrealHelper
 	WWISEUTILS_API FString GetProjectDirectory();
 	WWISEUTILS_API FString GetThirdPartyDirectory();
 	WWISEUTILS_API FString GetContentDirectory();
-	
+	WWISEUTILS_API FString GetExternalSourceDirectory();
+
+	WWISEUTILS_API FString GetWwiseProjectDirectoryPath();
+	WWISEUTILS_API FString GetWwiseSoundBankInfoCachePath();
+	WWISEUTILS_API FString FormatFolderPath(FString folderPath);
+	WWISEUTILS_API bool MakePathRelativeToWwiseProject(FString& AbsolutePath);
 
 	WWISEUTILS_API void RunTaskInGameThread(TFunction<void()> Function);
+
 	extern WWISEUTILS_API const TCHAR* MediaFolderName;
 
 	extern WWISEUTILS_API const FGuid InitBankID;

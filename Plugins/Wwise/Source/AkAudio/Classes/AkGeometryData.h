@@ -22,7 +22,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkInclude.h"
 
 #include "AkAcousticTexture.h"
-#include "Materials/MaterialInterface.h"
 
 #include "AkGeometryData.generated.h"
 
@@ -84,16 +83,11 @@ struct FAkGeometryData
 	UPROPERTY()
 	TArray<FAkTriangle> Triangles;
 
-	/** Used to store the physical material to override the acoustic texture with at begin play. */
 	UPROPERTY()
-	TArray<TObjectPtr<UPhysicalMaterial>> ToOverrideAcousticTexture;
+	TArray<UPhysicalMaterial*> ToOverrideAcousticTexture;
 
-	/** Used to store the physical material to override the transmission loss values with at begin play. */
 	UPROPERTY(DisplayName = "To Override Transmission Loss")
-	TArray<TObjectPtr<UPhysicalMaterial>> ToOverrideOcclusion;
-
-	UPROPERTY()
-	TMap<TObjectPtr<UMaterialInterface>, int32> MaterialToSurfaceIndex;
+	TArray<UPhysicalMaterial*> ToOverrideOcclusion;
 
 	void AddBox(AkSurfIdx surfIdx, FVector center, FVector extent, FRotator rotation);
 	void AddSphere(AkSurfIdx surfIdx, const FVector& Center, const float Radius, int32 NumSides, int32 NumRings);

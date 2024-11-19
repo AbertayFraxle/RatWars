@@ -27,6 +27,7 @@ public class WwiseObstructionOcclusion : ModuleRules
 			"Core",
 			"CoreUObject",
 			"Engine",
+			"WwiseUtils"
 		});
 
 		if (Target.bCompileAgainstCoreUObject)
@@ -44,8 +45,7 @@ public class WwiseObstructionOcclusion : ModuleRules
 		}
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
-			"WwiseLowLevelUtils",
-			"WwiseSoundEngine",
+			"WwiseSoundEngine"
 		});
 	}
 }

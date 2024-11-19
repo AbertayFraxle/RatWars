@@ -17,19 +17,11 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "WwiseDefines.h"
 #include "Wwise/Stats/Memory.h"
 
 LLM_DECLARE_TAG_API(Audio_Wwise_SoundEngine, AKAUDIO_API);
 
-#if WWISE_2024_1_OR_LATER
-DECLARE_MEMORY_STAT_EXTERN(TEXT("SoundEngine Reserved (Primary)"), STAT_WwiseMemorySoundEnginePrimary, STATGROUP_WwiseMemory, AKAUDIO_API);
-DECLARE_MEMORY_STAT_EXTERN(TEXT("SoundEngine Reserved (Media)"), STAT_WwiseMemorySoundEngineMedia, STATGROUP_WwiseMemory, AKAUDIO_API);
-DECLARE_MEMORY_STAT_EXTERN(TEXT("SoundEngine Reserved (Profiler)"), STAT_WwiseMemorySoundEngineProfiler, STATGROUP_WwiseMemory, AKAUDIO_API);
-#else
 DECLARE_MEMORY_STAT_EXTERN(TEXT("SoundEngine Reserved"), STAT_WwiseMemorySoundEngineVM, STATGROUP_WwiseMemory, AKAUDIO_API);
-#endif
-
 #if AK_SUPPORT_DEVICE_MEMORY
-DECLARE_MEMORY_STAT_EXTERN(TEXT("SoundBank Reserved (Device)"), STAT_WwiseMemorySoundEngineDevice, STATGROUP_WwiseMemory, AKAUDIO_API);
+DECLARE_MEMORY_STAT_EXTERN(TEXT("SoundBank Reserved Device"), STAT_WwiseMemorySoundEngineDevice, STATGROUP_WwiseMemory, WWISEFILEHANDLER_API);
 #endif

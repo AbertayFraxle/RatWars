@@ -218,10 +218,10 @@ private:
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(SkipSerialization, NonTransactional)
-	mutable TObjectPtr<UTextRenderComponent> FrontRoomText = nullptr;
+	mutable UTextRenderComponent* FrontRoomText = nullptr;
 
 	UPROPERTY(SkipSerialization, NonTransactional)
-	mutable TObjectPtr<UTextRenderComponent> BackRoomText = nullptr;
+	mutable UTextRenderComponent* BackRoomText = nullptr;
 #endif
 };
 
@@ -243,7 +243,7 @@ public:
 	AkAcousticPortalState GetCurrentState() const;
 
 	UPROPERTY(VisibleAnywhere, Category = "AcousticPortal", BlueprintReadOnly, meta = (ShowOnlyInnerProperties))
-	TObjectPtr<UAkPortalComponent> Portal = nullptr;
+	UAkPortalComponent* Portal = nullptr;
 
 	virtual void PostRegisterAllComponents() override;
 	virtual void PostLoad() override;

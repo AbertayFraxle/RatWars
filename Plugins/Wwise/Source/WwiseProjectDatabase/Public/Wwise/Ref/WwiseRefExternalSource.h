@@ -19,40 +19,40 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefExternalSource : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefExternalSource : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::ExternalSource;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::ExternalSource;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType ExternalSourceIndex;
 
-	WwiseRefExternalSource() {}
-	WwiseRefExternalSource(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefExternalSource() {}
+	FWwiseRefExternalSource(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InExternalSourceIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		ExternalSourceIndex(InExternalSourceIndex)
 	{}
-	const WwiseMetadataExternalSource* GetExternalSource() const;
+	const FWwiseMetadataExternalSource* GetExternalSource() const;
 
-	WwiseDBShortId ExternalSourceCookie() const;
-	WwiseDBGuid ExternalSourceGuid() const;
-	const WwiseDBString*  ExternalSourceName() const;
-	const WwiseDBString*  ExternalSourceObjectPath() const;
+	uint32 ExternalSourceCookie() const;
+	FGuid ExternalSourceGuid() const;
+	FName ExternalSourceName() const;
+	FName ExternalSourceObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefExternalSource& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefExternalSource& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& ExternalSourceIndex == Rhs.ExternalSourceIndex;
 	}
-	bool operator!=(const WwiseRefExternalSource& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefExternalSource& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefExternalSource::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefExternalSource::FGlobalIdsMap
 {
 	WwiseExternalSourceGlobalIdsMap GlobalIdsMap;
 };

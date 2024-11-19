@@ -19,7 +19,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "AkAudioStyle.h"
 #include "Widgets/SWidget.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Wwise/WwiseReconcile.h"
 

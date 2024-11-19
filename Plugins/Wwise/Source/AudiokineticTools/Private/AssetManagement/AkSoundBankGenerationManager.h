@@ -63,6 +63,7 @@ private:
 	void NotifyGenerationFailed();
 	void NotifyGenerationSucceeded();
 	void NotifyProfilingInProgress();
+	void NotifyAuthoringUnavailable();
 
 	void WrapUpGeneration(const bool bSuccess, const FString& BuilderName);
 	void SetIsBuilding(bool bIsBuilding);

@@ -19,41 +19,41 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefDialogueEvent.h"
 
-class WwiseRefDialogueArgument : public WwiseRefDialogueEvent
+class WWISEPROJECTDATABASE_API FWwiseRefDialogueArgument : public FWwiseRefDialogueEvent
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::DialogueArgument;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::DialogueArgument;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType DialogueArgumentIndex;
 
-	WwiseRefDialogueArgument() {}
-	WwiseRefDialogueArgument(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefDialogueArgument() {}
+	FWwiseRefDialogueArgument(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InDialogueEventIndex,
 		WwiseRefIndexType InDialogueArgumentIndex) :
-		WwiseRefDialogueEvent(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId, InDialogueEventIndex),
+		FWwiseRefDialogueEvent(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId, InDialogueEventIndex),
 		DialogueArgumentIndex(InDialogueArgumentIndex)
 	{}
-	const WwiseMetadataDialogueArgument* GetDialogueArgument() const;
+	const FWwiseMetadataDialogueArgument* GetDialogueArgument() const;
 
-	WwiseDBShortId DialogueArgumentId() const;
-	WwiseDBGuid DialogueArgumentGuid() const;
-	WwiseDBString DialogueArgumentName() const;
-	WwiseDBString DialogueArgumentObjectPath() const;
+	uint32 DialogueArgumentId() const;
+	FGuid DialogueArgumentGuid() const;
+	FName DialogueArgumentName() const;
+	FName DialogueArgumentObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefDialogueArgument& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefDialogueArgument& Rhs) const
 	{
-		return WwiseRefDialogueEvent::operator ==(Rhs)
+		return FWwiseRefDialogueEvent::operator ==(Rhs)
 			&& DialogueArgumentIndex == Rhs.DialogueArgumentIndex;
 	}
-	bool operator!=(const WwiseRefDialogueArgument& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefDialogueArgument& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefDialogueArgument::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefDialogueArgument::FGlobalIdsMap
 {
 	WwiseDialogueArgumentGlobalIdsMap GlobalIdsMap;
 };

@@ -16,15 +16,17 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefGameParameter.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataGameParameter.h"
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
 
-const WwiseDBString WwiseRefGameParameter::NAME = "GameParameter"_wwise_db;
+const TCHAR* const FWwiseRefGameParameter::NAME = TEXT("GameParameter");
 
-const WwiseMetadataGameParameter* WwiseRefGameParameter::GetGameParameter() const
+const FWwiseMetadataGameParameter* FWwiseRefGameParameter::GetGameParameter() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank) [[unlikely]]
+	if (UNLIKELY(!SoundBank))
 	{
 		return nullptr;
 	}
@@ -35,54 +37,54 @@ const WwiseMetadataGameParameter* WwiseRefGameParameter::GetGameParameter() cons
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get GameParameter index #%zu", GameParameterIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get GameParameter index #%zu"), GameParameterIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefGameParameter::GameParameterId() const
+uint32 FWwiseRefGameParameter::GameParameterId() const
 {
 	const auto* GameParameter = GetGameParameter();
-	if (!GameParameter) [[unlikely]]
+	if (UNLIKELY(!GameParameter))
 	{
 		return 0;
 	}
 	return GameParameter->Id;
 }
 
-WwiseDBGuid WwiseRefGameParameter::GameParameterGuid() const
+FGuid FWwiseRefGameParameter::GameParameterGuid() const
 {
 	const auto* GameParameter = GetGameParameter();
-	if (!GameParameter) [[unlikely]]
+	if (UNLIKELY(!GameParameter))
 	{
 		return {};
 	}
 	return GameParameter->GUID;
 }
 
-const WwiseDBString*  WwiseRefGameParameter::GameParameterName() const
+FName FWwiseRefGameParameter::GameParameterName() const
 {
 	const auto* GameParameter = GetGameParameter();
-	if (!GameParameter) [[unlikely]]
+	if (UNLIKELY(!GameParameter))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &GameParameter->Name;
+	return GameParameter->Name;
 }
 
-const WwiseDBString*  WwiseRefGameParameter::GameParameterObjectPath() const
+FName FWwiseRefGameParameter::GameParameterObjectPath() const
 {
 	const auto* GameParameter = GetGameParameter();
-	if (!GameParameter) [[unlikely]]
+	if (UNLIKELY(!GameParameter))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &GameParameter->ObjectPath;
+	return GameParameter->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefGameParameter::Hash() const
+uint32 FWwiseRefGameParameter::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(GameParameterIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(GameParameterIndex));
 	return Result;
 }

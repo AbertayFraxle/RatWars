@@ -24,14 +24,6 @@ class WWISECONCURRENCY_API FWwiseConcurrencyModule : public IWwiseConcurrencyMod
 public:
 	FWwiseConcurrencyModule();
 
-	virtual void StartupModule() override;
-	virtual void ShutdownModule() override;
-	
-	virtual FWwiseExecutionQueue* GetDefaultQueue() override
-	{
-		return DefaultQueue;
-	}
-
-protected:
-	FWwiseExecutionQueue* DefaultQueue{ nullptr };
+	void StartupModule() override;
+	void ShutdownModule() override;
 };

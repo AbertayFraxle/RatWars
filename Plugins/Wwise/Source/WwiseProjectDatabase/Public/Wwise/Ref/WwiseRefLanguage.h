@@ -19,34 +19,34 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefProjectInfo.h"
 
-class WwiseRefLanguage : public WwiseRefProjectInfo
+class WWISEPROJECTDATABASE_API FWwiseRefLanguage : public FWwiseRefProjectInfo
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::Language;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::Language;
 
 	WwiseRefIndexType LanguageIndex;
 
-	WwiseRefLanguage() :
-		LanguageIndex(-1)
+	FWwiseRefLanguage() :
+		LanguageIndex(INDEX_NONE)
 	{}
-	WwiseRefLanguage(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
+	FWwiseRefLanguage(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
 		WwiseRefIndexType InLanguageIndex) :
-		WwiseRefProjectInfo(InRootMediaRef, InJsonFilePath),
+		FWwiseRefProjectInfo(InRootMediaRef, InJsonFilePath),
 		LanguageIndex(InLanguageIndex)
 	{}
-	const WwiseMetadataLanguage* GetLanguage() const;
+	const FWwiseMetadataLanguage* GetLanguage() const;
 
-	WwiseDBShortId LanguageId() const;
-	WwiseDBGuid LanguageGuid() const;
-	WwiseDBString LanguageName() const;
+	uint32 LanguageId() const;
+	FGuid LanguageGuid() const;
+	FName LanguageName() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefLanguage& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefLanguage& Rhs) const
 	{
-		return WwiseRefProjectInfo::operator==(Rhs)
+		return FWwiseRefProjectInfo::operator==(Rhs)
 			&& LanguageIndex == Rhs.LanguageIndex;
 	}
-	bool operator!=(const WwiseRefLanguage& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefLanguage& Rhs) const { return !operator==(Rhs); }
 };

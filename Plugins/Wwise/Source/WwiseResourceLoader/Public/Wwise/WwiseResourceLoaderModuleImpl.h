@@ -23,10 +23,11 @@ Copyright (c) 2024 Audiokinetic Inc.
 class WWISERESOURCELOADER_API FWwiseResourceLoaderModule : public IWwiseResourceLoaderModule
 {
 public:
-	virtual FWwiseResourceLoader* GetResourceLoader() override;
-	virtual FWwiseResourceLoader* InstantiateResourceLoader() override;
+	FWwiseResourceLoader* GetResourceLoader() override;
+	FWwiseResourceLoaderImpl* InstantiateResourceLoaderImpl() override;
+	FWwiseResourceLoader* InstantiateResourceLoader() override;
 
-	virtual void ShutdownModule() override;
+	void ShutdownModule() override;
 
 protected:
 	FRWLock Lock;

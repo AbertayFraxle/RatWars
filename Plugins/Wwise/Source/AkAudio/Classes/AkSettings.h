@@ -52,8 +52,8 @@ enum class EAkUnrealAudioRouting
 {
 	Custom UMETA(DisplayName = "Default", ToolTip = "Custom Unreal audio settings set up by the developer"),
 	Separate UMETA(DisplayName = "Both Wwise and Unreal audio", ToolTip = "Use default Unreal audio at the same time than Wwise SoundEngine (might be incompatible with some platforms)"),
-	AudioLink UMETA(DisplayName = "Route through AudioLink", ToolTip = "Use WwiseAudioLink to route all Unreal audio sources to Wwise SoundEngine Inputs (requires Unreal Engine 5.1 or higher)"),
-	AudioMixer UMETA(DisplayName = "Route through AkAudioMixer", ToolTip = "(DEPRECATED) Use AkAudioMixer to route Unreal submixes to a Wwise SoundEngine Input"),
+	AudioLink UMETA(DisplayName = "Route through AudioLink [UE5.1+]", ToolTip = "Use WwiseAudioLink to route all Unreal audio sources to Wwise SoundEngine Inputs (requires Unreal Engine 5.1 or higher)"),
+	AudioMixer UMETA(DisplayName = "Route through AkAudioMixer", ToolTip = "Use AkAudioMixer to route Unreal submixes to a Wwise SoundEngine Input"),
 	EnableWwiseOnly UMETA(DisplayName = "Enable Wwise SoundEngine only", ToolTip = "Only use Wwise SoundEngine, and disable Unreal audio"),
 	EnableUnrealOnly UMETA(DisplayName = "Enable Unreal Audio only", ToolTip = "Only use Unreal audio, and disable Wwise SoundEngine")
 };
@@ -343,7 +343,7 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Initialization", meta=(ConfigRestartRequired=true, EditCondition="AudioRouting == EAkUnrealAudioRouting::Custom"))
 	bool bAkAudioMixerEnabled = false;
 
-	// The default value of the "Attenuation Scaling Factor" when an AkGameObject is created.
+	// The default value of the "Attenuation Scaling Factor" when an AkComponent is created.
 	UPROPERTY(Config, EditAnywhere, Category = "Initialization", meta = (ClampMin = "0.0"))
 	float DefaultScalingFactor = 1.0f;
 
@@ -374,7 +374,7 @@ public:
 	bool DampingRTPCInUse() const;
 	bool PredelayRTPCInUse() const;
 
-	bool GetAssociatedAcousticTexture(const UPhysicalMaterial* physMaterial, TObjectPtr<UAkAcousticTexture>& acousticTexture) const;
+	bool GetAssociatedAcousticTexture(const UPhysicalMaterial* physMaterial, UAkAcousticTexture*& acousticTexture) const;
 	bool GetAssociatedOcclusionValue(const UPhysicalMaterial* physMaterial, float& occlusionValue) const;
 
 #if WITH_EDITOR
@@ -411,11 +411,9 @@ protected:
 
 private:
 #if WITH_EDITOR
-	FDelegateHandle PostEngineInitDelegate;
 	FString PreviousWwiseProjectPath;
 	FString PreviousWwiseGeneratedSoundBankFolder;
 	bool bTextureMapInitialized = false;
-	float PreviousDefaultScalingFactor = 1.f;
 	TMap< UPhysicalMaterial*, UAkAcousticTexture* > TextureMapInternal;
 	FAssetRegistryModule* AssetRegistryModule;
 

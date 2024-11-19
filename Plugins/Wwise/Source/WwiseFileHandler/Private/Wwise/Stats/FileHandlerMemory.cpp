@@ -39,16 +39,11 @@ DEFINE_STAT(STAT_WwiseMemoryMediaPrefetchDevice);
 #endif
 
 DEFINE_STAT(STAT_WwiseMemorySoundBank);
+DEFINE_STAT(STAT_WwiseMemorySoundBankMapped);
 #if AK_SUPPORT_DEVICE_MEMORY
 DEFINE_STAT(STAT_WwiseMemorySoundBankDevice);
 #endif
 
-LLM_DEFINE_TAG(Audio_Wwise_FileHandler, TEXT("Wwise FileHandler"));
-LLM_DEFINE_TAG(Audio_Wwise_FileHandler_ExternalSources, TEXT("Wwise External Source File Handles"));
-LLM_DEFINE_TAG(Audio_Wwise_FileHandler_Media, TEXT("Wwise Media File Handles"));
-LLM_DEFINE_TAG(Audio_Wwise_FileHandler_SoundBanks, TEXT("Wwise SoundBank File Handles"));
-
-#if WITH_EDITORONLY_DATA
-DEFINE_STAT(STAT_WwiseMemoryCooking);
-LLM_DEFINE_TAG(Audio_Wwise_FileHandler_Cooking, TEXT("Cooking"));
-#endif
+LLM_DEFINE_TAG(Audio_Wwise_FileHandler_ExternalSources, TEXT("External Sources"));
+LLM_DEFINE_TAG(Audio_Wwise_FileHandler_Media, TEXT("Media"));
+LLM_DEFINE_TAG(Audio_Wwise_FileHandler_SoundBanks, TEXT("SoundBanks"));

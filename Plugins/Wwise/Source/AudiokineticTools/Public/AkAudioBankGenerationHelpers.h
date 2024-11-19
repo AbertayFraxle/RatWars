@@ -27,7 +27,7 @@ namespace AkAudioBankGenerationHelper
 	/**
 	 * Get path to the WwiseConsole application
 	 */
-	AUDIOKINETICTOOLS_API FString GetWwiseConsoleApplicationPath();
+	FString GetWwiseConsoleApplicationPath();
 
 	/**
 	 * Function to create the Generate SoundBanks window
@@ -35,7 +35,7 @@ namespace AkAudioBankGenerationHelper
 	 * @param pSoundBanks				List of SoundBanks to be pre-selected
 	 * @paramin_bShouldSaveWwiseProject	Whether the Wwise project should be saved or not
 	 */
-	AUDIOKINETICTOOLS_API void CreateGenerateSoundDataWindow(bool ProjectSave = false);
+	void CreateGenerateSoundDataWindow(bool ProjectSave = false);
 
 	enum class AkSoundDataClearFlags
 	{
@@ -46,5 +46,5 @@ namespace AkAudioBankGenerationHelper
 
 	ENUM_CLASS_FLAGS(AkSoundDataClearFlags)
 
-	AUDIOKINETICTOOLS_API void DoClearSoundData(AkSoundDataClearFlags ClearFlags);
+	void DoClearSoundData(AkSoundDataClearFlags ClearFlags);
 }

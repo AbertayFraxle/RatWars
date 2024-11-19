@@ -41,7 +41,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "WwiseUnrealHelper.h"
 #include "ToolMenus.h"
 #include "FileHelpers.h"
-#include "Wwise/WwisePluginStyle.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -321,7 +320,7 @@ AkAssetMigrationManager::MigrationResult AkAssetMigrationManager::PerformMigrati
 
 	FString ResultString = Result.bSuccess ? "Success" : "Failure";
 	FNotificationInfo Info(FText::Format(LOCTEXT("AkAssetManagementManagerResult", "Migration completed - {0}"), FText::FromString(ResultString)));
-	Info.Image = FWwisePluginStyle::Get()->GetBrush(FWwisePluginStyle::WwiseIconName);
+	Info.Image = FAkAudioStyle::GetBrush(TEXT("AudiokineticTools.AkBrowserTabIcon"));
 	Info.bFireAndForget = true;
 	Info.FadeOutDuration = 0.6f;
 	Info.ExpireDuration = 4.6f;

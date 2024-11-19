@@ -17,7 +17,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#if PLATFORM_LINUX && (!defined(PLATFORM_LINUXARM64) || !PLATFORM_LINUXARM64) 
+#if PLATFORM_LINUX && (!defined(PLATFORM_LINUXARM64) || !PLATFORM_LINUXARM64) && (!defined(PLATFORM_LINUXAARCH64) || !PLATFORM_LINUXAARCH64)
 
 #include "Platforms/AkPlatformBase.h"
 #include "AkLinuxInitializationSettings.h"

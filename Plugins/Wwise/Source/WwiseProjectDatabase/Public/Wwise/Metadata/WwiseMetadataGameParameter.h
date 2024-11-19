@@ -19,14 +19,14 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataBasicReference.h"
 
-struct WwiseMetadataGameParameterReference : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataGameParameterReference : public FWwiseMetadataLoadable
 {
-	WwiseMetadataGameParameterReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataGameParameterReference(FWwiseMetadataLoader& Loader);
 
-	WwiseDBShortId Id;
+	uint32 Id;
 };
 
-struct WwiseMetadataGameParameter : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataGameParameter : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataGameParameter(WwiseMetadataLoader& Loader);
+	FWwiseMetadataGameParameter(FWwiseMetadataLoader& Loader);
 };

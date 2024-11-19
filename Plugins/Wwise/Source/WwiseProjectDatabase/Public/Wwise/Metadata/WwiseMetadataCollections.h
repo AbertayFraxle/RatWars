@@ -18,16 +18,12 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "Wwise/Metadata/WwiseMetadataForwardDeclarations.h"
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
-#include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
 
-#include "Wwise/AdapterTypes/WwiseMap.h"
-#include "Wwise/AdapterTypes/WwisePair.h"
-#include "Wwise/AdapterTypes/WwiseString.h"
+#include "CoreMinimal.h"
 
-using WwiseMetadataSharedRootFilePtr = WwiseDBSharedPtr<WwiseMetadataRootFile>;
-using WwiseMetadataSharedRootFileConstPtr = WwiseDBSharedPtr<WwiseMetadataRootFile>;
-using WwiseMetadataFileMap = WwiseDBMap<WwiseDBString, WwiseMetadataSharedRootFilePtr>;
+using WwiseMetadataSharedRootFilePtr = TSharedPtr<FWwiseMetadataRootFile>;
+using WwiseMetadataSharedRootFileConstPtr = TSharedPtr<const FWwiseMetadataRootFile>;
+using WwiseMetadataFileMap = TMap<FString, WwiseMetadataSharedRootFilePtr>;
 
-using WwiseMetadataStateWithGroup = WwiseDBPair<WwiseMetadataStateGroup, WwiseMetadataState>;
-using WwiseMetadataSwitchWithGroup = WwiseDBPair<WwiseMetadataSwitchGroup, WwiseMetadataSwitch>;
+using WwiseMetadataStateWithGroup = TPair<const FWwiseMetadataStateGroup&, const FWwiseMetadataState&>;
+using WwiseMetadataSwitchWithGroup = TPair<const FWwiseMetadataSwitchGroup&, const FWwiseMetadataSwitch&>;

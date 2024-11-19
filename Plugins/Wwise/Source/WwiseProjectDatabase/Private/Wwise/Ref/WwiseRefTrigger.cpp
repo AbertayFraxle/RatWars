@@ -18,14 +18,17 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Ref/WwiseRefTrigger.h"
 
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
+#include "Wwise/Stats/FileHandler.h"
 #include "Wwise/Metadata/WwiseMetadataTrigger.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-const WwiseDBString WwiseRefTrigger::NAME = "Trigger"_wwise_db;
+const TCHAR* const FWwiseRefTrigger::NAME = TEXT("Trigger");
 
-const WwiseMetadataTrigger* WwiseRefTrigger::GetTrigger() const
+const FWwiseMetadataTrigger* FWwiseRefTrigger::GetTrigger() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank) [[unlikely]]
+	if (UNLIKELY(!SoundBank))
 	{
 		return nullptr;
 	}
@@ -36,54 +39,54 @@ const WwiseMetadataTrigger* WwiseRefTrigger::GetTrigger() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Trigger index #%zu", TriggerIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Trigger index #%zu"), TriggerIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefTrigger::TriggerId() const
+uint32 FWwiseRefTrigger::TriggerId() const
 {
 	const auto* Trigger = GetTrigger();
-	if (!Trigger) [[unlikely]]
+	if (UNLIKELY(!Trigger))
 	{
 		return 0;
 	}
 	return Trigger->Id;
 }
 
-WwiseDBGuid WwiseRefTrigger::TriggerGuid() const
+FGuid FWwiseRefTrigger::TriggerGuid() const
 {
 	const auto* Trigger = GetTrigger();
-	if (!Trigger) [[unlikely]]
+	if (UNLIKELY(!Trigger))
 	{
 		return {};
 	}
 	return Trigger->GUID;
 }
 
-const WwiseDBString* WwiseRefTrigger::TriggerName() const
+FName FWwiseRefTrigger::TriggerName() const
 {
 	const auto* Trigger = GetTrigger();
-	if (!Trigger) [[unlikely]]
+	if (UNLIKELY(!Trigger))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &Trigger->Name;
+	return Trigger->Name;
 }
 
-const WwiseDBString* WwiseRefTrigger::TriggerObjectPath() const
+FName FWwiseRefTrigger::TriggerObjectPath() const
 {
 	const auto* Trigger = GetTrigger();
-	if (!Trigger) [[unlikely]]
+	if (UNLIKELY(!Trigger))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &Trigger->ObjectPath;
+	return Trigger->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefTrigger::Hash() const
+uint32 FWwiseRefTrigger::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(TriggerIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(TriggerIndex));
 	return Result;
 }

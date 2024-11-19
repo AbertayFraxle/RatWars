@@ -19,7 +19,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/CookedData/WwiseEventCookedData.h"
 #include "Wwise/CookedData/WwiseLanguageCookedData.h"
-#include "Wwise/WwiseUnrealVersion.h"
 
 #include "WwiseLocalizedEventCookedData.generated.h"
 
@@ -46,8 +45,4 @@ struct WWISERESOURCELOADER_API FWwiseLocalizedEventCookedData
 	FWwiseLocalizedEventCookedData();
 
 	void Serialize(FArchive& Ar);
-	void SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& Options);
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	void PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const;
-#endif
 };

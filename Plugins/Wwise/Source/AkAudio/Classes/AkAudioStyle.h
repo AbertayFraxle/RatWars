@@ -17,8 +17,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "WwiseItemType.h"
-#include "Styling/CoreStyle.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 #include "Materials/Material.h"
 #if WITH_EDITOR
 #include "Wwise/Ref/WwiseRefType.h"
@@ -34,14 +33,14 @@ public:
 	static void Initialize();
 	static void Shutdown();
 
+	static void DisplayEditorMessage(const FText& messageText, EWwiseItemType::Type wwiseItemType = EWwiseItemType::Type::None, float duration = 1.5f);
 
 	static FName GetStyleSetName();
 
-#if WITH_EDITOR
-	static void DisplayEditorMessage(const FText& messageText, EWwiseItemType::Type wwiseItemType = EWwiseItemType::Type::None, float duration = 1.5f);
 	static const FSlateBrush* GetWwiseIcon();
 	static const FSlateBrush* GetBrush(EWwiseItemType::Type ItemType);
-	static const FSlateBrush* GetBrush(WwiseRefType WwiseRefType);
+#if WITH_EDITOR
+	static const FSlateBrush* GetBrush(EWwiseRefType WwiseRefType);
 	static const FSlateBrush* GetBrush(UClass* Class);
 #endif
 	static const FSlateBrush* GetBrush(FName PropertyName, const ANSICHAR* Specifier = NULL);

@@ -953,7 +953,7 @@ bool FMovieSceneAkAudioEventTrackEditor::HandleAssetAdded(UObject* Asset, const 
 
 const FSlateBrush* FMovieSceneAkAudioEventTrackEditor::GetIconBrush() const
 {
-	return FAkAudioStyle::Get().GetBrush("Wwise.EventIcon");
+	return FAkAudioStyle::Get().GetBrush("AudiokineticTools.EventIcon");
 }
 
 void FMovieSceneAkAudioEventTrackEditor::BuildAddTrackMenu(FMenuBuilder& MenuBuilder)
@@ -961,7 +961,7 @@ void FMovieSceneAkAudioEventTrackEditor::BuildAddTrackMenu(FMenuBuilder& MenuBui
 	MenuBuilder.AddMenuEntry(
 		LOCTEXT("AddAkAudioEventTrack", "AkAudioEvent"),
 		LOCTEXT("AddAkAudioEventMasterTrackTooltip", "Adds a master AkAudioEvent track."),
-		FSlateIcon(FAkAudioStyle::GetStyleSetName(), "Wwise.EventIcon"),
+		FSlateIcon(FAkAudioStyle::GetStyleSetName(), "AudiokineticTools.EventIcon"),
 		FUIAction(FExecuteAction::CreateLambda([this]
 		{
 			auto FocusedMovieScene = GetFocusedMovieScene();
@@ -1075,7 +1075,7 @@ void FMovieSceneAkAudioEventTrackEditor::BuildObjectBindingTrackMenu(FMenuBuilde
 		MenuBuilder.AddMenuEntry(
 			LOCTEXT("AddAkAudioEventTrack", "AkAudioEvent"),
 			LOCTEXT("AddAkAudioEventTrackTooltip", "Adds an AkAudioEvent track."),
-			FSlateIcon(FAkAudioStyle::GetStyleSetName(), "Wwise.EventIcon"),
+			FSlateIcon(FAkAudioStyle::GetStyleSetName(), "AudiokineticTools.EventIcon"),
 			FUIAction(FExecuteAction::CreateLambda([this, ObjectBinding = MoveTemp(ObjectBinding)]
 			{
 				auto FocusedMovieScene = GetFocusedMovieScene();

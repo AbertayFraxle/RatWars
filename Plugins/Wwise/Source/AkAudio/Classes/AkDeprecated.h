@@ -46,11 +46,11 @@ class AKAUDIO_API UAkAssetPlatformData : public UObject
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(transient, VisibleAnywhere, Category = "UAkAssetData")
-	TMap<FString, TObjectPtr<UAkAssetData>> AssetDataPerPlatform;
+	TMap<FString, UAkAssetData*> AssetDataPerPlatform;
 #endif
 
 	UPROPERTY(transient)
-	TObjectPtr<UAkAssetData> CurrentAssetData = nullptr;
+	UAkAssetData* CurrentAssetData = nullptr;
 
 	void Serialize(FArchive& Ar) override
 	{
@@ -111,7 +111,7 @@ class AKAUDIO_API UAkMediaAsset : public UObject
 	GENERATED_BODY()
 
 	UPROPERTY(transient, VisibleAnywhere, Category = "AkMediaAsset")
-	TMap<FString, TObjectPtr<UAkMediaAssetData>> MediaAssetDataPerPlatform;
+	TMap<FString, UAkMediaAssetData*> MediaAssetDataPerPlatform;
 
 	void Serialize(FArchive& Ar) override
 	{

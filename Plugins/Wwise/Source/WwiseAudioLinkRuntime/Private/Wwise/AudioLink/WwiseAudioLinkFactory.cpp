@@ -246,18 +246,10 @@ FName FWwiseAudioLinkFactory::GetFactoryNameStatic()
 
 IAudioLinkFactory::FAudioLinkSynchronizerSharedPtr FWwiseAudioLinkFactory::CreateSynchronizerAudioLink()
 {
-	UE_LOG(LogWwiseAudioLink, VeryVerbose, TEXT("FWwiseAudioLinkFactory: Creating Wwise AudioLink Synchronizer"));
+	UE_LOG(LogWwiseAudioLink, VeryVerbose, TEXT("FWwiseAudioLinkFactory: Creating AudioLink Synchronizer"));
 
 	auto SynchronizerSP = MakeShared<FWwiseAudioLinkSynchronizer, ESPMode::ThreadSafe>();
-
-	// AudioMixerPlatformAudioLink will use NullDevice if we fail to start
-	// an audio stream. But we have to tell it to do so by returning a nullptr SynchronizeLink
-	if (!SynchronizerSP->Bind())
-	{
-		UE_LOG(LogWwiseAudioLink, Verbose, TEXT("FWwiseAudioLinkFactory: Failed to bind Wwise AudioLink Synchronizer"));
-		return nullptr;
-	}
-
+	SynchronizerSP->Bind();
 	return SynchronizerSP;
 }
 

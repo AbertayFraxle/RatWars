@@ -19,41 +19,41 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefCustomPlugin : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefCustomPlugin : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::CustomPlugin;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::CustomPlugin;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType CustomPluginIndex;
 
-	WwiseRefCustomPlugin() {}
-	WwiseRefCustomPlugin(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefCustomPlugin() {}
+	FWwiseRefCustomPlugin(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InCustomPluginIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		CustomPluginIndex(InCustomPluginIndex)
 	{}
-	const WwiseMetadataPlugin* GetPlugin() const;
+	const FWwiseMetadataPlugin* GetPlugin() const;
 	WwiseMediaIdsMap GetPluginMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const;
 
-	WwiseDBShortId CustomPluginId() const;
-	WwiseDBGuid CustomPluginGuid() const;
-	const WwiseDBString* CustomPluginName() const;
-	const WwiseDBString* CustomPluginObjectPath() const;
+	uint32 CustomPluginId() const;
+	FGuid CustomPluginGuid() const;
+	FName CustomPluginName() const;
+	FName CustomPluginObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefCustomPlugin& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefCustomPlugin& Rhs) const
 	{
-		return WwiseRefSoundBank::operator==(Rhs)
+		return FWwiseRefSoundBank::operator==(Rhs)
 			&& CustomPluginIndex == Rhs.CustomPluginIndex;
 	}
-	bool operator!=(const WwiseRefCustomPlugin& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefCustomPlugin& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefCustomPlugin::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefCustomPlugin::FGlobalIdsMap
 {
 	WwiseCustomPluginGlobalIdsMap GlobalIdsMap;
 };

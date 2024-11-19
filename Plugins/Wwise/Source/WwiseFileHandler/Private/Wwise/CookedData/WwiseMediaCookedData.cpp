@@ -18,22 +18,22 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/CookedData/WwiseMediaCookedData.h"
 
 #include "Wwise/Stats/FileHandler.h"
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Cooker/CookDependency.h"
-#include "Serialization/CompactBinaryWriter.h"
-#include "UObject/ObjectSaveContext.h"
-#endif
-
 #include <inttypes.h>
 
-FWwiseMediaCookedData::FWwiseMediaCookedData()
+FWwiseMediaCookedData::FWwiseMediaCookedData():
+	MediaId(0),
+	MediaPathName(),
+	PrefetchSize(0),
+	MemoryAlignment(0),
+	bDeviceMemory(false),
+	bStreaming(false),
+	DebugName()
 {}
 
 void FWwiseMediaCookedData::Serialize(FArchive& Ar)
 {
 	UStruct* Struct = StaticStruct();
-	UE_CLOG(UNLIKELY(!Struct), LogWwiseFileHandler, Fatal, TEXT("MediaCookedData SerializeBulkData: No StaticStruct."));
+	UE_CLOG(UNLIKELY(!Struct), LogWwiseFileHandler, Fatal, TEXT("MediaCookedData Serialize: No StaticStruct."));
 
 	if (Ar.WantBinaryPropertySerialization())
 	{
@@ -49,26 +49,9 @@ void FWwiseMediaCookedData::Serialize(FArchive& Ar)
 	}
 }
 
-void FWwiseMediaCookedData::SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& Options)
-{
-	PackagedFile.SerializeBulkData(Ar, Options);
-}
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseMediaCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "M";
-	Writer.BeginObject();
-	Writer << "Media" << MediaId;
-	SaveContext.AddCookBuildDependency(PackagedFile.GetCookDependency());
-	PackagedFile.FillCbObject(Writer);
-	Writer.EndObject();
-}
-#endif
-
 FString FWwiseMediaCookedData::GetDebugString() const
 {
 	return FString::Printf(TEXT("Media %s (%" PRIu32 ") @ %s (p:%" PRIi32 " ma:%" PRIi32 " %sdm %ss)"),
-		*DebugName.ToString(), MediaId, *PackagedFile.PathName.ToString(), PackagedFile.PrefetchSize, PackagedFile.MemoryAlignment,
-		PackagedFile.bDeviceMemory ? TEXT("") : TEXT("!"), PackagedFile.bStreaming ? TEXT("") : TEXT("!"));
+		*DebugName.ToString(), MediaId, *MediaPathName.ToString(), PrefetchSize, MemoryAlignment,
+		bDeviceMemory ? TEXT("") : TEXT("!"), bStreaming ? TEXT("") : TEXT("!"));
 }

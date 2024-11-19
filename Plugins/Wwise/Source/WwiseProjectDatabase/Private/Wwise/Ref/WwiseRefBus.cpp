@@ -16,16 +16,18 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefBus.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
 #include "Wwise/Metadata/WwiseMetadataBus.h"
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-const WwiseDBString WwiseRefBus::NAME = "Bus"_wwise_db;
+const TCHAR* const FWwiseRefBus::NAME = TEXT("Bus");
 
-const WwiseMetadataBus* WwiseRefBus::GetBus() const
+const FWwiseMetadataBus* FWwiseRefBus::GetBus() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank) [[unlikely]]
+	if (UNLIKELY(!SoundBank))
 	{
 		return nullptr;
 	}
@@ -36,54 +38,54 @@ const WwiseMetadataBus* WwiseRefBus::GetBus() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Bus index #%zu", BusIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Bus index #%zu"), BusIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefBus::BusId() const
+uint32 FWwiseRefBus::BusId() const
 {
 	const auto* Bus = GetBus();
-	if (!Bus) [[unlikely]]
+	if (UNLIKELY(!Bus))
 	{
 		return 0;
 	}
 	return Bus->Id;
 }
 
-WwiseDBGuid WwiseRefBus::BusGuid() const
+FGuid FWwiseRefBus::BusGuid() const
 {
 	const auto* Bus = GetBus();
-	if (!Bus) [[unlikely]]
+	if (UNLIKELY(!Bus))
 	{
 		return {};
 	}
 	return Bus->GUID;
 }
 
-const WwiseDBString* WwiseRefBus::BusName() const
+FName FWwiseRefBus::BusName() const
 {
 	const auto* Bus = GetBus();
-	if (!Bus) [[unlikely]]
+	if (UNLIKELY(!Bus))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &Bus->Name;
+	return Bus->Name;
 }
 
-const WwiseDBString* WwiseRefBus::BusObjectPath() const
+FName FWwiseRefBus::BusObjectPath() const
 {
 	const auto* Bus = GetBus();
-	if (!Bus) [[unlikely]]
+	if (UNLIKELY(!Bus))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &Bus->ObjectPath;
+	return Bus->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefBus::Hash() const
+uint32 FWwiseRefBus::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(BusIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(BusIndex));
 	return Result;
 }

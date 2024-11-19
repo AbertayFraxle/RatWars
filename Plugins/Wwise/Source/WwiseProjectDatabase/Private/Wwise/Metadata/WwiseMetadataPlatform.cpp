@@ -17,37 +17,38 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataPlatform.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-WwiseMetadataPlatformAttributes::WwiseMetadataPlatformAttributes()
+FWwiseMetadataPlatformAttributes::FWwiseMetadataPlatformAttributes()
 {
-	WWISE_DB_LOG(Error, "Using default WwiseMetadataPlatformAttributes");
+	UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Using default FWwiseMetadataPlatformAttributes"));
 }
 
-WwiseMetadataPlatformAttributes::WwiseMetadataPlatformAttributes(WwiseMetadataLoader& Loader) :
-	Name(Loader.GetString(this, "Name"_wwise_db)),
-	BasePlatform(Loader.GetString(this, "BasePlatform"_wwise_db)),
-	Generator(Loader.GetString(this, "Generator"_wwise_db))
+FWwiseMetadataPlatformAttributes::FWwiseMetadataPlatformAttributes(FWwiseMetadataLoader& Loader) :
+	Name(Loader.GetString(this, TEXT("Name"))),
+	BasePlatform(Loader.GetString(this, TEXT("BasePlatform"))),
+	Generator(Loader.GetString(this, TEXT("Generator")))
 {
-	Loader.LogParsed("PlatformAttributes"_wwise_db, 0, Name);
+	Loader.LogParsed(TEXT("PlatformAttributes"), 0, Name);
 }
 
-WwiseMetadataPlatformReference::WwiseMetadataPlatformReference(WwiseMetadataLoader& Loader) :
-	Name(Loader.GetString(this, "Name"_wwise_db)),
-	GUID(Loader.GetGuid(this, "GUID"_wwise_db)),
-	BasePlatform(Loader.GetString(this, "BasePlatform"_wwise_db)),
-	BasePlatformGUID(Loader.GetGuid(this, "BasePlatformGUID"_wwise_db)),
-	Path(Loader.GetString(this, "Path"_wwise_db))
+FWwiseMetadataPlatformReference::FWwiseMetadataPlatformReference(FWwiseMetadataLoader& Loader) :
+	Name(Loader.GetString(this, TEXT("Name"))),
+	GUID(Loader.GetGuid(this, TEXT("GUID"))),
+	BasePlatform(Loader.GetString(this, TEXT("BasePlatform"))),
+	BasePlatformGUID(Loader.GetGuid(this, TEXT("BasePlatformGUID"))),
+	Path(Loader.GetString(this, TEXT("Path")))
 {
-	Loader.LogParsed("PlatformReference"_wwise_db, 0, Name);
+	Loader.LogParsed(TEXT("PlatformReference"), 0, Name);
 }
 
-WwiseMetadataPlatform::WwiseMetadataPlatform()
+FWwiseMetadataPlatform::FWwiseMetadataPlatform()
 {
-	WWISE_DB_LOG(Error, "Using default WwiseMetadataPlatform");
+	UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Using default FWwiseMetadataPlatform"));
 }
 
-WwiseMetadataPlatform::WwiseMetadataPlatform(WwiseMetadataLoader& Loader) :
-	WwiseMetadataPlatformAttributes(Loader)
+FWwiseMetadataPlatform::FWwiseMetadataPlatform(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataPlatformAttributes(Loader)
 {
-	Loader.LogParsed("Platform"_wwise_db, 0, Name);
+	Loader.LogParsed(TEXT("Platform"), 0, Name);
 }

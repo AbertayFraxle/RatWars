@@ -37,7 +37,7 @@ bool IWwiseReconcile::ReconcileAssets(EWwiseReconcileOperationFlags OperationFla
 		return false;
 	}
 	//Locking the Project Database to prevent changes during reconcile.
-	WwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
+	FWwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
 
 	if(GuidToWwiseRef.Num() == 0)
 	{

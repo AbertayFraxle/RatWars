@@ -204,7 +204,7 @@ void UWwiseReconcileCommandlet::LogOperations()
 		{
 			if (Item.WwiseAnyRef.WwiseAnyRef)
 			{
-				AssetName = FWwiseStringConverter::ToFString(Item.WwiseAnyRef.WwiseAnyRef->GetName());
+				AssetName = Item.WwiseAnyRef.WwiseAnyRef->GetName().ToString();
 			}
 		}
 

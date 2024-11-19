@@ -17,8 +17,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/WwiseUnrealVersion.h"
-
 #include "WwiseGroupValueCookedData.generated.h"
 
 UENUM(BlueprintType)
@@ -88,9 +86,6 @@ struct WWISERESOURCELOADER_API FWwiseGroupValueCookedData
 	}
 
 	void Serialize(FArchive& Ar);
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	void PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const;
-#endif
 
 	FString GetDebugString() const;
 };

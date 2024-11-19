@@ -17,17 +17,19 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefCustomPlugin.h"
 
+#include "Wwise/WwiseProjectDatabaseModule.h"
 #include "Wwise/Metadata/WwiseMetadataPlugin.h"
 #include "Wwise/Metadata/WwiseMetadataPluginGroup.h"
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
 #include "Wwise/Ref/WwiseRefMedia.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-const WwiseDBString WwiseRefCustomPlugin::NAME = "CustomPlugin"_wwise_db;
+const TCHAR* const FWwiseRefCustomPlugin::NAME = TEXT("CustomPlugin");
 
-const WwiseMetadataPlugin* WwiseRefCustomPlugin::GetPlugin() const
+const FWwiseMetadataPlugin* FWwiseRefCustomPlugin::GetPlugin() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank || !SoundBank->Plugins) [[unlikely]]
+	if (UNLIKELY(!SoundBank || !SoundBank->Plugins))
 	{
 		return nullptr;
 	}
@@ -39,28 +41,28 @@ const WwiseMetadataPlugin* WwiseRefCustomPlugin::GetPlugin() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Custom Plugin index #%zu", CustomPluginIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Custom Plugin index #%zu"), CustomPluginIndex);
 		return nullptr;
 	}
 }
 
-WwiseMediaIdsMap WwiseRefCustomPlugin::GetPluginMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const
+WwiseMediaIdsMap FWwiseRefCustomPlugin::GetPluginMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const
 {
 	const auto* CustomPlugin = GetPlugin();
 	const auto* SoundBank = GetSoundBank();
-	if (!CustomPlugin || !SoundBank) [[unlikely]]
+	if (UNLIKELY(!CustomPlugin || !SoundBank))
 	{
 		return {};
 	}
 	const auto& Media = CustomPlugin->MediaRefs;
 
 	WwiseMediaIdsMap Result;
-	Result.Empty(Media.Size());
+	Result.Empty(Media.Num());
 	for (const auto& Elem : Media)
 	{
-		WwiseDatabaseMediaIdKey Id(Elem.Id, SoundBank->Id);
+		FWwiseDatabaseMediaIdKey Id(Elem.Id, SoundBank->Id);
 
-		const WwiseRefMedia* MediaInGlobalMap = GlobalMap.Find(Id);
+		const auto* MediaInGlobalMap = GlobalMap.Find(Id);
 		if (MediaInGlobalMap)
 		{
 			Result.Add(Elem.Id, *MediaInGlobalMap);
@@ -69,49 +71,49 @@ WwiseMediaIdsMap WwiseRefCustomPlugin::GetPluginMedia(const WwiseMediaGlobalIdsM
 	return Result;
 }
 
-WwiseDBShortId WwiseRefCustomPlugin::CustomPluginId() const
+uint32 FWwiseRefCustomPlugin::CustomPluginId() const
 {
 	const auto* CustomPlugin = GetPlugin();
-	if (!CustomPlugin) [[unlikely]]
+	if (UNLIKELY(!CustomPlugin))
 	{
 		return 0;
 	}
 	return CustomPlugin->Id;
 }
 
-WwiseDBGuid WwiseRefCustomPlugin::CustomPluginGuid() const
+FGuid FWwiseRefCustomPlugin::CustomPluginGuid() const
 {
 	const auto* CustomPlugin = GetPlugin();
-	if (!CustomPlugin) [[unlikely]]
+	if (UNLIKELY(!CustomPlugin))
 	{
 		return {};
 	}
 	return CustomPlugin->GUID;
 }
 
-const WwiseDBString* WwiseRefCustomPlugin::CustomPluginName() const
+FName FWwiseRefCustomPlugin::CustomPluginName() const
 {
 	const auto* CustomPlugin = GetPlugin();
-	if (!CustomPlugin) [[unlikely]]
+	if (UNLIKELY(!CustomPlugin))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &CustomPlugin->Name;
+	return CustomPlugin->Name;
 }
 
-const WwiseDBString* WwiseRefCustomPlugin::CustomPluginObjectPath() const
+FName FWwiseRefCustomPlugin::CustomPluginObjectPath() const
 {
 	const auto* CustomPlugin = GetPlugin();
-	if (!CustomPlugin) [[unlikely]]
+	if (UNLIKELY(!CustomPlugin))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &CustomPlugin->ObjectPath;
+	return CustomPlugin->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefCustomPlugin::Hash() const
+uint32 FWwiseRefCustomPlugin::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(CustomPluginIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(CustomPluginIndex));
 	return Result;
 }

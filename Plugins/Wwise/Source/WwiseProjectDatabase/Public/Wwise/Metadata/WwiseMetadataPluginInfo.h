@@ -20,18 +20,18 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 #include "Wwise/Metadata/WwiseMetadataPluginLib.h"
 
-struct WwiseMetadataPluginInfoAttributes : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPluginInfoAttributes : public FWwiseMetadataLoadable
 {
-	WwiseDBString Platform;
-	WwiseDBString BasePlatform;
+	FName Platform;
+	FName BasePlatform;
 
-	WwiseMetadataPluginInfoAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPluginInfoAttributes(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataPluginInfo : public WwiseMetadataPluginInfoAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPluginInfo : public FWwiseMetadataPluginInfoAttributes
 {
-	WwiseDBArray<WwiseMetadataPluginLib> PluginLibs;
-	WwiseDBGuid FileHash;
+	TArray<FWwiseMetadataPluginLib> PluginLibs;
+	FGuid FileHash;
 
-	WwiseMetadataPluginInfo(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPluginInfo(FWwiseMetadataLoader& Loader);
 };

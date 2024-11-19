@@ -37,8 +37,6 @@ TSharedRef<IDetailCustomization> FAkPortalComponentDetailsCustomization::MakeIns
 
 void FAkPortalComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailLayout)
 {
-	FWwiseDetailsCustomization::CustomizeDetails(DetailLayout);
-	
 	TArray<TWeakObjectPtr<UObject>> ObjectsBeingCustomized;
 	DetailLayout.GetObjectsBeingCustomized(ObjectsBeingCustomized);
 

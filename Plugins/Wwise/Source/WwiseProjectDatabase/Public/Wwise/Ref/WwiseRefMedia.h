@@ -19,39 +19,39 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefMedia : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefMedia : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::Media;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::Media;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType MediaIndex;
 
-	WwiseRefMedia() {}
-	WwiseRefMedia(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefMedia() {}
+	FWwiseRefMedia(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InMediaIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		MediaIndex(InMediaIndex)
 	{}
-	const WwiseMetadataMedia* GetMedia() const;
+	const FWwiseMetadataMedia* GetMedia() const;
 
-	WwiseDBShortId MediaId() const;
-	const WwiseDBString* MediaShortName() const;
-	const WwiseDBString* MediaPath() const;
+	uint32 MediaId() const;
+	FName MediaShortName() const;
+	FName MediaPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefMedia& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefMedia& Rhs) const
 	{
-		return WwiseRefSoundBank::operator==(Rhs)
+		return FWwiseRefSoundBank::operator==(Rhs)
 			&& MediaIndex == Rhs.MediaIndex;
 	}
-	bool operator!=(const WwiseRefMedia& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefMedia& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefMedia::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefMedia::FGlobalIdsMap
 {
 	WwiseMediaGlobalIdsMap GlobalIdsMap;
 };

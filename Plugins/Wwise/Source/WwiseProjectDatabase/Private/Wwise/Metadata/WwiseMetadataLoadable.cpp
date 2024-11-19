@@ -16,39 +16,45 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-void WwiseMetadataLoadable::AddRequestedValue(const WwiseDBString& Type, const WwiseDBString& Value)
+#include "Dom/JsonObject.h"
+
+void FWwiseMetadataLoadable::AddRequestedValue(const FString& Type, const FString& Value)
 {
 	bool IsAlreadySet = false;
 	RequestedValues.Add(Value, &IsAlreadySet);
-	if (IsAlreadySet) [[unlikely]]
+	if (UNLIKELY(IsAlreadySet))
 	{
-		WWISE_DB_LOG(Fatal, "Trying to load the same %s field twice: %s", *Type, *Value);
+		UE_LOG(LogWwiseProjectDatabase, Fatal, TEXT("Trying to load the same %s field twice: %s"), *Type, *Value);
 	}
 }
 
-void WwiseMetadataLoadable::CheckRequestedValues(WwiseDBJsonObject& JsonObject) const
+void FWwiseMetadataLoadable::CheckRequestedValues(TSharedRef<FJsonObject>& JsonObject)
 {
-	WwiseDBArray<WwiseDBString> Keys;
-	JsonObject.GetKeys(Keys);
-	auto Diff = WwiseDBSet<WwiseDBString>(Keys.Array).Difference(RequestedValues);
+	TArray<FString> Keys;
+	JsonObject->Values.GetKeys(Keys);
+	auto Diff = TSet<FString>(Keys).Difference(RequestedValues);
 	for (const auto& Key : Diff)
 	{
-		WWISE_DB_LOG(Warning, "Unknown Json field: %s", *Key);
+		UE_LOG(LogWwiseProjectDatabase, Warning, TEXT("Unknown Json field: %s"), *Key);
 	}
 }
 
-void WwiseMetadataLoadable::IncLoadedSize(size_t Size)
+void FWwiseMetadataLoadable::IncLoadedSize(size_t Size)
 {
+	INC_DWORD_STAT_BY(STAT_WwiseProjectDatabaseMemory, Size);
 	LoadedSize += Size;
 }
 
-void WwiseMetadataLoadable::DecLoadedSize(size_t Size)
+void FWwiseMetadataLoadable::DecLoadedSize(size_t Size)
 {
+	DEC_DWORD_STAT_BY(STAT_WwiseProjectDatabaseMemory, Size);
 	LoadedSize -= Size;
 }
 
-void WwiseMetadataLoadable::UnloadLoadedSize()
+void FWwiseMetadataLoadable::UnloadLoadedSize()
 {
+	DEC_DWORD_STAT_BY(STAT_WwiseProjectDatabaseMemory, LoadedSize);
 	LoadedSize = 0;
 }

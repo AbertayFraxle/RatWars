@@ -32,9 +32,8 @@ protected:
 #if WITH_EDITORONLY_DATA
 public:
 	virtual void FillInfo() override;
-	virtual void FillInfo(const WwiseAnyRef& CurrentWwiseRef) override;
+	virtual void FillInfo(const FWwiseAnyRef& CurrentWwiseRef) override;
 	virtual bool ObjectIsInSoundBanks() override;
 	virtual FName GetWwiseGroupName() override;
-	virtual EWwiseGroupType GetGroupType() const override { return EWwiseGroupType::Switch; }
 #endif
 };

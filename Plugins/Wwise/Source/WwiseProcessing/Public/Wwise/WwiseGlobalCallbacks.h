@@ -18,7 +18,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "Wwise/WwiseDeferredQueue.h"
-#include "WwiseDefines.h"
 
 #include "AkInclude.h"
 #include "WwiseProcessingModule.h"
@@ -50,11 +49,7 @@ protected:
 	FWwiseDeferredQueue InitQueue;
 	FWwiseDeferredQueue SuspendQueue;
 	FWwiseDeferredQueue WakeupFromSuspendQueue;
-#if WWISE_2024_1_OR_LATER
-	FWwiseDeferredQueue ProfilerConnectQueue;
-	FWwiseDeferredQueue ProfilerDisconnectQueue;
-#endif
-	
+
 public:
 	static FWwiseGlobalCallbacks* Get()
 	{
@@ -190,26 +185,6 @@ public:
 	FGameThreadDelegate& OnWakeupFromSuspend { WakeupFromSuspendQueue.OnGameRun };
 	FThreadSafeDelegate& OnWakeupFromSuspendTS { WakeupFromSuspendQueue.OnSyncRunTS };
 
-#if WWISE_2024_1_OR_LATER
-	// AkGlobalCallbackLocation_ProfilerConnect: Wwise Profiler has connected to the game.
-	void ProfilerConnectAsync(FAsyncFunction&& InFunction) { ProfilerConnectQueue.AsyncDefer(MoveTemp(InFunction)); }
-	void ProfilerConnectGame(FGameFunction&& InFunction) { ProfilerConnectQueue.GameDefer(MoveTemp(InFunction)); }
-	void ProfilerConnectSync(FSyncFunction&& InFunction);
-	void ProfilerConnectCompletion(FCompletionPromise&& Promise);
-	void WaitForProfilerConnect();
-	FGameThreadDelegate& OnProfilerConnect { ProfilerConnectQueue.OnGameRun };
-	FThreadSafeDelegate& OnProfilerConnectTS { ProfilerConnectQueue.OnSyncRunTS };
-
-	// AkGlobalCallbackLocation_ProfilerDisconnect: Wwise Profiler has disconnected from the game.
-	void ProfilerDisconnectAsync(FAsyncFunction&& InFunction) { ProfilerDisconnectQueue.AsyncDefer(MoveTemp(InFunction)); }
-	void ProfilerDisconnectGame(FGameFunction&& InFunction) { ProfilerDisconnectQueue.GameDefer(MoveTemp(InFunction)); }
-	void ProfilerDisconnectSync(FSyncFunction&& InFunction);
-	void ProfilerDisconnectCompletion(FCompletionPromise&& Promise);
-	void WaitForProfilerDisconnect();
-	FGameThreadDelegate& OnProfilerDisconnect { ProfilerDisconnectQueue.OnGameRun };
-	FThreadSafeDelegate& OnProfilerDisconnectTS { ProfilerDisconnectQueue.OnSyncRunTS };
-#endif
-	
 protected:
 	virtual void OnRegisterCallback(AK::IAkGlobalPluginContext* in_pContext);
 	virtual void OnBeginCallback(AK::IAkGlobalPluginContext* in_pContext);
@@ -224,11 +199,7 @@ protected:
 	virtual void OnInitCallback(AK::IAkGlobalPluginContext* in_pContext);
 	virtual void OnSuspendCallback(AK::IAkGlobalPluginContext* in_pContext);
 	virtual void OnWakeupFromSuspendCallback(AK::IAkGlobalPluginContext* in_pContext);
-#if WWISE_2024_1_OR_LATER
-	virtual void OnProfilerConnectCallback(AK::IAkGlobalPluginContext* in_pContext);
-	virtual void OnProfilerDisconnectCallback(AK::IAkGlobalPluginContext* in_pContext);
-#endif
-	
+
 private:
 	static void OnRegisterCallbackStatic(
 		AK::IAkGlobalPluginContext * in_pContext,	///< Engine context.
@@ -295,16 +266,4 @@ private:
 		AkGlobalCallbackLocation in_eLocation,		///< Location where this callback is fired.
 		void * in_pCookie							///< User cookie passed to AK::SoundEngine::RegisterGlobalCallback().
 	);
-#if WWISE_2024_1_OR_LATER
-	static void OnProfilerConnectCallbackStatic(
-		AK::IAkGlobalPluginContext * in_pContext,	///< Engine context.
-		AkGlobalCallbackLocation in_eLocation,		///< Location where this callback is fired.
-		void * in_pCookie							///< User cookie passed to AK::SoundEngine::RegisterGlobalCallback().
-	);
-	static void OnProfilerDisconnectCallbackStatic(
-		AK::IAkGlobalPluginContext * in_pContext,	///< Engine context.
-		AkGlobalCallbackLocation in_eLocation,		///< Location where this callback is fired.
-		void * in_pCookie							///< User cookie passed to AK::SoundEngine::RegisterGlobalCallback().
-	);
-#endif
 };

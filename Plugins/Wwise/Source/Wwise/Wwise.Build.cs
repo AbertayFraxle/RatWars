@@ -32,8 +32,7 @@ public class Wwise : ModuleRules
 				"Core",
 				"CoreUObject",
 				"Engine",
-				"WwiseLowLevelUtils",
-				"WwiseUtils",
+				"WwiseUtils"
 			}
 		);
 

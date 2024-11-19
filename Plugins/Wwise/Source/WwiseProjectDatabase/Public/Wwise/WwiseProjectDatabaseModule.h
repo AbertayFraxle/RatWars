@@ -21,7 +21,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Misc/CommandLine.h"
 #include "Misc/ConfigCacheIni.h"
 #include "WwiseUnrealDefines.h"
-#include "Wwise/AdapterTypes/WwiseProjectDatabaseLogging.h"
+#if !UE_5_0_OR_LATER
+#include "Misc/CommandLine.h"
+#endif
 
 class FWwiseProjectDatabase;
 class FWwiseProjectDatabaseDelegates;

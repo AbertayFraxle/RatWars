@@ -29,70 +29,69 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataStateGroup.h"
 #include "Wwise/Metadata/WwiseMetadataSwitchGroup.h"
 #include "Wwise/Metadata/WwiseMetadataTrigger.h"
-#include "Wwise/Ref/WwiseRefCollections.h"
 
-struct WwiseMetadataSoundBankReference : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSoundBankReference : public FWwiseMetadataLoadable
 {
-	WwiseDBShortId Id;
-	WwiseDBGuid GUID;
-	WwiseDBString Language;
+	uint32 Id;
+	FGuid GUID;
+	FName Language;
 
-	WwiseMetadataSoundBankReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSoundBankReference(FWwiseMetadataLoader& Loader);
 };
 
-enum class EMetadataSoundBankType : WwiseDBShortId
+enum class EMetadataSoundBankType : uint32
 {
 	User = 0,
 	Event = 30,
 	Bus = 31,
-	Unknown = (WwiseDBShortId)-1
+	Unknown = (uint32)-1
 };
 
-struct WwiseMetadataSoundBankAttributes : public WwiseMetadataSoundBankReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSoundBankAttributes : public FWwiseMetadataSoundBankReference
 {
-	WwiseDBShortId Align;
+	uint32 Align;
 	bool bDeviceMemory;
-	WwiseDBGuid Hash;
+	FGuid Hash;
 	EMetadataSoundBankType Type;
 
-	WwiseMetadataSoundBankAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSoundBankAttributes(FWwiseMetadataLoader& Loader);
 
 private:
-	static EMetadataSoundBankType TypeFromString(const WwiseDBString& TypeString);
+	static EMetadataSoundBankType TypeFromString(const FName& TypeString);
 };
 
-struct WwiseMetadataSoundBank : public WwiseMetadataSoundBankAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSoundBank : public FWwiseMetadataSoundBankAttributes
 {
-	WwiseDBString ObjectPath;
-	WwiseDBString ShortName;
-	WwiseDBString Path;
+	FName ObjectPath;
+	FName ShortName;
+	FName Path;
 
-	WwiseDBArray<WwiseMetadataMedia> Media;
-	WwiseMetadataPluginGroup* Plugins;
-	WwiseDBArray<WwiseMetadataEvent> Events;
-	WwiseDBArray<WwiseMetadataDialogueEvent> DialogueEvents;
-	WwiseDBArray<WwiseMetadataBus> Busses;
-	WwiseDBArray<WwiseMetadataBus> AuxBusses;
-	WwiseDBArray<WwiseMetadataGameParameter> GameParameters;
-	WwiseDBArray<WwiseMetadataStateGroup> StateGroups;
-	WwiseDBArray<WwiseMetadataSwitchGroup> SwitchGroups;
-	WwiseDBArray<WwiseMetadataTrigger> Triggers;
-	WwiseDBArray<WwiseMetadataExternalSource> ExternalSources;
-	WwiseDBArray<WwiseMetadataAcousticTexture> AcousticTextures;
+	TArray<FWwiseMetadataMedia> Media;
+	FWwiseMetadataPluginGroup* Plugins;
+	TArray<FWwiseMetadataEvent> Events;
+	TArray<FWwiseMetadataDialogueEvent> DialogueEvents;
+	TArray<FWwiseMetadataBus> Busses;
+	TArray<FWwiseMetadataBus> AuxBusses;
+	TArray<FWwiseMetadataGameParameter> GameParameters;
+	TArray<FWwiseMetadataStateGroup> StateGroups;
+	TArray<FWwiseMetadataSwitchGroup> SwitchGroups;
+	TArray<FWwiseMetadataTrigger> Triggers;
+	TArray<FWwiseMetadataExternalSource> ExternalSources;
+	TArray<FWwiseMetadataAcousticTexture> AcousticTextures;
 
-	WwiseMetadataSoundBank(WwiseMetadataLoader& Loader);
-	WwiseDBSet<WwiseMetadataDialogueArgument> GetAllDialogueArguments() const;
-	WwiseDBSet<WwiseMetadataStateWithGroup> GetAllStates() const;
-	WwiseDBSet<WwiseMetadataSwitchWithGroup> GetAllSwitches() const;
+	FWwiseMetadataSoundBank(FWwiseMetadataLoader& Loader);
+	TSet<FWwiseMetadataDialogueArgument> GetAllDialogueArguments() const;
+	TSet<WwiseMetadataStateWithGroup> GetAllStates() const;
+	TSet<WwiseMetadataSwitchWithGroup> GetAllSwitches() const;
 	bool IsInitBank() const
 	{
 		return bIsInitBank;
 	}
 	bool ContainsMedia() const
 	{
-		return Media.ContainsByPredicate([](const WwiseMetadataMedia& MediaToTest)
+		return Media.ContainsByPredicate([](const FWwiseMetadataMedia& MediaToTest)
 		{
-			return MediaToTest.Location == WwiseMetadataMediaLocation::Memory;
+			return MediaToTest.Location == EWwiseMetadataMediaLocation::Memory;
 		});
 	}
 

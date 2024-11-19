@@ -16,74 +16,76 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefAcousticTexture.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
 #include "Wwise/Metadata/WwiseMetadataAcousticTexture.h"
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-const WwiseDBString WwiseRefAcousticTexture::NAME = "AcousticTexture"_wwise_db;
+const TCHAR* const FWwiseRefAcousticTexture::NAME = TEXT("AcousticTexture");
 
-const WwiseMetadataAcousticTexture* WwiseRefAcousticTexture::GetAcousticTexture() const
+const FWwiseMetadataAcousticTexture* FWwiseRefAcousticTexture::GetAcousticTexture() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank) [[unlikely]]
+	if (UNLIKELY(!SoundBank))
 	{
 		return nullptr;
 	}
 	const auto& AcousticTextures = SoundBank->AcousticTextures;
 	if (AcousticTextures.IsValidIndex(AcousticTextureIndex))
 	{
-		return &AcousticTextures.Array[AcousticTextureIndex];
+		return &AcousticTextures[AcousticTextureIndex];
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Acoustic Texture index #%zu", AcousticTextureIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Acoustic Texture index #%zu"), AcousticTextureIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefAcousticTexture::AcousticTextureId() const
+uint32 FWwiseRefAcousticTexture::AcousticTextureId() const
 {
 	const auto* AcousticTexture = GetAcousticTexture();
-	if (!AcousticTexture) [[unlikely]]
+	if (UNLIKELY(!AcousticTexture))
 	{
 		return 0;
 	}
 	return AcousticTexture->Id;
 }
 
-WwiseDBGuid WwiseRefAcousticTexture::AcousticTextureGuid() const
+FGuid FWwiseRefAcousticTexture::AcousticTextureGuid() const
 {
 	const auto* AcousticTexture = GetAcousticTexture();
-	if (!AcousticTexture) [[unlikely]]
+	if (UNLIKELY(!AcousticTexture))
 	{
 		return {};
 	}
 	return AcousticTexture->GUID;
 }
 
-const WwiseDBString* WwiseRefAcousticTexture::AcousticTextureName() const
+FName FWwiseRefAcousticTexture::AcousticTextureName() const
 {
 	const auto* AcousticTexture = GetAcousticTexture();
-	if (!AcousticTexture) [[unlikely]]
+	if (UNLIKELY(!AcousticTexture))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &AcousticTexture->Name;
+	return AcousticTexture->Name;
 }
 
-const WwiseDBString* WwiseRefAcousticTexture::AcousticTextureObjectPath() const
+FName FWwiseRefAcousticTexture::AcousticTextureObjectPath() const
 {
 	const auto* AcousticTexture = GetAcousticTexture();
-	if (!AcousticTexture) [[unlikely]]
+	if (UNLIKELY(!AcousticTexture))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &AcousticTexture->ObjectPath;
+	return AcousticTexture->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefAcousticTexture::Hash() const
+uint32 FWwiseRefAcousticTexture::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(AcousticTextureIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(AcousticTextureIndex));
 	return Result;
 }

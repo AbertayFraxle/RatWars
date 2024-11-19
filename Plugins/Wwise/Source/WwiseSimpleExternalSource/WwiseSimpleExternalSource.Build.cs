@@ -35,9 +35,9 @@ public class WwiseSimpleExternalSource : ModuleRules
 				"AkAudio",
 				"WwiseConcurrency",
 				"WwiseFileHandler",
-				"WwiseLowLevelUtils",
-				"WwiseResourceLoader",
 				"WwiseSoundEngine",
+				"WwiseResourceLoader",
+				"WwiseUtils"
 			}
 		);
 

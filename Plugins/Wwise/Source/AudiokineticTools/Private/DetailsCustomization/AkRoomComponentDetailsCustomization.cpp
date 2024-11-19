@@ -47,8 +47,6 @@ void FAkRoomComponentDetailsCustomization::CustomizeDetails(const TSharedPtr<IDe
 
 void FAkRoomComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& InDetailBuilder)
 {
-	FWwiseDetailsCustomization::CustomizeDetails(InDetailBuilder);
-	
 	TArray<TWeakObjectPtr<UObject>> ObjectsBeingCustomized;
 	InDetailBuilder.GetObjectsBeingCustomized(ObjectsBeingCustomized);
 

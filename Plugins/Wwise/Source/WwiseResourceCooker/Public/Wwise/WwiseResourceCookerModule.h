@@ -20,12 +20,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Misc/ConfigCacheIni.h"
 #include "Modules/ModuleManager.h"
 #include "UObject/Class.h"
-#include "Wwise/WwisePackagedFile.h"
 
-struct FWwiseAssetLibraryInfo;
-class UWwiseAssetLibrary;
 struct FWwiseSharedPlatformId;
-class IWwiseResourceCooker;
+class FWwiseResourceCooker;
 
 UENUM()
 enum class EWwiseExportDebugNameRule
@@ -111,23 +108,19 @@ public:
 #endif
 	}
 
-	virtual IWwiseResourceCooker* GetResourceCooker()
+	virtual FWwiseResourceCooker* GetResourceCooker()
 	{
 		return nullptr;
 	}
-	virtual IWwiseResourceCooker* InstantiateResourceCooker()
+	virtual FWwiseResourceCooker* InstantiateResourceCooker()
 	{
 		return nullptr;
 	}
 
-	using FAssetLibraryInfoPtr = TSharedPtr<FWwiseAssetLibraryInfo>;
-	using FAssetLibraryInfoMap = TMap<UObject*, FAssetLibraryInfoPtr>;
-
-	virtual IWwiseResourceCooker* CreateCookerForPlatform(
+	virtual FWwiseResourceCooker* CreateCookerForPlatform(
 		const ITargetPlatform* TargetPlatform,
 		const FWwiseSharedPlatformId& InPlatform,
-		EWwisePackagingStrategy InTargetPackagingStrategy,
-		EWwiseExportDebugNameRule InExportDebugNameRule)
+		EWwiseExportDebugNameRule InExportDebugNameRule = EWwiseExportDebugNameRule::Release)
 	{
 		return nullptr;
 	}
@@ -136,12 +129,12 @@ public:
 	{
 	}
 
-	virtual IWwiseResourceCooker* GetCookerForPlatform(const ITargetPlatform* TargetPlatform)
+	virtual FWwiseResourceCooker* GetCookerForPlatform(const ITargetPlatform* TargetPlatform)
 	{
 		return nullptr;
 	}
 
-	IWwiseResourceCooker* GetCookerForArchive(const FArchive& InArchive)
+	FWwiseResourceCooker* GetCookerForArchive(const FArchive& InArchive)
 	{
 		if (!InArchive.IsCooking() || !InArchive.IsSaving())
 		{

@@ -20,38 +20,38 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataBasicReference.h"
 #include "Wwise/Metadata/WwiseMetadataMedia.h"
 
-struct WwiseMetadataPluginReference : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPluginReference : public FWwiseMetadataLoadable
 {
-	WwiseDBShortId Id;
+	uint32 Id;
 
-	WwiseMetadataPluginReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPluginReference(FWwiseMetadataLoader& Loader);
 };
 
-inline WwiseDBShortId GetTypeHash(const WwiseMetadataPluginReference& Plugin)
+inline uint32 GetTypeHash(const FWwiseMetadataPluginReference& Plugin)
 {
 	return GetTypeHash(Plugin.Id);
 }
-inline bool operator ==(const WwiseMetadataPluginReference& Lhs, const WwiseMetadataPluginReference& Rhs)
+inline bool operator ==(const FWwiseMetadataPluginReference& Lhs, const FWwiseMetadataPluginReference& Rhs)
 {
 	return Lhs.Id == Rhs.Id;
 }
-inline bool operator <(const WwiseMetadataPluginReference& Lhs, const WwiseMetadataPluginReference& Rhs)
+inline bool operator <(const FWwiseMetadataPluginReference& Lhs, const FWwiseMetadataPluginReference& Rhs)
 {
 	return Lhs.Id < Rhs.Id;
 }
 
-struct WwiseMetadataPluginAttributes : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPluginAttributes : public FWwiseMetadataBasicReference
 {
-	WwiseDBString LibName;
-	WwiseDBShortId LibId;
+	FName LibName;
+	uint32 LibId;
 
-	WwiseMetadataPluginAttributes(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPluginAttributes(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataPlugin : public WwiseMetadataPluginAttributes
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPlugin : public FWwiseMetadataPluginAttributes
 {
-	WwiseDBArray<WwiseMetadataMediaReference> MediaRefs;
-	WwiseMetadataPluginReferenceGroup* PluginRefs;
+	TArray<FWwiseMetadataMediaReference> MediaRefs;
+	FWwiseMetadataPluginReferenceGroup* PluginRefs;
 
-	WwiseMetadataPlugin(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPlugin(FWwiseMetadataLoader& Loader);
 };

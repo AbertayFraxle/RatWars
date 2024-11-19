@@ -23,10 +23,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Info/WwiseObjectInfo.h"
 #include "Wwise/WwiseResourceLoaderFuture.h"
 #include "WwiseUnrealDefines.h"
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Cooker/CookDependency.h"
-#include "Serialization/CompactBinary.h"
-#endif
 #if UE_5_4_OR_LATER
 #include "UObject/AssetRegistryTagsContext.h"
 #endif
@@ -34,13 +30,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkAudioType.generated.h"
 
 class FWwiseProjectDatabase;
-class WwiseAnyRef;
-
-/**
- * Wwise Audio Type abstract Unreal base class.
- *
- * All Unreal assets derive from this type.
- */
+class FWwiseAnyRef;
 UCLASS(Abstract)
 class AKAUDIO_API UAkAudioType : public UObject
 {
@@ -49,11 +39,11 @@ class AKAUDIO_API UAkAudioType : public UObject
 public:
 	virtual ~UAkAudioType() override;
 
-	/// Automatically load SoundBanks and associated media associated when Unreal loads this asset.
+	///< When true, SoundBanks and medias associated with this asset will be loaded in the Wwise SoundEngine when Unreal loads this asset.
 	UPROPERTY(EditAnywhere, Category = "AkAudioType|Behaviour")
 	bool bAutoLoad = true;
 
-	// Deprecated ID properties used in migration
+// Deprecated ID properties used in migration
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(meta=(Deprecated))
 	FGuid ID_DEPRECATED;
@@ -63,7 +53,7 @@ public:
 #endif
 	
 	UPROPERTY(EditAnywhere, Category = "AkAudioType")
-	TArray<TObjectPtr<UObject>> UserData;
+	TArray<UObject*> UserData;
 
 public:
 	void Serialize(FArchive& Ar) override;
@@ -112,14 +102,13 @@ public:
 	virtual void BeginCacheForCookedPlatformData(const ITargetPlatform* TargetPlatform) override;
 
 	// Checks whether the metadata for this UAkAudioType matches what is in the Project Database
-	virtual bool IsAssetOutOfDate(const WwiseAnyRef& CurrentWwiseRef);
-	virtual void FillInfo(const WwiseAnyRef& CurrentWwiseRef);
+	virtual bool IsAssetOutOfDate(const FWwiseAnyRef& CurrentWwiseRef);
+	virtual void FillInfo(const FWwiseAnyRef& CurrentWwiseRef);
 	virtual void FillInfo() {}
 	virtual void FillMetadata(FWwiseProjectDatabase* ProjectDatabase) {}
 	virtual void CheckWwiseObjectInfo();
 	virtual void MigrateWwiseObjectInfo();
 	void WaitForResourceUnloaded();
-	virtual void EnsureResourceCookerCreated(const ITargetPlatform* TargetPlatform);
 
 	template <class InfoType>
 	InfoType GetValidatedInfo(const InfoType& InInfo)
@@ -139,10 +128,6 @@ public:
 	virtual void GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) const override;
 #endif // UE_5_4_OR_LATER
 #endif // WITH_EDITOR
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	static void HashDependenciesForCook(FCbFieldViewIterator Args, UE::Cook::FCookDependencyContext& Context);
-#endif
 
 protected:
 	FWwiseResourceUnloadFuture ResourceUnload;

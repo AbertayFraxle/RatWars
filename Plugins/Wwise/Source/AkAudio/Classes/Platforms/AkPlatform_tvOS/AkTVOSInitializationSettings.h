@@ -20,7 +20,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkInclude.h"
 #include "InitializationSettings/AkInitializationSettings.h"
 #include "InitializationSettings/AkAudioSession.h"
-#include "InitializationSettings/AkPlatformInitializationSettingsBase.h"
+#include "InitializationSettings/AkPlatformInitialisationSettingsBase.h"
 
 #include "AkTVOSInitializationSettings.generated.h"
 
@@ -29,17 +29,17 @@ struct FAkTVOSAdvancedInitializationSettings : public FAkAdvancedInitializationS
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Number of Apple Spatial Audio point sources to allocate for 3D audio use (each point source is a system audio object).", MinWwiseVersion="2023.1"))
+	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Number of Apple Spatial Audio point sources to allocate for 3D audio use (each point source is a system audio object)."))
 	uint32 uNumSpatialAudioPointSources = 128;
 
-	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Print detailed system output information to the system log.", MinWwiseVersion="2023.1"))
+	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Print detailed system output information to the system log."))
 	bool bVerboseSystemOutput = false;
 
 	void FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const;
 };
 
 UCLASS(config = Game, defaultconfig)
-class AKAUDIO_API UAkTVOSInitializationSettings : public UAkPlatformInitializationSettingsBase
+class AKAUDIO_API UAkTVOSInitializationSettings : public UObject, public IAkPlatformInitialisationSettingsBase
 {
 	GENERATED_BODY()
 

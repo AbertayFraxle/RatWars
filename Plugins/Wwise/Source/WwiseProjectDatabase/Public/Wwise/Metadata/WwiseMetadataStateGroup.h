@@ -19,10 +19,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataState.h"
 
-struct WwiseMetadataStateGroup : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataStateGroup : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataStateGroup(){}
-	WwiseDBArray<WwiseMetadataState> States;
+	TArray<FWwiseMetadataState> States;
 
-	WwiseMetadataStateGroup(WwiseMetadataLoader& Loader);
+	FWwiseMetadataStateGroup(FWwiseMetadataLoader& Loader);
 };

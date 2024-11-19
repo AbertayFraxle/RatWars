@@ -16,57 +16,59 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefPlatform.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataPlatform.h"
 #include "Wwise/Metadata/WwiseMetadataPlatformInfo.h"
 #include "Wwise/Metadata/WwiseMetadataProjectInfo.h"
 
-const WwiseDBString WwiseRefPlatform::NAME = "Platform"_wwise_db;
+const TCHAR* const FWwiseRefPlatform::NAME = TEXT("Platform");
 
-void WwiseRefPlatform::Merge(WwiseRefPlatform&& InOtherPlatform)
+void FWwiseRefPlatform::Merge(FWwiseRefPlatform&& InOtherPlatform)
 {
-	if (InOtherPlatform.ProjectInfo.IsValid() && InOtherPlatform.IsValid())
+	if (UNLIKELY(InOtherPlatform.ProjectInfo.IsValid() && InOtherPlatform.IsValid()))
 	{
-		WWISE_DB_LOG(Error, "WwiseRefPlatform::Merge: Merging with a complete OtherPlatform.");
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("FWwiseRefPlatform::Merge: Merging with a complete OtherPlatform."));
 	}
-	if (ProjectInfo.IsValid() && IsValid())
+	if (UNLIKELY(ProjectInfo.IsValid() && IsValid()))
 	{
-		WWISE_DB_LOG(Error, "WwiseRefPlatform::Merge: Merging with a complete self.");
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("FWwiseRefPlatform::Merge: Merging with a complete self."));
 	}
 
 	if (InOtherPlatform.IsValid())
 	{
-		if (IsValid())
+		if (UNLIKELY(IsValid()))
 		{
-			WWISE_DB_LOG(Error, "WwiseRefPlatform::Merge: Already have a PlatformInfo. Overriding.");
+			UE_LOG(LogWwiseProjectDatabase, Error, TEXT("FWwiseRefPlatform::Merge: Already have a PlatformInfo. Overriding."));
 		}
-		RootFileRef = std::move(InOtherPlatform.RootFileRef);
-		JsonFilePath = std::move(InOtherPlatform.JsonFilePath);
+		RootFileRef = MoveTemp(InOtherPlatform.RootFileRef);
+		JsonFilePath = MoveTemp(InOtherPlatform.JsonFilePath);
 	}
 	if (InOtherPlatform.ProjectInfo.IsValid())
 	{
-		if (ProjectInfo.IsValid())
+		if (UNLIKELY(ProjectInfo.IsValid()))
 		{
-			WWISE_DB_LOG(Error, "WwiseRefPlatform::Merge: Already have a ProjectInfo. Overriding.");
+			UE_LOG(LogWwiseProjectDatabase, Error, TEXT("FWwiseRefPlatform::Merge: Already have a ProjectInfo. Overriding."));
 		}
-		ProjectInfo = std::move(InOtherPlatform.ProjectInfo);
-		ProjectInfoPlatformReferenceIndex = std::move(InOtherPlatform.ProjectInfoPlatformReferenceIndex);
+		ProjectInfo = MoveTemp(InOtherPlatform.ProjectInfo);
+		ProjectInfoPlatformReferenceIndex = MoveTemp(InOtherPlatform.ProjectInfoPlatformReferenceIndex);
 	}
 }
 
-const WwiseMetadataPlatform* WwiseRefPlatform::GetPlatform() const
+const FWwiseMetadataPlatform* FWwiseRefPlatform::GetPlatform() const
 {
 	const auto* PlatformInfo = GetPlatformInfo();
-	if (!PlatformInfo) [[unlikely]]
+	if (UNLIKELY(!PlatformInfo))
 	{
 		return nullptr;
 	}
 	return &PlatformInfo->Platform;
 }
 
-const WwiseMetadataPlatformReference* WwiseRefPlatform::GetPlatformReference() const
+const FWwiseMetadataPlatformReference* FWwiseRefPlatform::GetPlatformReference() const
 {
 	const auto* GetProjectInfo = ProjectInfo.GetProjectInfo();
-	if (!GetProjectInfo) [[unlikely]]
+	if (UNLIKELY(!GetProjectInfo))
 	{
 		return nullptr;
 	}
@@ -77,54 +79,54 @@ const WwiseMetadataPlatformReference* WwiseRefPlatform::GetPlatformReference() c
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Platform Reference index #%zu", ProjectInfoPlatformReferenceIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Platform Reference index #%zu"), ProjectInfoPlatformReferenceIndex);
 		return nullptr;
 	}
 }
 
-const WwiseDBGuid* WwiseRefPlatform::PlatformGuid() const
+FGuid FWwiseRefPlatform::PlatformGuid() const
 {
 	const auto* PlatformReference = GetPlatformReference();
-	if (!PlatformReference) [[unlikely]]
+	if (UNLIKELY(!PlatformReference))
 	{
 		return {};
 	}
-	return &PlatformReference->GUID;
+	return PlatformReference->GUID;
 }
 
-const WwiseDBString* WwiseRefPlatform::PlatformName() const
+FName FWwiseRefPlatform::PlatformName() const
 {
 	const auto* PlatformReference = GetPlatformReference();
-	if (!PlatformReference) [[unlikely]]
+	if (UNLIKELY(!PlatformReference))
 	{
 		return {};
 	}
-	return &PlatformReference->Name;
+	return PlatformReference->Name;
 }
 
-WwiseDBGuid WwiseRefPlatform::BasePlatformGuid() const
+FGuid FWwiseRefPlatform::BasePlatformGuid() const
 {
 	const auto* PlatformReference = GetPlatformReference();
-	if (!PlatformReference) [[unlikely]]
+	if (UNLIKELY(!PlatformReference))
 	{
 		return {};
 	}
 	return PlatformReference->BasePlatformGUID;
 }
 
-WwiseDBString WwiseRefPlatform::BasePlatformName() const
+FName FWwiseRefPlatform::BasePlatformName() const
 {
 	const auto* PlatformReference = GetPlatformReference();
-	if (!PlatformReference) [[unlikely]]
+	if (UNLIKELY(!PlatformReference))
 	{
 		return {};
 	}
 	return PlatformReference->BasePlatform;
 }
-WwiseDBShortId WwiseRefPlatform::Hash() const
+uint32 FWwiseRefPlatform::Hash() const
 {
-	auto Result = WwiseRefPlatformInfo::Hash();
-	Result = WwiseDBHashCombine(Result, ProjectInfo.Hash());
-	Result = WwiseDBHashCombine(Result, GetTypeHash(ProjectInfoPlatformReferenceIndex));
+	auto Result = FWwiseRefPlatformInfo::Hash();
+	Result = HashCombine(Result, ProjectInfo.Hash());
+	Result = HashCombine(Result, GetTypeHash(ProjectInfoPlatformReferenceIndex));
 	return Result;
 }

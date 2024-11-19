@@ -18,7 +18,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 #include "Widgets/Views/STreeView.h"
 #include "WwiseBrowserForwards.h"
 

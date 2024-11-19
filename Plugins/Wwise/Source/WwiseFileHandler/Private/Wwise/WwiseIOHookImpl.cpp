@@ -26,6 +26,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Stats/AsyncStats.h"
 
+#include "WwiseDefines.h"
 #include "WwiseUnrealDefines.h"
 
 #include "Async/Async.h"
@@ -333,7 +334,6 @@ void FWwiseIOHookImpl::BatchWrite(
 	});
 }
 
-#if !WWISE_2024_1_OR_LATER
 void FWwiseIOHookImpl::BatchCancel(
 	AkUInt32 in_uNumTransfers,
 	BatchIoTransferItem* in_pTransferItems,
@@ -352,7 +352,6 @@ void FWwiseIOHookImpl::BatchCancel(
 			LogWwiseFileHandler, VeryVerbose, TEXT("FWwiseIOHookImpl::BatchCancel [%" PRIu64 "]: Cancelling transfer unsupported"), AK_FILEHANDLE_TO_UINTPTR(TransferItem.pFileDesc->hFile));
 	}
 }
-#endif
 
 AKRESULT FWwiseIOHookImpl::Close(AkFileDesc* in_pFileDesc)
 {

@@ -17,9 +17,10 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
+#include "CoreMinimal.h"
 
-enum class WwiseRefType : WwiseDBShortId
+UENUM()
+enum class EWwiseRefType : uint32
 {
 	RootFile,
 		
@@ -53,7 +54,7 @@ enum class WwiseRefType : WwiseDBShortId
 				ExternalSource,
 				AcousticTexture,
 
-	None = (WwiseDBShortId)-1
+	None = (uint32)-1
 };
 
-using WwiseRefIndexType = unsigned int;
+using WwiseRefIndexType = int32;

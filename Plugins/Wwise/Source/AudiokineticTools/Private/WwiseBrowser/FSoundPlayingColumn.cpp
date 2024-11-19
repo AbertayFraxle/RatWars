@@ -20,7 +20,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "WwiseUEFeatures.h"
 #include "EditorStyleSet.h"
 #include "SWwiseBrowser.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 

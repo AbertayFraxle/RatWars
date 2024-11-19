@@ -19,7 +19,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
 
-struct WwiseMetadataSettings : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSettings : public FWwiseMetadataLoadable
 {
 	bool bAutoSoundBankDefinition;
 	bool bCopyLooseStreamedMediaFiles;
@@ -39,6 +39,6 @@ struct WwiseMetadataSettings : public WwiseMetadataLoadable
 	bool bPrintObjectGuid;
 	bool bPrintObjectPath;
 
-	WwiseMetadataSettings();
-	WwiseMetadataSettings(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSettings();
+	FWwiseMetadataSettings(FWwiseMetadataLoader& Loader);
 };

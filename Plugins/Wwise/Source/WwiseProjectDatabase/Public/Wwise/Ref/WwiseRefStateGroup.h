@@ -19,40 +19,40 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefStateGroup : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefStateGroup : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::StateGroup;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::StateGroup;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType StateGroupIndex;
 
-	WwiseRefStateGroup() {}
-	WwiseRefStateGroup(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefStateGroup() {}
+	FWwiseRefStateGroup(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InStateGroupIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		StateGroupIndex(InStateGroupIndex)
 	{}
-	const WwiseMetadataStateGroup* GetStateGroup() const;
+	const FWwiseMetadataStateGroup* GetStateGroup() const;
 
-	WwiseDBShortId StateGroupId() const;
-	WwiseDBGuid StateGroupGuid() const;
-	const WwiseDBString* StateGroupName() const;
-	const WwiseDBString* StateGroupObjectPath() const;
+	uint32 StateGroupId() const;
+	FGuid StateGroupGuid() const;
+	FName StateGroupName() const;
+	FName StateGroupObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefStateGroup& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefStateGroup& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& StateGroupIndex == Rhs.StateGroupIndex;
 	}
-	bool operator!=(const WwiseRefStateGroup& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefStateGroup& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefStateGroup::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefStateGroup::FGlobalIdsMap
 {
 	WwiseStateGroupGlobalIdsMap GlobalIdsMap;
 };

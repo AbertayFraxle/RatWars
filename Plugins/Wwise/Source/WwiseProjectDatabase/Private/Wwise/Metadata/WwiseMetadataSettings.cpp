@@ -16,9 +16,11 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Metadata/WwiseMetadataSettings.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
-WwiseMetadataSettings::WwiseMetadataSettings() :
+FWwiseMetadataSettings::FWwiseMetadataSettings() :
 	bAutoSoundBankDefinition(false),
 	bCopyLooseStreamedMediaFiles(false),
 	bSubFoldersForGeneratedFiles(false),
@@ -37,27 +39,27 @@ WwiseMetadataSettings::WwiseMetadataSettings() :
 	bPrintObjectGuid(false),
 	bPrintObjectPath(false)
 {
-	WWISE_DB_LOG(Error, "Using default Settings");
+	UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Using default Settings"));
 }
 
-WwiseMetadataSettings::WwiseMetadataSettings(WwiseMetadataLoader& Loader) :
-	bAutoSoundBankDefinition(Loader.GetBool(this, "AutoSoundBankDefinition"_wwise_db)),
-	bCopyLooseStreamedMediaFiles(Loader.GetBool(this, "CopyLooseStreamedMediaFiles"_wwise_db)),
-	bSubFoldersForGeneratedFiles(Loader.GetBool(this, "SubFoldersForGeneratedFiles"_wwise_db)),
-	bRemoveUnusedGeneratedFiles(Loader.GetBool(this, "RemoveUnusedGeneratedFiles"_wwise_db)),
-	bSourceControlGeneratedFiles(Loader.GetBool(this, "SourceControlGeneratedFiles"_wwise_db)),
-	bGenerateHeaderFile(Loader.GetBool(this, "GenerateHeaderFile"_wwise_db)),
-	bGenerateContentTxtFile(Loader.GetBool(this, "GenerateContentTxtFile"_wwise_db)),
-	bGenerateMetadataXML(Loader.GetBool(this, "GenerateMetadataXML"_wwise_db)),
-	bGenerateMetadataJSON(Loader.GetBool(this, "GenerateMetadataJSON"_wwise_db)),
-	bGenerateAllBanksMetadata(Loader.GetBool(this, "GenerateAllBanksMetadata"_wwise_db)),
-	bGeneratePerBankMetadata(Loader.GetBool(this, "GeneratePerBankMetadata"_wwise_db)),
-	bUseSoundBankNames(Loader.GetBool(this, "UseSoundBankNames"_wwise_db)),
-	bAllowExceedingMaxSize(Loader.GetBool(this, "AllowExceedingMaxSize"_wwise_db)),
-	bMaxAttenuationInfo(Loader.GetBool(this, "MaxAttenuationInfo"_wwise_db)),
-	bEstimatedDurationInfo(Loader.GetBool(this, "EstimatedDurationInfo"_wwise_db)),
-	bPrintObjectGuid(Loader.GetBool(this, "PrintObjectGuid"_wwise_db)),
-	bPrintObjectPath(Loader.GetBool(this, "PrintObjectPath"_wwise_db))
+FWwiseMetadataSettings::FWwiseMetadataSettings(FWwiseMetadataLoader& Loader) :
+	bAutoSoundBankDefinition(Loader.GetBool(this, TEXT("AutoSoundBankDefinition"))),
+	bCopyLooseStreamedMediaFiles(Loader.GetBool(this, TEXT("CopyLooseStreamedMediaFiles"))),
+	bSubFoldersForGeneratedFiles(Loader.GetBool(this, TEXT("SubFoldersForGeneratedFiles"))),
+	bRemoveUnusedGeneratedFiles(Loader.GetBool(this, TEXT("RemoveUnusedGeneratedFiles"))),
+	bSourceControlGeneratedFiles(Loader.GetBool(this, TEXT("SourceControlGeneratedFiles"))),
+	bGenerateHeaderFile(Loader.GetBool(this, TEXT("GenerateHeaderFile"))),
+	bGenerateContentTxtFile(Loader.GetBool(this, TEXT("GenerateContentTxtFile"))),
+	bGenerateMetadataXML(Loader.GetBool(this, TEXT("GenerateMetadataXML"))),
+	bGenerateMetadataJSON(Loader.GetBool(this, TEXT("GenerateMetadataJSON"))),
+	bGenerateAllBanksMetadata(Loader.GetBool(this, TEXT("GenerateAllBanksMetadata"))),
+	bGeneratePerBankMetadata(Loader.GetBool(this, TEXT("GeneratePerBankMetadata"))),
+	bUseSoundBankNames(Loader.GetBool(this, TEXT("UseSoundBankNames"))),
+	bAllowExceedingMaxSize(Loader.GetBool(this, TEXT("AllowExceedingMaxSize"))),
+	bMaxAttenuationInfo(Loader.GetBool(this, TEXT("MaxAttenuationInfo"))),
+	bEstimatedDurationInfo(Loader.GetBool(this, TEXT("EstimatedDurationInfo"))),
+	bPrintObjectGuid(Loader.GetBool(this, TEXT("PrintObjectGuid"))),
+	bPrintObjectPath(Loader.GetBool(this, TEXT("PrintObjectPath")))
 {
-	Loader.LogParsed("Settings"_wwise_db);
+	Loader.LogParsed(TEXT("Settings"));
 }

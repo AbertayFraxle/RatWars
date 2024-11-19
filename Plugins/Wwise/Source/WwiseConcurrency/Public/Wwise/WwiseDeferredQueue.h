@@ -18,7 +18,8 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "Wwise/WwiseExecutionQueue.h"
-#include "Wwise/WwiseUnrealVersion.h"
+
+#include "WwiseUnrealDefines.h"
 
 namespace AK
 {

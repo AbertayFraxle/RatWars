@@ -28,7 +28,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AssetRegistry/AssetData.h"
 #include "Framework/Docking/TabManager.h"
 #include "Framework/Notifications/NotificationManager.h"
-#include "Interfaces/IPluginManager.h"
 #include "StringMatchAlgos/Array2D.h"
 #include "StringMatchAlgos/StringMatching.h"
 #include "UObject/UnrealType.h"
@@ -38,13 +37,11 @@ Copyright (c) 2024 Audiokinetic Inc.
 #if WITH_EDITOR
 #include "AkAudioStyle.h"
 #include "AssetToolsModule.h"
-
 #if UE_5_0_OR_LATER
 #include "HAL/PlatformFileManager.h"
 #else
 #include "HAL/PlatformFilemanager.h"
 #endif
-
 #include "Misc/ConfigCacheIni.h"
 #include "Misc/FileHelper.h"
 #include "Misc/MessageDialog.h"
@@ -54,7 +51,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "ISourceControlModule.h"
 #include "SourceControlHelpers.h"
 #include "AkUnrealEditorHelper.h"
-#include "FileHelpers.h"
 #include "PackageTools.h"
 
 #if AK_SUPPORT_WAAPI
@@ -409,6 +405,7 @@ void UAkSettings::PostInitProperties()
 		RootOutputPath = GeneratedSoundBanksFolder_DEPRECATED;
 		AkUnrealEditorHelper::SaveConfigFile(this);
 	}
+
 #endif // WITH_EDITOR
 }
 
@@ -417,7 +414,6 @@ void UAkSettings::PreEditChange(FProperty* PropertyAboutToChange)
 {
 	PreviousWwiseProjectPath = WwiseProjectPath.FilePath;
 	PreviousWwiseGeneratedSoundBankFolder = RootOutputPath.Path;
-	PreviousDefaultScalingFactor = DefaultScalingFactor;
 
 	Super::PreEditChange(PropertyAboutToChange);
 }
@@ -519,7 +515,7 @@ void UAkSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedE
 	}
 	else if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(UAkSettings, WwiseStagingDirectory))
 	{
-		FAkAudioModule::UpdateWwiseResourceCookerSettings();
+		FAkAudioModule::AkAudioModuleInstance->UpdateWwiseResourceLoaderSettings();
 	}
 	else if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(UAkSettings, RootOutputPath))
 	{
@@ -527,14 +523,6 @@ void UAkSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedE
 		{
 			FWwiseInitBankLoader::Get()->UpdateInitBankInSettings();
 			FAkAudioModule::AkAudioModuleInstance->ReloadWwiseAssetData();
-		}
-	}
-	else if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(UAkSettings, DefaultScalingFactor))
-	{
-		if (DefaultScalingFactor <= 0.f)
-		{
-			DefaultScalingFactor = PreviousDefaultScalingFactor;
-			UE_LOG(LogAkAudio, Warning, TEXT("UAkSettings::PostEditChangeProperty: Default Scaling Factor must be greater than 0. Setting Default Scaling Factor to the previous value."));
 		}
 	}
 
@@ -603,28 +591,6 @@ void UAkSettings::InitGeometrySurfacePropertiesTable()
 
 			GeometryTable = nullptr;
 			GeometrySurfacePropertiesTable = nullptr;
-		}
-	}
-
-	if (GeometryTable == nullptr)
-	{
-		// find a valid GeometrySurfacePropertiesTable based on the RowStructure tag
-		TArray<FAssetData> TableAssets;
-		TMultiMap<FName, FString> Search;
-		Search.Add("RowStructure", "/Script/AkAudio.WwiseGeometrySurfacePropertiesRow");
-		AssetRegistryModule->Get().GetAssetsByTagValues(Search, TableAssets);
-		for (const auto& TableAsset : TableAssets)
-		{
-			auto Table = Cast<UDataTable>(TableAsset.GetAsset());
-			// verify it has the correct structure
-			if (Table && Table->RowStruct && Table->RowStruct->GetStructCPPName() == "FWwiseGeometrySurfacePropertiesRow")
-			{
-				UE_LOG(LogAkAudio, Log, TEXT("No GeometrySurfacePropertiesTable is assigned in the Integration Settings. Assigning %s."), *Table->GetPathName());
-				GeometryTable = Table;
-				GeometrySurfacePropertiesTable = TSoftObjectPtr<UDataTable>(Table);
-				AkUnrealEditorHelper::SaveConfigFile(this);
-				break;
-			}
 		}
 	}
 
@@ -1392,28 +1358,6 @@ void UAkSettings::InitReverbAssignmentTable()
 
 	if (DecayTable == nullptr)
 	{
-		// find a valid ReverbAssignmentTable based on the RowStructure tag
-		TArray<FAssetData> TableAssets;
-		TMultiMap<FName, FString> Search;
-		Search.Add("RowStructure", "/Script/AkAudio.WwiseDecayAuxBusRow");
-		AssetRegistryModule->Get().GetAssetsByTagValues(Search, TableAssets);
-		for (const auto& TableAsset : TableAssets)
-		{
-			auto Table = Cast<UDataTable>(TableAsset.GetAsset());
-			// verify it has the correct structure
-			if (Table && Table->RowStruct && Table->RowStruct->GetStructCPPName() == "FWwiseDecayAuxBusRow")
-			{
-				UE_LOG(LogAkAudio, Log, TEXT("No ReverbAssignmentTable is assigned in the Integration Settings. Assigning %s."), *Table->GetPathName());
-				DecayTable = Table;
-				ReverbAssignmentTable = TSoftObjectPtr<UDataTable>(Table);
-				AkUnrealEditorHelper::SaveConfigFile(this);
-				break;
-			}
-		}
-	}
-
-	if (DecayTable == nullptr)
-	{
 		// try and find a valid asset at the default GeometrySurfacePropertiesTable location
 		auto DefaultPackagePath = UPackageTools::SanitizePackageName(DefaultAssetCreationPath + TEXT("/") + "DefaultReverbAssignmentTable");
 		auto DefaultAssetPath = DefaultPackagePath.Append(".DefaultReverbAssignmentTable");
@@ -1507,7 +1451,7 @@ bool UAkSettings::PredelayRTPCInUse() const
 	return validPath || !TimeToFirstReflectionName.IsEmpty();
 }
 
-bool UAkSettings::GetAssociatedAcousticTexture(const UPhysicalMaterial* physMaterial, TObjectPtr<UAkAcousticTexture>& acousticTexture) const
+bool UAkSettings::GetAssociatedAcousticTexture(const UPhysicalMaterial* physMaterial, UAkAcousticTexture*& acousticTexture) const
 {
 	auto GeometryTable = GeometrySurfacePropertiesTable.LoadSynchronous();
 	if (GeometryTable == nullptr)
@@ -1531,11 +1475,6 @@ bool UAkSettings::GetAssociatedOcclusionValue(const UPhysicalMaterial* physMater
 {
 	auto GeometryTable = GeometrySurfacePropertiesTable.LoadSynchronous();
 	if (GeometryTable == nullptr)
-	{
-		return false;
-	}
-
-	if (physMaterial == nullptr)
 	{
 		return false;
 	}

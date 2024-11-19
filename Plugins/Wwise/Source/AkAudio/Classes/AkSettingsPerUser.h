@@ -60,7 +60,7 @@ public:
 
 	// Whether to connect to WAAPI or not
 	UPROPERTY(Config, EditAnywhere, Category = "WAAPI")
-	bool bAutoConnectToWAAPI = true;
+	bool bAutoConnectToWAAPI = false;
 
 	// Whether to synchronize the selection between the WAAPI picker and the Wwise Project Explorer
 	UPROPERTY(Config, EditAnywhere, Category = "WAAPI")

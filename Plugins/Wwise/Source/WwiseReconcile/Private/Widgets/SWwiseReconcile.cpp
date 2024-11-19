@@ -90,6 +90,7 @@ void SWwiseReconcile::Construct(const FArguments& InArgs, const TArray< FWwiseRe
 					SAssignNew(ReconcileList, SWwiseReconcileListView, StaticCastSharedRef<SWwiseReconcile>(AsShared()))
 					.ListItemsSource(&ReconcileItems)
 					.OnGenerateRow(this, &SWwiseReconcile::GenerateRow)
+					.ItemHeight(18)
 					.ClearSelectionOnClick(false)
 					.SelectionMode(ESelectionMode::None)
 					.HeaderRow(HeaderRowWidget)

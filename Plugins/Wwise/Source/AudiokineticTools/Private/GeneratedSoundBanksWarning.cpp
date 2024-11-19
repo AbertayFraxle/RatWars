@@ -35,7 +35,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Framework/Notifications/NotificationManager.h"
 #include "Misc/App.h"
 #include "Widgets/Notifications/SNotificationList.h"
-#include "Wwise/WwisePluginStyle.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -66,7 +65,7 @@ void FGeneratedSoundBanksWarning::DisplayGeneratedSoundBanksWarning()
 		Info.WidthOverride = 400;
 		Info.ButtonDetails.Add(SetGeneratedSoundBanksPathButton);
 		Info.ButtonDetails.Add(DismissButton);
-		Info.Image = FWwisePluginStyle::Get()->GetBrush(FWwisePluginStyle::WwiseIconName);
+		Info.Image = FAkAudioStyle::GetBrush(TEXT("AudiokineticTools.AkBrowserTabIcon"));
 		Info.bUseSuccessFailIcons = false;
 		Info.FadeOutDuration = 0.5f;
 		Info.ExpireDuration = 10.0f;

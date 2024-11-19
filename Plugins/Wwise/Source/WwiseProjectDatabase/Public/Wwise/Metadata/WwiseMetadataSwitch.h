@@ -19,8 +19,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataBasicReference.h"
 
-struct WwiseMetadataSwitch : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSwitch : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataSwitch(){}
-	WwiseMetadataSwitch(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSwitch(FWwiseMetadataLoader& Loader);
 };

@@ -19,7 +19,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "AkInclude.h"
 #include "InitializationSettings/AkInitializationSettings.h"
-#include "InitializationSettings/AkPlatformInitializationSettingsBase.h"
+#include "InitializationSettings/AkPlatformInitialisationSettingsBase.h"
 
 #include "AkWindowsInitializationSettings.generated.h"
 
@@ -33,13 +33,12 @@ struct FAkWindowsAdvancedInitializationSettings : public FAkAdvancedInitializati
 
 	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Maximum number of System Audio Objects to reserve. Other processes will not be able to use them. Default is 128."))
 	uint32 MaxSystemAudioObjects = 128;
-
 	void FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const;
 };
 
 
 UCLASS(config = Game, defaultconfig)
-class AKAUDIO_API UAkWindowsInitializationSettings : public UAkPlatformInitializationSettingsBase
+class AKAUDIO_API UAkWindowsInitializationSettings : public UObject, public IAkPlatformInitialisationSettingsBase
 {
 	GENERATED_BODY()
 

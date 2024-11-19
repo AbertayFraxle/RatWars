@@ -17,23 +17,26 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "WwisePackagedFile.h"
 #include "Wwise/WwiseFileState.h"
 #include "Wwise/WwiseStreamableFileStateInfo.h"
 
-class FWwiseFileSystemCacheHandle;
+class FWwiseFileCacheHandle;
 
 class WWISEFILEHANDLER_API FWwiseExternalSourceFileState : public FWwiseFileState, public AkExternalSourceInfo
 {
 public:
+	const uint32 MemoryAlignment;
+	const bool bDeviceMemory;
+
 	const uint32 MediaId;
-	FWwisePackagedFile PackagedFile;
+	const FName MediaPathName;
+	const FName RootPath;
 
 	TAtomic<int> PlayCount;
 
 protected:
 	FWwiseExternalSourceFileState(uint32 InMemoryAlignment, bool bInDeviceMemory, 
-		uint32 InMediaId, const FName& InMediaPathName, int32 InCodecId);
+		uint32 InMediaId, const FName& InMediaPathName, const FName& InRootPath, int32 InCodecId);
 	~FWwiseExternalSourceFileState() override;
 
 public:
@@ -58,7 +61,7 @@ public:
 	IMappedFileRegion* MappedRegion;
 
 	FWwiseInMemoryExternalSourceFileState(uint32 InMemoryAlignment, bool bInDeviceMemory, 
-		uint32 InMediaId, const FName& InMediaPathName, int32 InCodecId);
+		uint32 InMediaId, const FName& InMediaPathName, const FName& InRootPath, int32 InCodecId);
 	~FWwiseInMemoryExternalSourceFileState() override { Term(); }
 
 	void OpenFile(FOpenFileCallback&& InCallback) override;
@@ -73,11 +76,11 @@ public:
 	const uint32 PrefetchSize;
 	const uint32 StreamingGranularity;
 
-	IWwiseFileCacheHandle* StreamedFile;
+	FWwiseFileCacheHandle* StreamedFile;
 
 	FWwiseStreamedExternalSourceFileState(uint32 InMemoryAlignment, bool bInDeviceMemory,
 		uint32 InPrefetchSize, uint32 InStreamingGranularity,
-		uint32 InMediaId, const FName& InMediaPathName, int32 InCodecId);
+		uint32 InMediaId, const FName& InMediaPathName, const FName& InRootPath, int32 InCodecId);
 	~FWwiseStreamedExternalSourceFileState() override { Term(); }
 
 	void CloseStreaming() override;

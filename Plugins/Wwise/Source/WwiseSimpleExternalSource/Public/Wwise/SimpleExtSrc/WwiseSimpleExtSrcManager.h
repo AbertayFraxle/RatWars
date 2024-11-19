@@ -43,14 +43,14 @@ public:
 	virtual void SetExternalSourceMediaWithIds(const int32 ExternalSourceCookie, const int32 MediaId) override;
 
 	#if WITH_EDITORONLY_DATA
-	virtual void Cook(IWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData,
-	                  const TCHAR* PackageFilename,
-	                  const TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)>& WriteAdditionalFile, const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage) override;
+	virtual void Cook(FWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData, 
+		TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)> WriteAdditionalFile,
+		const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage) override;
 	#endif
 
 protected:
-	virtual void LoadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, FLoadExternalSourceCallback&& InCallback) override;
-	virtual void UnloadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, FUnloadExternalSourceCallback&& InCallback) override;
+	virtual void LoadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, const FName& InRootPath, FLoadExternalSourceCallback&& InCallback) override;
+	virtual void UnloadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, const FName& InRootPath, FUnloadExternalSourceCallback&& InCallback) override;
 
 	virtual void OnTablesChanged();
 	virtual void OnMediaInfoTableChanged();
@@ -59,7 +59,7 @@ protected:
 	virtual void FillMediaNameToIdMap(const UDataTable& InMappingTable);
 
 	virtual void SetExternalSourceMedia(const uint32 ExternalSourceCookie, const uint32 MediaInfoId, const FName& ExternalSourceName = FName());
-	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseExternalSourceMediaInfo& ExternalSourceMediaInfo);
+	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseExternalSourceMediaInfo& ExternalSourceMediaInfo, const FName& InRootPath);
 
 	TStrongObjectPtr<UDataTable> MediaInfoTable;
 	TStrongObjectPtr<UDataTable> ExternalSourceDefaultMedia;

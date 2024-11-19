@@ -74,7 +74,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "!AutoAssignAuxBus"), Category = "Late Reverb")
-	TObjectPtr<class UAkAuxBus> AuxBus = nullptr;
+	class UAkAuxBus* AuxBus = nullptr;
 
 	/** Wwise Auxiliary Bus associated to this AkReverbVolume */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, meta = (EditCondition = "!AutoAssignAuxBus"), Category = "Late Reverb")
@@ -140,7 +140,7 @@ private:
 	
 	/** Save the manually assigned aux bus so we can recall it if auto-assign is disabled. */
 	UPROPERTY()
-	TObjectPtr<class UAkAuxBus> AuxBusManual = nullptr;
+	class UAkAuxBus* AuxBusManual = nullptr;
 
 	/** The component that will be used to estimate the HFDamping value. This will usually be an AkGeometryComponent.
 	 *  When the owning Actor is a Volume (as is the case for SpatialAudioVolume) this will be an AkSurfaceReflectorSetComponent.
@@ -178,21 +178,19 @@ private:
 #endif
 #if WITH_EDITORONLY_DATA
 	static float TextVisualizerHeightOffset;
-	bool bTextValuesNeedUpdate = false;
-	bool bTextVisibilityNeedUpdate = false;
-
+	bool bTextStatusNeedsUpdate = false;
 	// The text visualizers display the values of the parameter estimations directly in the level (or blueprint editor).
 	UPROPERTY(SkipSerialization, NonTransactional)
-	mutable TObjectPtr<UTextRenderComponent> TextVisualizerLabels;
+	UTextRenderComponent* TextVisualizerLabels = nullptr;
 	UPROPERTY(SkipSerialization, NonTransactional)
-	mutable TObjectPtr<UTextRenderComponent> TextVisualizerValues;
-	void UpdateTextVisibility();
-	bool IsTextVisualizersInitialized() const;
-	FText GetTextValues() const;
+	UTextRenderComponent* TextVisualizerValues = nullptr;
+	void UpdateTextVisualizerStatus();
+	bool TextVisualizersInitialized() const;
+	FText GetValuesLabels() const;
 	void DestroyTextVisualizers();
 	void InitTextVisualizers();
-	void UpdateTextValues();
-	bool bWasSelected = false;
+	void UpdateValuesLabels();
+	bool WasSelected = false;
 
 	FVector GetTextVisualizersLocation();
 

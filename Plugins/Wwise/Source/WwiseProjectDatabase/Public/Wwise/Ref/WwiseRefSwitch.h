@@ -19,41 +19,41 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSwitchGroup.h"
 
-class WwiseRefSwitch : public WwiseRefSwitchGroup
+class WWISEPROJECTDATABASE_API FWwiseRefSwitch : public FWwiseRefSwitchGroup
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::Switch;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::Switch;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType SwitchIndex;
 
-	WwiseRefSwitch() {}
-	WwiseRefSwitch(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefSwitch() {}
+	FWwiseRefSwitch(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InSwitchGroupIndex,
 		WwiseRefIndexType InSwitchIndex) :
-		WwiseRefSwitchGroup(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId, InSwitchGroupIndex),
+		FWwiseRefSwitchGroup(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId, InSwitchGroupIndex),
 		SwitchIndex(InSwitchIndex)
 	{}
-	const WwiseMetadataSwitch* GetSwitch() const;
+	const FWwiseMetadataSwitch* GetSwitch() const;
 
-	WwiseDBShortId SwitchId() const;
-	WwiseDBGuid SwitchGuid() const;
-	WwiseDBString SwitchName() const;
-	WwiseDBString SwitchObjectPath() const;
+	uint32 SwitchId() const;
+	FGuid SwitchGuid() const;
+	FName SwitchName() const;
+	FName SwitchObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefSwitch& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefSwitch& Rhs) const
 	{
-		return WwiseRefSwitchGroup::operator ==(Rhs)
+		return FWwiseRefSwitchGroup::operator ==(Rhs)
 			&& SwitchIndex == Rhs.SwitchIndex;
 	}
-	bool operator!=(const WwiseRefSwitch& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefSwitch& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefSwitch::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefSwitch::FGlobalIdsMap
 {
 	WwiseSwitchGlobalIdsMap GlobalIdsMap;
 };

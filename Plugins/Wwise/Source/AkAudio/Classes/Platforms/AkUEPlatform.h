@@ -25,7 +25,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkPlatform_tvOS/AkTVOSPlatform.h"
 #elif PLATFORM_IOS && !PLATFORM_TVOS
 #include "AkPlatform_iOS/AkIOSPlatform.h"
-#elif defined(PLATFORM_LINUXARM64) && PLATFORM_LINUXARM64
+#elif (defined(PLATFORM_LINUXARM64) && PLATFORM_LINUXARM64) || (defined(PLATFORM_LINUXAARCH64) && PLATFORM_LINUXAARCH64)
 #include "AkPlatform_LinuxArm64/AkLinuxArm64Platform.h"
 #elif PLATFORM_LINUX
 #include "AkPlatform_Linux/AkLinuxPlatform.h"

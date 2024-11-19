@@ -28,7 +28,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "HAL/ThreadSafeBool.h"
 #include "LatentActions.h"
 #include "AkDeprecated.h"
-#include "WwiseDefines.h"
 #include "AkAudioDeviceShareSet.h"
 #include "AkGameplayTypes.generated.h"
 
@@ -46,15 +45,8 @@ UENUM(BlueprintType)
 enum class PanningRule : uint8
 {
 	PanningRule_Speakers = 0,	///< Left and right positioned 60 degrees apart (by default - see AK::SoundEngine::GetSpeakerAngles()).
-	PanningRule_Headphones = 1,		///< Left and right positioned 180 degrees apart.
-	Last
+	PanningRule_Headphones = 1		///< Left and right positioned 180 degrees apart.
 };
-static_assert(static_cast<AkPanningRule>(PanningRule::PanningRule_Speakers) == AkPanningRule_Speakers, "PanningRule::PanningRule_Speakers does not correspond with its internal Wwise counterpart.");
-static_assert(static_cast<AkPanningRule>(PanningRule::PanningRule_Headphones) == AkPanningRule_Headphones, "PanningRule::PanningRule_Speakers does not correspond with its internal Wwise counterpart.");
-
-#if WWISE_2024_1_OR_LATER
-static_assert(static_cast<AkPanningRule>(PanningRule::Last) == AkPanningRule_Last, "A new value was added to the AkPanningRule enum. Please update its Unreal counterpart.");
-#endif
 
 UENUM(BlueprintType)
 enum class AkAcousticPortalState : uint8
@@ -122,15 +114,11 @@ enum class AkMultiPositionType : uint8
     SingleSource = 0, //AK::SoundEngine::MultiPositionType_SingleSource,
     MultiSources = 1, //AK::SoundEngine::MultiPositionType_MultiSources,
     MultiDirections = 2, //AK::SoundEngine::MultiPositionType_MultiDirections,
-	Last
 };
 
 static_assert(static_cast<AK::SoundEngine::MultiPositionType>(AkMultiPositionType::SingleSource) == AK::SoundEngine::MultiPositionType_SingleSource, "AkMultiPositionType::SingleSource does not correspond with its internal Wwise counterpart.");
 static_assert(static_cast<AK::SoundEngine::MultiPositionType>(AkMultiPositionType::MultiSources) == AK::SoundEngine::MultiPositionType_MultiSources, "AkMultiPositionType::MultiSources does not correspond with its internal Wwise counterpart.");
 static_assert(static_cast<AK::SoundEngine::MultiPositionType>(AkMultiPositionType::MultiDirections) == AK::SoundEngine::MultiPositionType_MultiDirections, "AkMultiPositionType::MultiDirections does not correspond with its internal Wwise counterpart.");
-#if WWISE_2024_1_OR_LATER
-static_assert(static_cast<AK::SoundEngine::MultiPositionType>(AkMultiPositionType::Last) == AK::SoundEngine::MultiPositionType_Last, "A new value was added to the AK::SoundEngine::MultiPositionType enum. Please update its Unreal counterpart.");
-#endif
 
 UENUM(BlueprintType)
 enum class AkActionOnEventType : uint8
@@ -144,8 +132,7 @@ enum class AkActionOnEventType : uint8
 	// AK::SoundEngine::AkActionOnEventType_Break
 	Break = 3,
 	// AK::SoundEngine::AkActionOnEventType_ReleaseEnvelope
-	ReleaseEnvelope = 4,
-	Last
+	ReleaseEnvelope = 4
 };
 
 static_assert(static_cast<AK::SoundEngine::AkActionOnEventType>(AkActionOnEventType::Stop) == AK::SoundEngine::AkActionOnEventType_Stop, "AkActionOnEventType::Stop does not correspond with its internal Wwise counterpart.");
@@ -153,9 +140,6 @@ static_assert(static_cast<AK::SoundEngine::AkActionOnEventType>(AkActionOnEventT
 static_assert(static_cast<AK::SoundEngine::AkActionOnEventType>(AkActionOnEventType::Resume) == AK::SoundEngine::AkActionOnEventType_Resume, "AkActionOnEventType::Resume does not correspond with its internal Wwise counterpart.");
 static_assert(static_cast<AK::SoundEngine::AkActionOnEventType>(AkActionOnEventType::Break) == AK::SoundEngine::AkActionOnEventType_Break, "AkActionOnEventType::Break does not correspond with its internal Wwise counterpart.");
 static_assert(static_cast<AK::SoundEngine::AkActionOnEventType>(AkActionOnEventType::ReleaseEnvelope) == AK::SoundEngine::AkActionOnEventType_ReleaseEnvelope, "AkActionOnEventType::ReleaseEnvelope does not correspond with its internal Wwise counterpart.");
-#if WWISE_2024_1_OR_LATER
-static_assert(static_cast<AK::SoundEngine::AkActionOnEventType>(AkActionOnEventType::Last) == AK::SoundEngine::AkActionOnEventType_Last, "A new value was added to the AK::SoundEngine::AkActionOnEventType enum. Please update its Unreal counterpart.");
-#endif
 
 UENUM(BlueprintType)
 enum class EAkCurveInterpolation : uint8
@@ -181,9 +165,7 @@ enum class EAkCurveInterpolation : uint8
 	// Update this value to reflect last curve available for fades
 	LastFadeCurve = 8,
 	// Constant ( not valid for fading values )
-	Constant = 9,
-
-	Last
+	Constant = 9
 };
 
 static_assert(static_cast<AkCurveInterpolation>(EAkCurveInterpolation::Log3) == AkCurveInterpolation_Log3, "AkCurveInterpolation::Log3 does not correspond with its internal Wwise counterpart.");
@@ -197,9 +179,6 @@ static_assert(static_cast<AkCurveInterpolation>(EAkCurveInterpolation::SineRecip
 static_assert(static_cast<AkCurveInterpolation>(EAkCurveInterpolation::Exp3) == AkCurveInterpolation_Exp3, "AkCurveInterpolation::Exp3 does not correspond with its internal Wwise counterpart.");
 static_assert(static_cast<AkCurveInterpolation>(EAkCurveInterpolation::LastFadeCurve) == AkCurveInterpolation_LastFadeCurve, "AkCurveInterpolation::LastFadeCurve does not correspond with its internal Wwise counterpart.");
 static_assert(static_cast<AkCurveInterpolation>(EAkCurveInterpolation::Constant) == AkCurveInterpolation_Constant, "AkCurveInterpolation::Constant does not correspond with its internal Wwise counterpart.");
-#if WWISE_2024_1_OR_LATER
-static_assert(static_cast<AkCurveInterpolation>(EAkCurveInterpolation::Last) == AkCurveInterpolation_Last, "A new value was added to the AkCurveInterpolation enum. Please update its Unreal counterpart.");
-#endif
 
 static_assert(AK_NotImplemented == 0, "AK_NotImplemented is not equal to 0, please change the value in the EAkResult enum");
 UENUM(BlueprintType)
@@ -211,7 +190,7 @@ enum class EAkResult : uint8
 	PartialSuccess = AK_PartialSuccess				 UMETA(ToolTip = "The operation succeeded partially."),
 	NotCompatible = AK_NotCompatible				 UMETA(ToolTip = "Incompatible formats."),
 	AlreadyConnected = AK_AlreadyConnected			 UMETA(ToolTip = "The stream is already connected to another node."),
-	InvalidFile = AK_InvalidFile					 UMETA(ToolTip = "The provided file is the wrong format or unexpected values causes the file to be invalid."),
+	InvalidFile = AK_InvalidFile					 UMETA(ToolTip = "An unexpected value causes the file to be invalid."),
 	AudioFileHeaderTooLarge = AK_AudioFileHeaderTooLarge		 UMETA(ToolTip = "The file header is too large."),
 	MaxReached = AK_MaxReached					 UMETA(ToolTip = "The maximum was reached."),
 	InvalidID = AK_InvalidID					 UMETA(ToolTip = "The ID is invalid."),
@@ -222,7 +201,7 @@ enum class EAkResult : uint8
 	ChildAlreadyHasAParent = AK_ChildAlreadyHasAParent		 UMETA(ToolTip = "The child already has a parent.", DisplayName = "Child Already Has A Parent"),
 	InvalidLanguage = AK_InvalidLanguage				 UMETA(ToolTip = "The language is invalid (applies to the Low-Level I/O)."),
 	CannotAddItselfAsAChild = AK_CannotAddItselfAsAChild		 UMETA(ToolTip = "It is not possible to add itself as its own child.", DisplayName = "Cannot Add Itself As A Child"),
-	InvalidParameter = AK_InvalidParameter			 UMETA(ToolTip = "Something is not within bounds, check the documentation of the function returning this code."),
+	InvalidParameter = AK_InvalidParameter			 UMETA(ToolTip = "Something is not within bounds."),
 	ElementAlreadyInList = AK_ElementAlreadyInList		 UMETA(ToolTip = "The item could not be added because it was already in the list."),
 	PathNotFound = AK_PathNotFound				 UMETA(ToolTip = "This path is not known."),
 	PathNoVertices = AK_PathNoVertices				 UMETA(ToolTip = "Stuff in vertices before trying to start it."),
@@ -242,7 +221,7 @@ enum class EAkResult : uint8
 	FormatNotReady = AK_FormatNotReady				 UMETA(ToolTip = "Source format not known yet."),
 	WrongBankVersion = AK_WrongBankVersion			 UMETA(ToolTip = "The bank version is not compatible with the current bank reader."),
 	FileNotFound = AK_FileNotFound				 UMETA(ToolTip = "File not found."),
-	DeviceNotReady = AK_DeviceNotReady				 UMETA(ToolTip = "Specified ID doesn't match a valid hardware device: either the device doesn't exist or is disabled."),
+	DeviceNotReady = AK_DeviceNotReady				 UMETA(ToolTip = "IO device not ready (may be because the tray is open)."),
 	BankAlreadyLoaded = AK_BankAlreadyLoaded			 UMETA(ToolTip = "The bank load failed because the bank is already loaded."),
 	RenderedFX = AK_RenderedFX					 UMETA(ToolTip = "The effect on the node is rendered."),
 	ProcessNeeded = AK_ProcessNeeded				 UMETA(ToolTip = "A routine needs to be executed on some CPU."),
@@ -271,9 +250,7 @@ enum class EAkResult : uint8
 	InvalidFloatValue = AK_InvalidFloatValue		UMETA(ToolTip = "One parameter has a invalid float value such as NaN, INF or FLT_MAX."),
 	FileFormatMismatch = AK_FileFormatMismatch      UMETA(ToolTip = "Media file format unexpected"),
 	NoDistinctListener = AK_NoDistinctListener		UMETA(ToolTip = "No distinct listener provided for AddOutput"),
-#if !WWISE_2024_1_OR_LATER
 	ACP_Error = AK_ACP_Error				UMETA(ToolTip = "Generic XMA decoder error."),
-#endif
 	ResourceInUse = AK_ResourceInUse			UMETA(ToolTip = "Resource is in use and cannot be released."),
 	InvalidBankType = AK_InvalidBankType			UMETA(ToolTip = "Invalid bank type. The bank type was either supplied through a function call (e.g. LoadBank) or obtained from a bank loaded from memory."),
 	AlreadyInitialized = AK_AlreadyInitialized		UMETA(ToolTip = "Init() was called but that element was already initialized."),
@@ -283,11 +260,7 @@ enum class EAkResult : uint8
 	TooManyConcurrentOperations = AK_TooManyConcurrentOperations UMETA(ToolTip = "When using StdStream, file operations can be blocking or not. When not blocking, operations need to be synchronized externally properly. If not, this error occurs."),
 	InvalidFileSize = AK_InvalidFileSize			UMETA(ToolTip = "The file requested was found and opened but is either 0 bytes long or not the expected size. This usually point toward a Low Level IO Hook implementation error."),
 	Deferred = AK_Deferred					UMETA(ToolTip = "Returned by functions to indicate to the caller the that the operation is done asynchronously. Used by Low Level IO Hook implementations when async operation are suppored by the hardware."),
-	FilePathTooLong = AK_FilePathTooLong			UMETA(ToolTip = "The combination of base path and file name exceeds maximum buffer lengths."),
-#if WWISE_2024_1_OR_LATER
-	InvalidState = AK_InvalidState			UMETA(ToolTip = "This method should not be called when the object is in its current state."),
-#endif
-	Last
+	FilePathTooLong = AK_FilePathTooLong			UMETA(ToolTip = "The combination of base path and file name exceeds maximum buffer lengths.")
 };
 
 #define CHECK_AKRESULT_VALUE(ValueName) static_assert(AK_##ValueName == (uint32)EAkResult::ValueName, #ValueName " value has changed in AKRESULT, please update the EAkResult::" #ValueName " value");
@@ -349,31 +322,7 @@ CHECK_AKRESULT_VALUE(NoJavaVM);
 CHECK_AKRESULT_VALUE(OpenSLError);
 CHECK_AKRESULT_VALUE(PluginNotRegistered);
 CHECK_AKRESULT_VALUE(DataAlignmentError);
-CHECK_AKRESULT_VALUE(DeviceNotCompatible);
-CHECK_AKRESULT_VALUE(DuplicateUniqueID);
-CHECK_AKRESULT_VALUE(InitBankNotLoaded);
-CHECK_AKRESULT_VALUE(DeviceNotFound);
-CHECK_AKRESULT_VALUE(PlayingIDNotFound);
-CHECK_AKRESULT_VALUE(InvalidFloatValue);
-CHECK_AKRESULT_VALUE(FileFormatMismatch);
-CHECK_AKRESULT_VALUE(NoDistinctListener);
-#if !WWISE_2024_1_OR_LATER
-CHECK_AKRESULT_VALUE(ACP_Error);
-#endif
-CHECK_AKRESULT_VALUE(ResourceInUse);
-CHECK_AKRESULT_VALUE(InvalidBankType);
-CHECK_AKRESULT_VALUE(AlreadyInitialized); 
-CHECK_AKRESULT_VALUE(NotInitialized);
-CHECK_AKRESULT_VALUE(FilePermissionError);
-CHECK_AKRESULT_VALUE(UnknownFileError);
-CHECK_AKRESULT_VALUE(TooManyConcurrentOperations);
-CHECK_AKRESULT_VALUE(InvalidFileSize);
-CHECK_AKRESULT_VALUE(Deferred);
-CHECK_AKRESULT_VALUE(FilePathTooLong);
-#if WWISE_2024_1_OR_LATER
-CHECK_AKRESULT_VALUE(InvalidState);
-static_assert(AKRESULT_Last == (uint32)EAkResult::Last, "An AKRESULT value was added to the enum, please update EAkResult accordingly.");
-#endif
+
 
 /*=============================================================================
 
@@ -404,13 +353,7 @@ enum class EAkCallbackType : uint8
 	MusicSyncUserCue = 13	UMETA(ToolTip = "Enable notifications on Music Custom Cue. AkCallbackInfo can be cast to AkMusicSyncCallbackInfo."),
 	MusicSyncPoint = 14		UMETA(ToolTip = "Enable notifications on Music switch transition synchronization point. AkCallbackInfo can be cast to AkMusicSyncCallbackInfo."),
 
-#if WWISE_2024_1_OR_LATER
-	MIDIEvent = 15			UMETA(ToolTip = "Enable notifications for MIDI events. AkCallbackInfo can be cast to AkMIDIEventCallbackInfo."),
-#else
 	MIDIEvent = 16			UMETA(ToolTip = "Enable notifications for MIDI events. AkCallbackInfo can be cast to AkMIDIEventCallbackInfo."),
-#endif
-	
-	Last					UMETA(Hidden)
 };
 
 #define CHECK_CALLBACK_TYPE_VALUE(ValueName) static_assert(AK_##ValueName == (1 << (uint32)EAkCallbackType::ValueName), #ValueName " value has changed in AkCallbackType, please update the EAkCallbackType::" #ValueName " value");
@@ -427,9 +370,6 @@ CHECK_CALLBACK_TYPE_VALUE(MusicSyncGrid);
 CHECK_CALLBACK_TYPE_VALUE(MusicSyncUserCue);
 CHECK_CALLBACK_TYPE_VALUE(MusicSyncPoint);
 CHECK_CALLBACK_TYPE_VALUE(MIDIEvent);
-#if WWISE_2024_1_OR_LATER
-static_assert(AK_Callback_Last == (1 << (uint32)EAkCallbackType::Last), "An AkCallbackType value was added to the enum, please update EAkCallbackType accordingly.");
-#endif
 
 static_assert(AK::SoundEngine::Query::RTPCValue_Default == 0, "AK::SoundEngine::Query::RTPCValue_Default is not equal to 0, please change the value in the ERTPCValueType enum");
 UENUM(BlueprintType)
@@ -440,12 +380,8 @@ enum class ERTPCValueType : uint8
 	Global = AK::SoundEngine::Query::RTPCValue_Global,		///< The value is the Global RTPC.
 	GameObject = AK::SoundEngine::Query::RTPCValue_GameObject,	///< The value is the game object specific RTPC.
 	PlayingID = AK::SoundEngine::Query::RTPCValue_PlayingID,	///< The value is the playing ID specific RTPC.
-	Unavailable = AK::SoundEngine::Query::RTPCValue_Unavailable,	///< The value is not available for the RTPC specified.
-	Last
+	Unavailable = AK::SoundEngine::Query::RTPCValue_Unavailable	///< The value is not available for the RTPC specified.
 };
-#if WWISE_2024_1_OR_LATER
-static_assert(AK::SoundEngine::Query::RTPCValue_Last == static_cast<AK::SoundEngine::Query::RTPCValue_type>(ERTPCValueType::Last), "A value was added to the AK::SoundEngine::Query::RTPCValue_type enum, please update its Unreal counterpart accordingly.");
-#endif
 
 class AkCallbackTypeHelpers
 {
@@ -470,7 +406,7 @@ public:
 	static UAkCallbackInfo* Create(AkGameObjectID GameObjectID);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audiokinetic|AkCallbackInfo")
-	TObjectPtr<class UAkComponent> AkComponent = nullptr;
+	class UAkComponent * AkComponent = nullptr;
 
 	virtual void Reset();
 };
@@ -1109,10 +1045,8 @@ enum class AkCodecId : uint8
 	///< ADPCM encoding
 	ADPCM = AKCODECID_ADPCM,
 	
-#if !WWISE_2024_1_OR_LATER
 	///< XMA encoding
 	XMA = AKCODECID_XMA,
-#endif
 
 	///< Vorbis encoding
 	Vorbis = AKCODECID_VORBIS,
@@ -1149,7 +1083,7 @@ struct FAkExternalSourceInfo
 
 	/// Hard link to the media asset to use, it can be either streamed or not using IsStreamed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audiokinetic|AkExternalSourceInfo")
-	TObjectPtr<UAkExternalMediaAsset> ExternalSourceAsset = nullptr;
+	UAkExternalMediaAsset* ExternalSourceAsset = nullptr;
 
 	/// Is the ExternalSourceAsset streamed or not
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audiokinetic|AkExternalSourceInfo")

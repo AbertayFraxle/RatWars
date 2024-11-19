@@ -174,11 +174,11 @@ int32 UAkMigrationCommandlet::Main(const FString& Params)
 			UE_LOG(LogAudiokineticTools, Error, TEXT("'transfer-banks-waapi' switch is set, but could not connect WAAPI Client, cancelling migration."));
 			return 1;
 		}
-		MigrationOperations.BankTransferMethod = AkAssetMigration::WAAPI;
 #else
 		UE_LOG(LogAudiokineticTools, Error, TEXT("UAkMigrationCommandlet: 'waapi-bank-transfer' switch is enabled, but the Unreal project does not support WAAPI. Ensure your current platform supports AkAutobahn."));
 		return 1;
 #endif
+		MigrationOperations.BankTransferMethod = AkAssetMigration::WAAPI;
 	}
 
 	if (bWriteBankDefinitionFile)

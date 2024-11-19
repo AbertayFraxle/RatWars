@@ -61,7 +61,7 @@ public:
 
 private:
 	UPROPERTY(Transient)
-	TObjectPtr<UPrimitiveComponent> Primitive = nullptr;
+	UPrimitiveComponent* Primitive = nullptr;
 	UAkLateReverbComponent* ReverbComponent = nullptr;
 	/* Looks for a room component attached to Primitive, whose room ID has been registered with wwise, and whose world is Game or PIE.
 		room will be null if no such room is found, or if there is no valid AkAudioDevice.

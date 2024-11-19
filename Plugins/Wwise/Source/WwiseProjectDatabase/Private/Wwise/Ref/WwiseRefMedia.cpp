@@ -16,15 +16,17 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefMedia.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataMedia.h"
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
 
-const WwiseDBString WwiseRefMedia::NAME = "Media"_wwise_db;
+const TCHAR* const FWwiseRefMedia::NAME = TEXT("Media");
 
-const WwiseMetadataMedia* WwiseRefMedia::GetMedia() const
+const FWwiseMetadataMedia* FWwiseRefMedia::GetMedia() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank) [[unlikely]]
+	if (UNLIKELY(!SoundBank))
 	{
 		return nullptr;
 	}
@@ -36,44 +38,44 @@ const WwiseMetadataMedia* WwiseRefMedia::GetMedia() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get Media index #%zu", MediaIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get Media index #%zu"), MediaIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefMedia::MediaId() const
+uint32 FWwiseRefMedia::MediaId() const
 {
 	const auto* Media = GetMedia();
-	if (!Media) [[unlikely]]
+	if (UNLIKELY(!Media))
 	{
 		return 0;
 	}
 	return Media->Id;
 }
 
-const WwiseDBString* WwiseRefMedia::MediaShortName() const
+FName FWwiseRefMedia::MediaShortName() const
 {
 	const auto* Media = GetMedia();
-	if (!Media) [[unlikely]]
+	if (UNLIKELY(!Media))
 	{
 		return {};
 	}
-	return &Media->ShortName;
+	return Media->ShortName;
 }
 
-const WwiseDBString* WwiseRefMedia::MediaPath() const
+FName FWwiseRefMedia::MediaPath() const
 {
 	const auto* Media = GetMedia();
-	if (!Media) [[unlikely]]
+	if (UNLIKELY(!Media))
 	{
 		return {};
 	}
-	return &Media->Path;
+	return Media->Path;
 }
 
-WwiseDBShortId WwiseRefMedia::Hash() const
+uint32 FWwiseRefMedia::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(MediaIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(MediaIndex));
 	return Result;
 }

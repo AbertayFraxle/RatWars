@@ -21,7 +21,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/CookedData/WwiseExternalSourceCookedData.h"
 #include "Wwise/CookedData/WwiseGroupValueCookedData.h"
 #include "Wwise/CookedData/WwiseMediaCookedData.h"
-#include "Wwise/WwiseUnrealVersion.h"
 
 #include "WwiseSwitchContainerLeafCookedData.generated.h"
 
@@ -45,11 +44,7 @@ struct WWISERESOURCELOADER_API FWwiseSwitchContainerLeafCookedData
 	FWwiseSwitchContainerLeafCookedData();
 
 	void Serialize(FArchive& Ar);
-	void SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& Options);
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	void PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const;
-#endif
-	
+
 	bool operator==(const FWwiseSwitchContainerLeafCookedData& Rhs) const;
 
 	FString GetDebugString() const;

@@ -16,6 +16,3 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Stats/Memory.h"
-
-LLM_DEFINE_TAG(Audio_Wwise, NAME_None, NAME_None);
-

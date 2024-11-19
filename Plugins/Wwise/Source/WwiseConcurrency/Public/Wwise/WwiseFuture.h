@@ -25,7 +25,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Templates/SharedPointer.h"
 #include "Misc/DateTime.h"
 #include "HAL/Event.h"
-#include "HAL/PlatformMisc.h"
 
 #include "Wwise/Stats/Concurrency.h"
 #include "Wwise/Stats/AsyncStats.h"
@@ -106,24 +105,18 @@ public:
 	bool WaitFor(const FTimespan& Duration)
 	{
 		check(!CompletionCallback.load(std::memory_order_seq_cst));
-
+		
 		if (IsComplete())
 		{
 			return true;
 		}
 
-		bool bResult;
+		auto CompletionEvent = MakeShared<FEventRef, ESPMode::ThreadSafe>();
+		SetContinuation([CompletionEvent]
 		{
-			auto CompletionEvent = MakeShared<FEventRef, ESPMode::ThreadSafe>();
-			SetContinuation([CompletionEvent]
-			{
-				CompletionEvent.Get()->Trigger();
-			});
-			bResult = CompletionEvent.Get()->Wait(Duration);
-			ResetContinuation();
-		}
-		
-		return bResult;
+			CompletionEvent.Get()->Trigger();
+		});
+		return CompletionEvent.Get()->Wait(Duration);
 	}
 
 	/**
@@ -158,15 +151,6 @@ public:
 			(*Copy)();
 			delete Copy;
 		}
-	}
-
-	/**
-	 * Reset the continuation function
-	 */
-	void ResetContinuation()
-	{
-		const auto OldCopy = CompletionCallback.exchange(nullptr);
-		delete OldCopy;
 	}
 
 protected:

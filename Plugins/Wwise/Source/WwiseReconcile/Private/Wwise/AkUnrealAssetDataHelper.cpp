@@ -122,7 +122,7 @@ namespace AkUnrealAssetDataHelper
 		return {};
 	}
 
-	FString GetAssetDefaultPackagePath(const WwiseAnyRef* WwiseRef)
+	FString GetAssetDefaultPackagePath(const FWwiseAnyRef* WwiseRef)
 	{
 		auto AkSettings = GetMutableDefault<UAkSettings>();
 		if (!AkSettings)
@@ -131,7 +131,7 @@ namespace AkUnrealAssetDataHelper
 			return {};
 		}
 
-		FString DefaultPath = AkSettings->DefaultAssetCreationPath + FWwiseStringConverter::ToFString(WwiseRef->GetObjectPath());
+		FString DefaultPath = AkSettings->DefaultAssetCreationPath + WwiseRef->GetObjectPath().ToString();
 		DefaultPath.ReplaceCharInline('\\', '/');
 		int32 Index;
 		if(DefaultPath.FindLastChar('/', Index))
@@ -151,26 +151,26 @@ namespace AkUnrealAssetDataHelper
 		return {};
 	}
 
-	FName GetAssetDefaultName(const WwiseAnyRef* WwiseRef)
+	FName GetAssetDefaultName(const FWwiseAnyRef* WwiseRef)
 	{
-		WwiseRefType WwiseRefType = WwiseRef->GetType();
-		FName WwiseName = FName(*WwiseRef->GetName());
+		EWwiseRefType WwiseRefType = WwiseRef->GetType();
+		FName WwiseName = WwiseRef->GetName();
 		FNameBuilder DefaultName;
 
 		switch (WwiseRefType)
 		{
-		case WwiseRefType::AcousticTexture:
-		case WwiseRefType::AuxBus:
-		case WwiseRefType::AudioDevice:
-		case WwiseRefType::Event:
-		case WwiseRefType::GameParameter:
-		case WwiseRefType::PluginShareSet:
-		case WwiseRefType::Trigger:
+		case EWwiseRefType::AcousticTexture:
+		case EWwiseRefType::AudioDevice:
+		case EWwiseRefType::AuxBus:
+		case EWwiseRefType::Event:
+		case EWwiseRefType::GameParameter:
+		case EWwiseRefType::PluginShareSet:
+		case EWwiseRefType::Trigger:
 			return WwiseName;
 
-		case WwiseRefType::Switch:
+		case EWwiseRefType::Switch:
 			{
-			FString GroupName = FWwiseStringConverter::ToFString(WwiseRef->GetSwitchGroup()->Name);
+			FString GroupName = WwiseRef->GetSwitchGroup()->Name.ToString();
 			DefaultName << GroupName << TEXT("-") << WwiseName;
 #if UE_5_0_OR_LATER
 			return FName(DefaultName.ToView());
@@ -179,9 +179,9 @@ namespace AkUnrealAssetDataHelper
 #endif
 			}
 
-		case WwiseRefType::State:
+		case EWwiseRefType::State:
 			{
-			FString GroupName = FWwiseStringConverter::ToFString(WwiseRef->GetStateGroup()->Name);
+			FString GroupName = WwiseRef->GetStateGroup()->Name.ToString();
 			DefaultName << GroupName << TEXT("-") << WwiseName;
 #if UE_5_0_OR_LATER
 			return FName(DefaultName.ToView());

@@ -17,64 +17,65 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataMedia.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-WwiseMetadataMediaReference::WwiseMetadataMediaReference(WwiseMetadataLoader& Loader) :
-	Id(Loader.GetWwiseShortId(this, "Id"_wwise_db))
+FWwiseMetadataMediaReference::FWwiseMetadataMediaReference(FWwiseMetadataLoader& Loader) :
+	Id(Loader.GetUint32(this, TEXT("Id")))
 {
-	Loader.LogParsed("MediaReference"_wwise_db, Id);
+	Loader.LogParsed(TEXT("MediaReference"), Id);
 }
 
-WwiseMetadataMediaAttributes::WwiseMetadataMediaAttributes(WwiseMetadataLoader& Loader) :
-	WwiseMetadataMediaReference(Loader),
-	Language(Loader.GetString(this, "Language"_wwise_db)),
-	bStreaming(Loader.GetBool(this, "Streaming"_wwise_db)),
-	Location(LocationFromString(Loader.GetString(this, "Location"_wwise_db))),
-	bUsingReferenceLanguage(Loader.GetBool(this, "UsingReferenceLanguage"_wwise_db, WwiseRequiredMetadata::Optional)),
-	Align(Loader.GetWwiseShortId(this, "Align"_wwise_db, WwiseRequiredMetadata::Optional)),
-	bDeviceMemory(Loader.GetBool(this, "DeviceMemory"_wwise_db, WwiseRequiredMetadata::Optional))
+FWwiseMetadataMediaAttributes::FWwiseMetadataMediaAttributes(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataMediaReference(Loader),
+	Language(Loader.GetString(this, TEXT("Language"))),
+	bStreaming(Loader.GetBool(this, TEXT("Streaming"))),
+	Location(LocationFromString(Loader.GetString(this, TEXT("Location")))),
+	bUsingReferenceLanguage(Loader.GetBool(this, TEXT("UsingReferenceLanguage"), EWwiseRequiredMetadata::Optional)),
+	Align(Loader.GetUint32(this, TEXT("Align"), EWwiseRequiredMetadata::Optional)),
+	bDeviceMemory(Loader.GetBool(this, TEXT("DeviceMemory"), EWwiseRequiredMetadata::Optional))
 {
-	Loader.LogParsed("MediaAttributes"_wwise_db, Id);
+	Loader.LogParsed(TEXT("MediaAttributes"), Id);
 }
 
-WwiseMetadataMediaLocation WwiseMetadataMediaAttributes::LocationFromString(const WwiseDBString& LocationString)
+EWwiseMetadataMediaLocation FWwiseMetadataMediaAttributes::LocationFromString(const FName& LocationString)
 {
-	if (LocationString == "Memory"_wwise_db)
+	if (LocationString == "Memory")
 	{
-		return WwiseMetadataMediaLocation::Memory;
+		return EWwiseMetadataMediaLocation::Memory;
 	}
-	else if (LocationString == "Loose"_wwise_db)
+	else if (LocationString == "Loose")
 	{
-		return WwiseMetadataMediaLocation::Loose;
+		return EWwiseMetadataMediaLocation::Loose;
 	}
-	else if (LocationString == "OtherBank"_wwise_db)
+	else if (LocationString == "OtherBank")
 	{
-		return WwiseMetadataMediaLocation::OtherBank;
+		return EWwiseMetadataMediaLocation::OtherBank;
 	}
 	else
 	{
-		WWISE_DB_LOG(Warning, "WwiseMetadataMediaAttributes: Unknown Location: %s", *LocationString);
-		return WwiseMetadataMediaLocation::Unknown;
+		UE_LOG(LogWwiseProjectDatabase, Warning, TEXT("FWwiseMetadataMediaAttributes: Unknown Location: %s"), *LocationString.ToString());
+		return EWwiseMetadataMediaLocation::Unknown;
 	}
 }
 
-WwiseMetadataMedia::WwiseMetadataMedia(WwiseMetadataLoader& Loader) :
-	WwiseMetadataMediaAttributes(Loader),
-	ShortName(Loader.GetString(this, "ShortName"_wwise_db)),
-	Path(Loader.GetString(this, "Path"_wwise_db, WwiseRequiredMetadata::Optional)),
-	CachePath(Loader.GetString(this, "CachePath"_wwise_db, WwiseRequiredMetadata::Optional)),
-	PrefetchSize(Loader.GetWwiseShortId(this, "PrefetchSize"_wwise_db, WwiseRequiredMetadata::Optional))
+FWwiseMetadataMedia::FWwiseMetadataMedia(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataMediaAttributes(Loader),
+	ShortName(Loader.GetString(this, TEXT("ShortName"))),
+	Path(Loader.GetString(this, TEXT("Path"), EWwiseRequiredMetadata::Optional)),
+	CachePath(Loader.GetString(this, TEXT("CachePath"), EWwiseRequiredMetadata::Optional)),
+	PrefetchSize(Loader.GetUint32(this, TEXT("PrefetchSize"), EWwiseRequiredMetadata::Optional))
 {
-	if (Path.IsEmpty() && Location == WwiseMetadataMediaLocation::Loose)
+	if (UNLIKELY(Path.IsNone() && Location == EWwiseMetadataMediaLocation::Loose))
 	{
-		Loader.Fail("!Path+Location=Loose"_wwise_db);
+		Loader.Fail(TEXT("!Path+Location=Loose"));
 	}
-	else if (Path.IsEmpty() && Location == WwiseMetadataMediaLocation::Memory && bStreaming)
+	else if (UNLIKELY(Path.IsNone() && Location == EWwiseMetadataMediaLocation::Memory && bStreaming))
 	{
-		Loader.Fail("!Path+Streaming"_wwise_db);
+		Loader.Fail(TEXT("!Path+Streaming"));
 	}
-	else if (!Path.IsEmpty() && Location == WwiseMetadataMediaLocation::Memory && !bStreaming)
+	else if (UNLIKELY(!Path.IsNone() && Location == EWwiseMetadataMediaLocation::Memory && !bStreaming))
 	{
-		Loader.Fail("Path+Memory"_wwise_db);
+		Loader.Fail(TEXT("Path+Memory"));
 	}
-	Loader.LogParsed("Media"_wwise_db, Id);
+	Loader.LogParsed(TEXT("Media"), Id);
 }

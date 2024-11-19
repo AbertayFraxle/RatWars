@@ -66,13 +66,6 @@ void FWwiseExecutionQueue::Async(const TCHAR* InDebugName, FBasicFunction&& InFu
 	UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::Async(%p \"%s\") [%" PRIi32 "]: Enqueuing async function %" PRIu64), this, DebugName, FPlatformTLS::GetCurrentThreadId(), (intptr_t&)InFunction);
 	if (UNLIKELY(IsBeingClosed() || !OpQueue.Enqueue(FOpQueueItem(InDebugName, MoveTemp(InFunction)))))
 	{
-		if (auto* Module = IWwiseConcurrencyModule::GetModule())
-		{
-			if (auto* DefaultQueue = Module->GetDefaultQueue())
-			{
-				return DefaultQueue->Async(InDebugName, MoveTemp(InFunction));
-			}
-		}
 		ASYNC_INC_DWORD_STAT(STAT_WwiseExecutionQueueAsyncCalls);
 		UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::Async(%p \"%s\") [%" PRIi32 "]: Executing async function %" PRIu64), this, DebugName, FPlatformTLS::GetCurrentThreadId(), (intptr_t&)InFunction);
 		InFunction();
@@ -87,10 +80,21 @@ void FWwiseExecutionQueue::AsyncAlways(const TCHAR* InDebugName, FSharedFunction
 
 	auto Lambda { [this, InDebugName, InFunction = MoveTemp(InFunction)](float) mutable
 	{
-		Async(InDebugName, [this, InFunction = MoveTemp(InFunction)]() mutable
+		Async(InDebugName, [this, CallerThreadId = IsBeingClosed() ? FPlatformTLS::GetCurrentThreadId() : 0, InFunction = MoveTemp(InFunction)]() mutable
 		{
-			UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::AsyncAlways(%p \"%s\") [%" PRIi32 "]: Executing function %" PRIu64 " in worker thread"), this, DebugName, FPlatformTLS::GetCurrentThreadId(), (intptr_t&)InFunction);
-			InFunction();
+			if (CallerThreadId == FPlatformTLS::GetCurrentThreadId())
+			{
+				LaunchWwiseTask(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::AsyncAlways"), [this, InFunction = MoveTemp(InFunction)]
+				{
+					UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::AsyncAlways(%p \"%s\") [%" PRIi32 "]: Executing function %" PRIu64 " in TaskGraph"), this, DebugName, FPlatformTLS::GetCurrentThreadId(), (intptr_t&)InFunction);
+					InFunction();
+				});
+			}
+			else
+			{
+				UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::AsyncAlways(%p \"%s\") [%" PRIi32 "]: Executing function %" PRIu64 " in worker thread"), this, DebugName, FPlatformTLS::GetCurrentThreadId(), (intptr_t&)InFunction);
+				InFunction();
+			}
 		});
 		return false;
 	} };
@@ -117,14 +121,6 @@ void FWwiseExecutionQueue::AsyncWait(const TCHAR* InDebugName, FBasicFunction&& 
 		Event->Trigger();
 	}))))
 	{
-		if (auto* Module = IWwiseConcurrencyModule::GetModule())
-		{
-			if (auto* DefaultQueue = Module->GetDefaultQueue())
-			{
-				return DefaultQueue->AsyncWait(InDebugName, MoveTemp(InFunction));
-			}
-		}
-
 		UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::AsyncWait(%p \"%s\") [%" PRIi32 "]: Executing async wait function %" PRIu64 " synchronously!"), this, DebugName, FPlatformTLS::GetCurrentThreadId(), (intptr_t&)InFunction);
 		InFunction();
 		return;
@@ -141,14 +137,11 @@ void FWwiseExecutionQueue::Close()
 		return;
 	}
 
-	if (!TryStateUpdate(EWorkerState::Stopped, EWorkerState::Closed))
+	AsyncWait(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::Close"), [this]
 	{
-		AsyncWait(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::Close"), [this]
-		{
-			TrySetRunningWorkerToClosing();
-		});
-	}
-	
+		TrySetRunningWorkerToClosing();
+	});
+
 	auto State = WorkerState.load(std::memory_order_relaxed);
 	if (State != EWorkerState::Closed)
 	{
@@ -165,38 +158,30 @@ void FWwiseExecutionQueue::Close()
 
 void FWwiseExecutionQueue::CloseAndDelete()
 {
+	UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::Close(%p \"%s\") [%" PRIi32 "]: Closing and Request Deleting"), this, DebugName, FPlatformTLS::GetCurrentThreadId());
 	bDeleteOnceClosed = true;
 	FEvent* CloseAndDeleteFunctionReturned = nullptr;
-	if (TryStateUpdate(EWorkerState::Stopped, EWorkerState::Closed))
+	if (FPlatformProcess::SupportsMultithreading())
 	{
-		UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::Close(%p \"%s\") [%" PRIi32 "]: Immediate Closing and Request Deleting"), this, DebugName, FPlatformTLS::GetCurrentThreadId());
-		delete this;
+		CloseAndDeleteFunctionReturned = FPlatformProcess::GetSynchEventFromPool();		// We must wait for the Async to be done before the Worker thread can "delete this".
 	}
-	else
+	
+	Async(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::CloseAndDelete"), [CloseAndDeleteFunctionReturned, this]
 	{
-		UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose, TEXT("FWwiseExecutionQueue::Close(%p \"%s\") [%" PRIi32 "]: Closing and Request Deleting"), this, DebugName, FPlatformTLS::GetCurrentThreadId());
-		if (FPlatformProcess::SupportsMultithreading())
-		{
-			CloseAndDeleteFunctionReturned = FPlatformProcess::GetSynchEventFromPool();		// We must wait for the Async to be done before the Worker thread can "delete this".
-		}
-		
-		Async(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::CloseAndDelete"), [CloseAndDeleteFunctionReturned, this]
-		{
-			if (CloseAndDeleteFunctionReturned)
-			{
-				CloseAndDeleteFunctionReturned->Wait();
-				FPlatformProcess::ReturnSynchEventToPool(CloseAndDeleteFunctionReturned);
-			}
-			else if (FPlatformProcess::SupportsMultithreading())
-			{
-				FPlatformProcess::Yield();
-			}
-			TrySetRunningWorkerToClosing();
-		});
 		if (CloseAndDeleteFunctionReturned)
 		{
-			CloseAndDeleteFunctionReturned->Trigger();
+			CloseAndDeleteFunctionReturned->Wait();
+			FPlatformProcess::ReturnSynchEventToPool(CloseAndDeleteFunctionReturned);
 		}
+		else if (FPlatformProcess::SupportsMultithreading())
+		{
+			FPlatformProcess::Yield();
+		}
+		TrySetRunningWorkerToClosing();
+	});
+	if (CloseAndDeleteFunctionReturned)
+	{
+		CloseAndDeleteFunctionReturned->Trigger();
 	}
 }
 
@@ -234,8 +219,7 @@ void FWwiseExecutionQueue::StartWorkerIfNeeded()
 			UE_CLOG(Test::IsExtremelyVerbose(), LogWwiseConcurrency, VeryVerbose,
 				TEXT("FWwiseExecutionQueue::StartWorkerIfNeeded(%p \"%s\") [%" PRIi32 "]: Starting new worker task with priority %d"),
 				this, DebugName, FPlatformTLS::GetCurrentThreadId(), (int)TaskPriority);
-			LaunchWwiseTask(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::StartWorkerIfNeeded"),
-				TaskPriority, EWwiseTaskFlags::DoNotRunInsideBusyWait, [this]
+			LaunchWwiseTask(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::StartWorkerIfNeeded"), TaskPriority, [this]
 			{
 				Work();
 			});
@@ -308,8 +292,7 @@ bool FWwiseExecutionQueue::KeepWorking()
 	}
 	else
 	{
-		LaunchWwiseTask(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::StartWorkerIfNeeded"),
-			TaskPriority, EWwiseTaskFlags::DoNotRunInsideBusyWait, [this]
+		LaunchWwiseTask(WWISECONCURRENCY_ASYNC_NAME("FWwiseExecutionQueue::StartWorkerIfNeeded"), TaskPriority, [this]
 		{
 			Work();
 		});

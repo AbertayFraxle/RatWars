@@ -45,8 +45,47 @@ public:
 		}
 		return {};
 	}
-	
-	static FWwiseSharedPlatformId GetSharedPlatformInfo(const FString& PlatformName);
+
+	static FWwiseSharedPlatformId GetSharedPlatformInfo(const FString& PlatformName)
+	{
+		if (UnrealTargetNameToSharedPlatformId.Contains(PlatformName))
+		{
+			return UnrealTargetNameToSharedPlatformId[PlatformName];
+		}
+
+		const auto ProjectDatabase = FWwiseProjectDatabase::Get();
+		if (UNLIKELY(!ProjectDatabase))
+		{
+			UE_LOG(LogAkAudio, Warning, TEXT("ProjectDatabase is not initialized"));
+			return {};
+		}
+		
+		const FWwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
+		auto Platforms = DataStructure.GetPlatforms();
+
+		if (const auto* CurrentPlatformInfo = GetAkPlatformInfo(PlatformName))
+		{
+			TArray<FString> AvailablePlatforms;
+			for (auto WwisePlatform : Platforms)
+			{
+				AvailablePlatforms.Add(WwisePlatform.GetPlatformName().ToString());
+			}
+			const FString WwisePlatformName = CurrentPlatformInfo->GetWwiseBankPlatformName(AvailablePlatforms);
+			for (auto WwisePlatform : Platforms)
+			{
+				if (WwisePlatform.GetPlatformName().ToString() == WwisePlatformName)
+				{
+					UnrealTargetNameToSharedPlatformId.Add(PlatformName, WwisePlatform);
+					return UnrealTargetNameToSharedPlatformId[PlatformName];
+				}
+			}
+			UE_LOG(LogAkAudio, Warning, TEXT("Could not find parsed platform that matches %s"), *CurrentPlatformInfo->WwisePlatform);
+			return {};
+		}
+
+		UE_LOG(LogAkAudio, Warning, TEXT("Could not find platform info for %s"), *PlatformName)
+		return {};
+	}
 #endif
 
 	static UAkPlatformInfo* GetAkPlatformInfo(const FString& PlatformName)

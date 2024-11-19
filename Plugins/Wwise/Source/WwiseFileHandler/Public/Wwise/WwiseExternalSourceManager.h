@@ -24,7 +24,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 struct FWwiseSharedLanguageId;
 struct AkExternalSourceInfo;
 struct FWwiseExternalSourceCookedData;
-class IWwiseResourceCooker;
+class FWwiseResourceCooker;
 
 #if WITH_EDITORONLY_DATA
 struct FWwiseSharedPlatformId;
@@ -45,9 +45,9 @@ public:
 	using FLoadExternalSourceCallback = TUniqueFunction<void(bool bSuccess)>;
 	using FUnloadExternalSourceCallback = TUniqueFunction<void()>;
 
-	virtual void LoadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, 
+	virtual void LoadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath, 
 		const FWwiseLanguageCookedData& InLanguage, FLoadExternalSourceCallback&& InCallback) = 0;
-	virtual void UnloadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	virtual void UnloadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 		const FWwiseLanguageCookedData& InLanguage, FUnloadExternalSourceCallback&& InCallback) = 0;
 	virtual void SetGranularity(uint32 Uint32) = 0;
 
@@ -62,22 +62,8 @@ public:
 
 
 #if WITH_EDITORONLY_DATA
-	virtual void Cook(IWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData, const TCHAR* PackageFilename,
-		const TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)>& WriteAdditionalFile, const FWwiseSharedPlatformId& InPlatform,
-		const FWwiseSharedLanguageId& InLanguage) = 0;
-
-	/**
-	 * Sets the path where the External Sources are located, relative to the Unreal Content folder.
-	 *
-	 * This is typically used to synchronize the settings in UAkSettings.
-	 * 
-	 * @param InPath Path where the External Sources are located.
-	 */
-	virtual void SetExternalSourcePath(const FDirectoryPath& DirectoryPath) = 0;
-	virtual const FDirectoryPath& GetExternalSourcePath() const = 0;
-	virtual FString GetExternalSourcePathFor(const FName& InPath) const { return GetExternalSourcePathFor(InPath.ToString()); }
-	virtual FString GetExternalSourcePathFor(const FString& InPath) const { return GetExternalSourcePath().Path / InPath; }
-
+	virtual void Cook(FWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData, TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)> WriteAdditionalFile,
+		const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage) = 0;
 #endif
 
 	virtual FString GetStagingDirectory() const { return TEXT("ExternalSources"); }

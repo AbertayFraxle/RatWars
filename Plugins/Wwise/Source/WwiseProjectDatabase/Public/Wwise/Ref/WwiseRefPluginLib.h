@@ -19,41 +19,39 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefPluginInfo.h"
 
-class WwiseRefPluginLib : public WwiseRefPluginInfo
+class WWISEPROJECTDATABASE_API FWwiseRefPluginLib : public FWwiseRefPluginInfo
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::PluginLib;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::PluginLib;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType PluginLibIndex;
 
-	WwiseRefPluginLib() :
-		PluginLibIndex(-1)
+	FWwiseRefPluginLib() :
+		PluginLibIndex(INDEX_NONE)
 	{}
-	WwiseRefPluginLib(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
+	FWwiseRefPluginLib(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
 		WwiseRefIndexType InPluginIndex) :
-		WwiseRefPluginInfo(InRootMediaRef, InJsonFilePath),
+		FWwiseRefPluginInfo(InRootMediaRef, InJsonFilePath),
 		PluginLibIndex(InPluginIndex)
 	{}
-	const WwiseMetadataPluginLib* GetPluginLib() const;
+	const FWwiseMetadataPluginLib* GetPluginLib() const;
 
-	WwiseDBShortId PluginLibId() const;
-	const WwiseDBString* PluginLibName() const;
-	const WwiseDBString* PluginLibDLL() const;
-	const WwiseDBString* PluginLibStaticLib() const;
+	uint32 PluginLibId() const;
+	FName PluginLibName() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefPluginLib& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefPluginLib& Rhs) const
 	{
-		return WwiseRefPluginInfo::operator==(Rhs)
+		return FWwiseRefPluginInfo::operator==(Rhs)
 			&& PluginLibIndex == Rhs.PluginLibIndex;
 	}
-	bool operator!=(const WwiseRefPluginLib& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefPluginLib& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefPluginLib::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefPluginLib::FGlobalIdsMap
 {
 	WwisePluginLibGlobalIdsMap GlobalIdsMap;
 };

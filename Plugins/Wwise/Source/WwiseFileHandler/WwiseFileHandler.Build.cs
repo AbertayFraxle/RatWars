@@ -22,16 +22,11 @@ public class WwiseFileHandler : ModuleRules
 	public WwiseFileHandler(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-		
-		PublicDefinitions.AddRange(new string[]
-		{
-			"AK_ENABLE_BANK_MGR_THREAD=0"
-		});
 
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"WwiseConcurrency",
-			"WwiseLowLevelUtils",
 			"WwiseSoundEngine",
+			"WwiseUtils"
 		});
 
 		if (Target.bCompileAgainstCoreUObject)

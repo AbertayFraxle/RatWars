@@ -18,7 +18,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "ProjectedResultColumn.h"
 
 #include "AkAudioStyle.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 #include "Widgets/SWidget.h"
 #include "AkUnrealAssetDataHelper.h"
 #include "WwiseUnrealHelper.h"

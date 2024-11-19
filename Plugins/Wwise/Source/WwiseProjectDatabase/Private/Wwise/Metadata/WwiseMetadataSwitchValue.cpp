@@ -17,41 +17,42 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataSwitchValue.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-WwiseMetadataSwitchValueAttributes::WwiseMetadataSwitchValueAttributes()
+FWwiseMetadataSwitchValueAttributes::FWwiseMetadataSwitchValueAttributes()
 {
 }
 
-WwiseMetadataSwitchValueAttributes::WwiseMetadataSwitchValueAttributes(WwiseMetadataLoader& Loader) :
-	GroupType(GroupTypeFromString(Loader.GetString(this, "GroupType"_wwise_db))),
-	GroupId(Loader.GetWwiseShortId(this, "GroupId"_wwise_db)),
-	Id(Loader.GetWwiseShortId(this, "Id"_wwise_db)),
-	GUID(Loader.GetGuid(this, "GUID"_wwise_db)),
-	bDefault(Loader.GetBool(this, "Default"_wwise_db, WwiseRequiredMetadata::Optional))
+FWwiseMetadataSwitchValueAttributes::FWwiseMetadataSwitchValueAttributes(FWwiseMetadataLoader& Loader) :
+	GroupType(GroupTypeFromString(Loader.GetString(this, TEXT("GroupType")))),
+	GroupId(Loader.GetUint32(this, TEXT("GroupId"))),
+	Id(Loader.GetUint32(this, TEXT("Id"))),
+	GUID(Loader.GetGuid(this, TEXT("GUID"))),
+	bDefault(Loader.GetBool(this, TEXT("Default"), EWwiseRequiredMetadata::Optional))
 {
-	Loader.LogParsed("SwitchValueAttributes"_wwise_db);
+	Loader.LogParsed(TEXT("SwitchValueAttributes"));
 }
 
-WwiseMetadataSwitchValueGroupType WwiseMetadataSwitchValueAttributes::GroupTypeFromString(const WwiseDBString& TypeString)
+EWwiseMetadataSwitchValueGroupType FWwiseMetadataSwitchValueAttributes::GroupTypeFromString(const FName& TypeString)
 {
-	if (TypeString == "Switch"_wwise_db)
+	if (TypeString == "Switch")
 	{
-		return WwiseMetadataSwitchValueGroupType::Switch;
+		return EWwiseMetadataSwitchValueGroupType::Switch;
 	}
-	else if (TypeString == "State"_wwise_db)
+	else if (TypeString == "State")
 	{
-		return WwiseMetadataSwitchValueGroupType::State;
+		return EWwiseMetadataSwitchValueGroupType::State;
 	}
-	WWISE_DB_LOG(Warning, "Wwise/Metadata/WwiseMetadataSwitchValueAttributes: Unknown GroupType: %s", *TypeString);
-	return WwiseMetadataSwitchValueGroupType::Unknown;
+	UE_LOG(LogWwiseProjectDatabase, Warning, TEXT("FWwiseMetadataSwitchValueAttributes: Unknown GroupType: %s"), *TypeString.ToString());
+	return EWwiseMetadataSwitchValueGroupType::Unknown;
 }
 
-WwiseMetadataSwitchValue::WwiseMetadataSwitchValue()
+FWwiseMetadataSwitchValue::FWwiseMetadataSwitchValue()
 {
 }
 
-WwiseMetadataSwitchValue::WwiseMetadataSwitchValue(WwiseMetadataLoader& Loader) :
-	WwiseMetadataSwitchValueAttributes(Loader)
+FWwiseMetadataSwitchValue::FWwiseMetadataSwitchValue(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataSwitchValueAttributes(Loader)
 {
-	Loader.LogParsed("SwitchValue"_wwise_db);
+	Loader.LogParsed(TEXT("SwitchValue"));
 }

@@ -19,41 +19,41 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefDialogueEvent : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefDialogueEvent : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::DialogueEvent;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::DialogueEvent;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType DialogueEventIndex;
 
-	WwiseRefDialogueEvent() {}
-	WwiseRefDialogueEvent(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefDialogueEvent() {}
+	FWwiseRefDialogueEvent(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InDialogueEventIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		DialogueEventIndex(InDialogueEventIndex)
 	{}
-	const WwiseMetadataDialogueEvent* GetDialogueEvent() const;
+	const FWwiseMetadataDialogueEvent* GetDialogueEvent() const;
 	WwiseDialogueArgumentIdsMap GetDialogueArguments(const WwiseDialogueArgumentGlobalIdsMap& GlobalMap) const;
 
-	WwiseDBShortId DialogueEventId() const;
-	WwiseDBGuid DialogueEventGuid() const;
-	const WwiseDBString* DialogueEventName() const;
-	const WwiseDBString* DialogueEventObjectPath() const;
+	uint32 DialogueEventId() const;
+	FGuid DialogueEventGuid() const;
+	FName DialogueEventName() const;
+	FName DialogueEventObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefDialogueEvent& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefDialogueEvent& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& DialogueEventIndex == Rhs.DialogueEventIndex;
 	}
-	bool operator!=(const WwiseRefDialogueEvent& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefDialogueEvent& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefDialogueEvent::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefDialogueEvent::FGlobalIdsMap
 {
 	WwiseDialogueEventGlobalIdsMap GlobalIdsMap;
 };

@@ -23,15 +23,6 @@ public class WwiseProjectDatabase : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"Core",
-				"WwiseResourceLoader",
-				"WwiseSoundEngine",
-			}
-		);
-		
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
@@ -39,11 +30,13 @@ public class WwiseProjectDatabase : ModuleRules
 				"CoreUObject",
 				"Engine",
 
+				"EditorSubsystem",
 				"Json",
 
 				"WwiseFileHandler",
-				"WwiseLowLevelUtils",
-				"WwiseUtils",
+				"WwiseResourceLoader",
+				"WwiseSoundEngine",
+				"WwiseUtils"
 			}
 		);
 
@@ -52,14 +45,10 @@ public class WwiseProjectDatabase : ModuleRules
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
 				{
-					"EditorSubsystem",
 					"UnrealEd"
 				}
 			);
 		}
-
-		PublicDefinitions.Add("WWISE_DB_UNREAL_TYPES");
-		PublicDefinitions.Add("WITH_WWISE_PROJECT_DATABASE");
 
 #if UE_5_3_OR_LATER
 		bLegacyParentIncludePaths = false;

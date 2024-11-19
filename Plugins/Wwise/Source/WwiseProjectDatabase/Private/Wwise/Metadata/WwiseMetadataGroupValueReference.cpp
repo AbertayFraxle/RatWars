@@ -17,17 +17,16 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataGroupValueReference.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-#include "Wwise/Metadata/WwiseMetadataBasicReference.h"
-
-WwiseMetadataGroupValueReference::WwiseMetadataGroupValueReference()
+FWwiseMetadataGroupValueReference::FWwiseMetadataGroupValueReference()
 {
-	WWISE_DB_LOG(Error, "Using default WwiseMetadataGroupValueReference");
+	UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Using default FWwiseMetadataGroupValueReference"));
 }
 
-WwiseMetadataGroupValueReference::WwiseMetadataGroupValueReference(WwiseMetadataLoader& Loader) :
-	::WwiseMetadataBasicReference(Loader),
-	GroupId(Loader.GetWwiseShortId(this, "GroupId"_wwise_db))
+FWwiseMetadataGroupValueReference::FWwiseMetadataGroupValueReference(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader),
+	GroupId(Loader.GetUint32(this, TEXT("GroupId")))
 {
-	Loader.LogParsed("GroupValueReference"_wwise_db, GroupId, Name);
+	Loader.LogParsed(TEXT("GroupValueReference"), GroupId, Name);
 }

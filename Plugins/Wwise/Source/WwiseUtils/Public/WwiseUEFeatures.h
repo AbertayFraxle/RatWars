@@ -20,7 +20,10 @@ Copyright (c) 2024 Audiokinetic Inc.
 #pragma once
 
 #include "WwiseUnrealDefines.h"
+#include "WwiseWeakObjectPtrSetKeyFuncs.h"
+#include "Containers/Set.h"
 #include "Containers/Ticker.h"
+#include "UObject/WeakObjectPtrTemplates.h"
 
 // Styling naming changed between UE4 and UE5.
 #if WITH_EDITOR && defined(COREUOBJECT_API)
@@ -48,4 +51,7 @@ using FUnrealFloatPlane = FPlane;
 using FTickerDelegateHandle = FDelegateHandle;
 #endif
 
-
+class UAkComponent;
+// Set for holding UAkComponents
+// Use TWeakObjectPtrMapKeyFuncs since different stale items will be indistinguishable using the default key func
+typedef TSet<TWeakObjectPtr<UAkComponent>, TWwiseWeakObjectPtrSetKeyFuncs<TWeakObjectPtr<UAkComponent>>> UAkComponentSet;

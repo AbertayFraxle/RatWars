@@ -21,7 +21,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 class FWwiseResourceLoader;
 class FWwiseProjectDatabase;
-using FSharedWwiseDataStructure = TSharedRef<WwiseDataStructure, ESPMode::ThreadSafe>;
+using FSharedWwiseDataStructure = TSharedRef<FWwiseDataStructure, ESPMode::ThreadSafe>;
 
 class WWISEPROJECTDATABASE_API FWwiseProjectDatabaseImpl : public FWwiseProjectDatabase
 {
@@ -32,21 +32,16 @@ public:
 	TUniquePtr<FWwiseResourceLoader> ResourceLoaderOverride;
 
 	void UpdateDataStructure(
-		const WwiseDBGuid* InBasePlatformGuid = &BasePlatformGuid) override;
+		const FDirectoryPath* InUpdateGeneratedSoundBanksPath = nullptr,
+		const FGuid* InBasePlatformGuid = &BasePlatformGuid) override;
 
-	void PrepareProjectDatabaseForPlatform(FWwiseResourceLoader*&& InResourceLoader) override;
+	void PrepareProjectDatabaseForPlatform(FWwiseResourceLoader*&& InResourceLoader);
 	FWwiseResourceLoader* GetResourceLoader() override;
 	const FWwiseResourceLoader* GetResourceLoader() const override;
 
 protected:
 	bool bShouldBroadcast = true;
 	FSharedWwiseDataStructure LockedDataStructure;
-
-	/**
-	 * @brief Location where the Wwise Generated SoundBanks is found on disk relative to the project
-	 */
-	const WwiseDBString* GeneratedSoundBanksPath;
-
 
 	FSharedWwiseDataStructure& GetLockedDataStructure() override { return LockedDataStructure; }
 	const FSharedWwiseDataStructure& GetLockedDataStructure() const override { return LockedDataStructure; }

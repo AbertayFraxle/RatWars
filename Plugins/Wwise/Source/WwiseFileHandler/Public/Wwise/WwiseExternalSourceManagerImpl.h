@@ -41,9 +41,9 @@ public:
 	~FWwiseExternalSourceManagerImpl();
 
 	virtual const TCHAR* GetManagingTypeName() const override { return TEXT("External Source"); }
-	virtual void LoadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	virtual void LoadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 		const FWwiseLanguageCookedData& InLanguage, FLoadExternalSourceCallback&& InCallback) override;
-	virtual void UnloadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	virtual void UnloadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 		const FWwiseLanguageCookedData& InLanguage, FUnloadExternalSourceCallback&& InCallback) override;
 	virtual void SetGranularity(uint32 InStreamingGranularity) override;
 
@@ -59,12 +59,9 @@ public:
 
 
 #if WITH_EDITORONLY_DATA
-	virtual void Cook(IWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData, const TCHAR* PackageFilename,
-		const TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)>& WriteAdditionalFile, const FWwiseSharedPlatformId& InPlatform,
-		const FWwiseSharedLanguageId& InLanguage) override;
-
-	virtual void SetExternalSourcePath(const FDirectoryPath& DirectoryPath) override;
-	virtual const FDirectoryPath& GetExternalSourcePath() const override { return ExternalSourcePath; }
+	virtual void Cook(FWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData,
+		TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)> WriteAdditionalFile,
+		const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage) override;
 #endif
 
 protected:
@@ -80,20 +77,16 @@ protected:
 	uint32 StreamingGranularity;
 	TMap<uint32, FWwiseExternalSourceStateSharedPtr> ExternalSourceStatesById;
 
-	virtual void LoadExternalSourceImpl(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	virtual void LoadExternalSourceImpl(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 		const FWwiseLanguageCookedData& InLanguage, FLoadExternalSourceCallback&& InCallback);
-	virtual void UnloadExternalSourceImpl(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	virtual void UnloadExternalSourceImpl(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 		const FWwiseLanguageCookedData& InLanguage, FUnloadExternalSourceCallback&& InCallback);
-	virtual FWwiseExternalSourceStateSharedPtr CreateExternalSourceState(const FWwiseExternalSourceCookedData& InExternalSourceCookedData);
+	virtual FWwiseExternalSourceStateSharedPtr CreateExternalSourceState(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath);
 	virtual bool CloseExternalSourceState(FWwiseExternalSourceState& InExternalSourceState);
 
-	virtual void LoadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, FLoadExternalSourceCallback&& InCallback);
-	virtual void UnloadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, FUnloadExternalSourceCallback&& InCallback);
+	virtual void LoadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, const FName& InRootPath, FLoadExternalSourceCallback&& InCallback);
+	virtual void UnloadExternalSourceMedia(const uint32 InExternalSourceCookie, const FName& InExternalSourceName, const FName& InRootPath, FUnloadExternalSourceCallback&& InCallback);
 
 	virtual uint32 PrepareExternalSourceInfo(AkExternalSourceInfo& OutInfo, const FWwiseExternalSourceCookedData& InCookedData);
 	virtual void OnDeleteState(uint32 InShortId, FWwiseFileState& InFileState, EWwiseFileStateOperationOrigin InOperationOrigin, FDecrementStateCallback&& InCallback) override;
-
-#if WITH_EDITORONLY_DATA
-	FDirectoryPath ExternalSourcePath;
-#endif
 };

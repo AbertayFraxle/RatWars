@@ -17,44 +17,45 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataPluginLib.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-WwiseMetadataPluginLibAttributes::WwiseMetadataPluginLibAttributes(WwiseMetadataLoader& Loader) :
-	LibName(Loader.GetString(this, "LibName"_wwise_db)),
-	LibId(Loader.GetWwiseShortId(this, "LibId"_wwise_db)),
-	Type(TypeFromString(Loader.GetString(this, "Type"_wwise_db))),
-	DLL(Loader.GetString(this, "DLL"_wwise_db, WwiseRequiredMetadata::Optional)),
-	StaticLib(Loader.GetString(this, "StaticLib"_wwise_db, WwiseRequiredMetadata::Optional))
+FWwiseMetadataPluginLibAttributes::FWwiseMetadataPluginLibAttributes(FWwiseMetadataLoader& Loader) :
+	LibName(Loader.GetString(this, TEXT("LibName"))),
+	LibId(Loader.GetUint32(this, TEXT("LibId"))),
+	Type(TypeFromString(Loader.GetString(this, TEXT("Type")))),
+	DLL(Loader.GetString(this, TEXT("DLL"), EWwiseRequiredMetadata::Optional)),
+	StaticLib(Loader.GetString(this, TEXT("StaticLib"), EWwiseRequiredMetadata::Optional))
 {
-	Loader.LogParsed("PluginLibAttributes"_wwise_db, LibId, LibName);
+	Loader.LogParsed(TEXT("PluginLibAttributes"), LibId, LibName);
 }
 
-WwiseMetadataPluginLibType WwiseMetadataPluginLibAttributes::TypeFromString(const WwiseDBString& TypeString)
+EWwiseMetadataPluginLibType FWwiseMetadataPluginLibAttributes::TypeFromString(const FName& TypeString)
 {
-	if (TypeString == "Effect"_wwise_db)
+	if (TypeString == "Effect")
 	{
-		return WwiseMetadataPluginLibType::Effect;
+		return EWwiseMetadataPluginLibType::Effect;
 	}
-	else if (TypeString == "Source"_wwise_db)
+	else if (TypeString == "Source")
 	{
-		return WwiseMetadataPluginLibType::Source;
+		return EWwiseMetadataPluginLibType::Source;
 	}
-	else if (TypeString == "AudioDevice"_wwise_db)
+	else if (TypeString == "AudioDevice")
 	{
-		return WwiseMetadataPluginLibType::AudioDevice;
+		return EWwiseMetadataPluginLibType::AudioDevice;
 	}
-	else if (TypeString == "Metadata"_wwise_db)
+	else if (TypeString == "Metadata")
 	{
-		return WwiseMetadataPluginLibType::Metadata;
+		return EWwiseMetadataPluginLibType::Metadata;
 	}
 	else
 	{
-		WWISE_DB_LOG(Warning, "WwiseMetadataPluginLibAttributes: Unknown Type: %s", *TypeString);
-		return WwiseMetadataPluginLibType::Unknown;
+		UE_LOG(LogWwiseProjectDatabase, Warning, TEXT("FWwiseMetadataPluginLibAttributes: Unknown Type: %s"), *TypeString.ToString());
+		return EWwiseMetadataPluginLibType::Unknown;
 	}
 }
 
-WwiseMetadataPluginLib::WwiseMetadataPluginLib(WwiseMetadataLoader& Loader) :
-	WwiseMetadataPluginLibAttributes(Loader)
+FWwiseMetadataPluginLib::FWwiseMetadataPluginLib(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataPluginLibAttributes(Loader)
 {
-	Loader.LogParsed("PluginLib"_wwise_db, LibId, LibName);
+	Loader.LogParsed(TEXT("PluginLib"), LibId, LibName);
 }

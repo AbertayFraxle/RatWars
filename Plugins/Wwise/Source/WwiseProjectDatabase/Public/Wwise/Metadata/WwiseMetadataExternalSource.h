@@ -17,35 +17,33 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/AdapterTypes/WwiseDataTypesAdapter.h"
 #include "Wwise/Metadata/WwiseMetadataLoadable.h"
-#include "Wwise/WwiseDatabaseIdentifiers.h"
 
-struct WwiseMetadataExternalSourceReference : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataExternalSourceReference : public FWwiseMetadataLoadable
 {
-	WwiseDBShortId Cookie;
+	uint32 Cookie;
 
-	WwiseMetadataExternalSourceReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataExternalSourceReference(FWwiseMetadataLoader& Loader);
 };
 
-inline WwiseDBShortId GetTypeHash(const WwiseMetadataExternalSourceReference& Ref)
+inline uint32 GetTypeHash(const FWwiseMetadataExternalSourceReference& Ref)
 {
 	return GetTypeHash(Ref.Cookie);
 }
-inline bool operator==(const WwiseMetadataExternalSourceReference& Lhs, const WwiseMetadataExternalSourceReference& Rhs)
+inline bool operator==(const FWwiseMetadataExternalSourceReference& Lhs, const FWwiseMetadataExternalSourceReference& Rhs)
 {
 	return Lhs.Cookie == Rhs.Cookie;
 }
-inline bool operator<(const WwiseMetadataExternalSourceReference& Lhs, const WwiseMetadataExternalSourceReference& Rhs)
+inline bool operator<(const FWwiseMetadataExternalSourceReference& Lhs, const FWwiseMetadataExternalSourceReference& Rhs)
 {
 	return Lhs.Cookie < Rhs.Cookie;
 }
 
-struct WwiseMetadataExternalSource : public WwiseMetadataExternalSourceReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataExternalSource : public FWwiseMetadataExternalSourceReference
 {
-	WwiseDBString Name;
-	WwiseDBString ObjectPath;
-	WwiseDBGuid GUID;
+	FName Name;
+	FName ObjectPath;
+	FGuid GUID;
 
-	WwiseMetadataExternalSource(WwiseMetadataLoader& Loader);
+	FWwiseMetadataExternalSource(FWwiseMetadataLoader& Loader);
 };

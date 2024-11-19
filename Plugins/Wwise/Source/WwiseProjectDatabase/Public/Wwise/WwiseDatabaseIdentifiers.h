@@ -17,57 +17,65 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "AdapterTypes/WwiseWrapperTypes.h"
+#include "CoreMinimal.h"
 
-struct WWISEPROJECTDATABASE_API WwiseDatabaseMediaIdKey
+#include "WwiseDatabaseIdentifiers.generated.h"
+
+USTRUCT()
+struct WWISEPROJECTDATABASE_API FWwiseDatabaseMediaIdKey
 {
-	WwiseDBShortId MediaId = 0;
-	WwiseDBShortId SoundBankId = 0;
+	GENERATED_BODY()
 
-	WwiseDatabaseMediaIdKey()
+	UPROPERTY() uint32 MediaId = 0;
+	UPROPERTY() uint32 SoundBankId = 0;
+
+	FWwiseDatabaseMediaIdKey()
 	{}
-	WwiseDatabaseMediaIdKey(unsigned int InMediaId, unsigned int InSoundBankId) :
+	FWwiseDatabaseMediaIdKey(uint32 InMediaId, uint32 InSoundBankId) :
 		MediaId(InMediaId),
 		SoundBankId(InSoundBankId)
 	{}
-	bool operator==(const WwiseDatabaseMediaIdKey& Rhs) const
+	bool operator==(const FWwiseDatabaseMediaIdKey& Rhs) const
 	{
 		return MediaId == Rhs.MediaId
 			&& SoundBankId == Rhs.SoundBankId;
 	}
-	bool operator<(const WwiseDatabaseMediaIdKey& Rhs) const
+	bool operator<(const FWwiseDatabaseMediaIdKey& Rhs) const
 	{
 		return (MediaId < Rhs.MediaId)
 			|| (MediaId == Rhs.MediaId && SoundBankId < Rhs.SoundBankId);
 	}
 };
 
-struct WWISEPROJECTDATABASE_API WwiseDatabaseLocalizableIdKey
+USTRUCT()
+struct WWISEPROJECTDATABASE_API FWwiseDatabaseLocalizableIdKey
 {
-	static constexpr unsigned int GENERIC_LANGUAGE = 0;
+	GENERATED_BODY()
 
-	unsigned int Id = 0;
-	unsigned int LanguageId = 0;
-	unsigned int SoundBankId = 0;
+	static constexpr uint32 GENERIC_LANGUAGE = 0;
 
-	WwiseDatabaseLocalizableIdKey()
+	UPROPERTY() uint32 Id = 0;
+	UPROPERTY() uint32 LanguageId = 0;
+	UPROPERTY() uint32 SoundBankId = 0;
+
+	FWwiseDatabaseLocalizableIdKey()
 	{}
-	WwiseDatabaseLocalizableIdKey(unsigned int InId, unsigned int InLanguageId) :
+	FWwiseDatabaseLocalizableIdKey(uint32 InId, uint32 InLanguageId) :
 		Id(InId),
 		LanguageId(InLanguageId)
 	{}
-	WwiseDatabaseLocalizableIdKey(unsigned int InId, unsigned int InLanguageId, unsigned int InSoundBankId) :
+	FWwiseDatabaseLocalizableIdKey(uint32 InId, uint32 InLanguageId, uint32 InSoundBankId) :
 		Id(InId),
 		LanguageId(InLanguageId),
 		SoundBankId(InSoundBankId)
 	{}
-	bool operator==(const WwiseDatabaseLocalizableIdKey& Rhs) const
+	bool operator==(const FWwiseDatabaseLocalizableIdKey& Rhs) const
 	{
 		return Id == Rhs.Id
 			&& LanguageId == Rhs.LanguageId
 			&& SoundBankId == Rhs.SoundBankId;
 	}
-	bool operator<(const WwiseDatabaseLocalizableIdKey& Rhs) const
+	bool operator<(const FWwiseDatabaseLocalizableIdKey& Rhs) const
 	{
 		return (Id < Rhs.Id)
 			|| (Id == Rhs.Id && LanguageId < Rhs.LanguageId)
@@ -75,147 +83,125 @@ struct WWISEPROJECTDATABASE_API WwiseDatabaseLocalizableIdKey
 	}
 };
 
-struct WWISEPROJECTDATABASE_API WwiseDatabaseGroupValueKey
+USTRUCT()
+struct WWISEPROJECTDATABASE_API FWwiseDatabaseGroupValueKey
 {
+	GENERATED_BODY()
 
-	unsigned int GroupId = 0;
-	unsigned int Id = 0;
+	UPROPERTY() uint32 GroupId = 0;
+	UPROPERTY() uint32 Id = 0;
 
-	WwiseDatabaseGroupValueKey()
+	FWwiseDatabaseGroupValueKey()
 	{}
-	WwiseDatabaseGroupValueKey(unsigned int InGroupId, unsigned int InId) :
+	FWwiseDatabaseGroupValueKey(uint32 InGroupId, uint32 InId) :
 		GroupId(InGroupId),
 		Id(InId)
 	{}
-	bool operator==(const WwiseDatabaseGroupValueKey& Rhs) const
+	bool operator==(const FWwiseDatabaseGroupValueKey& Rhs) const
 	{
 		return GroupId == Rhs.GroupId
 			&& Id == Rhs.Id;
 	}
-	bool operator<(const WwiseDatabaseGroupValueKey& Rhs) const
+	bool operator<(const FWwiseDatabaseGroupValueKey& Rhs) const
 	{
 		return (GroupId < Rhs.GroupId)
 			|| (GroupId == Rhs.GroupId && Id < Rhs.Id);
 	}
 };
 
-struct WWISEPROJECTDATABASE_API WwiseDatabaseLocalizableGroupValueKey
+USTRUCT()
+struct WWISEPROJECTDATABASE_API FWwiseDatabaseLocalizableGroupValueKey
 {
+	GENERATED_BODY()
 
-	static constexpr unsigned int GENERIC_LANGUAGE = 0;
+	static constexpr uint32 GENERIC_LANGUAGE = 0;
 
-	WwiseDatabaseGroupValueKey GroupValue;
-	unsigned int LanguageId = 0;
+	UPROPERTY() FWwiseDatabaseGroupValueKey GroupValue;
+	UPROPERTY() uint32 LanguageId = 0;
 
-	WwiseDatabaseLocalizableGroupValueKey()
+	FWwiseDatabaseLocalizableGroupValueKey()
 	{}
-	WwiseDatabaseLocalizableGroupValueKey(unsigned int InGroup, unsigned int InId, unsigned int InLanguageId) :
+	FWwiseDatabaseLocalizableGroupValueKey(uint32 InGroup, uint32 InId, uint32 InLanguageId) :
 		GroupValue(InGroup, InId),
 		LanguageId(InLanguageId)
 	{}
-	WwiseDatabaseLocalizableGroupValueKey(WwiseDatabaseGroupValueKey InGroupValue, unsigned int InLanguageId) :
+	FWwiseDatabaseLocalizableGroupValueKey(FWwiseDatabaseGroupValueKey InGroupValue, uint32 InLanguageId) :
 		GroupValue(InGroupValue),
 		LanguageId(InLanguageId)
 	{}
-	bool operator==(const WwiseDatabaseLocalizableGroupValueKey& Rhs) const
+	bool operator==(const FWwiseDatabaseLocalizableGroupValueKey& Rhs) const
 	{
 		return GroupValue == Rhs.GroupValue
 			&& LanguageId == Rhs.LanguageId;
 	}
-	bool operator<(const WwiseDatabaseLocalizableGroupValueKey& Rhs) const
+	bool operator<(const FWwiseDatabaseLocalizableGroupValueKey& Rhs) const
 	{
 		return (GroupValue < Rhs.GroupValue)
 			|| (GroupValue == Rhs.GroupValue && LanguageId < Rhs.LanguageId);
 	}
 };
 
-struct WWISEPROJECTDATABASE_API WwiseDatabaseLocalizableGuidKey
+
+USTRUCT()
+struct WWISEPROJECTDATABASE_API FWwiseDatabaseLocalizableGuidKey
 {
+	GENERATED_BODY()
 
-	static constexpr unsigned int GENERIC_LANGUAGE = WwiseDatabaseLocalizableIdKey::GENERIC_LANGUAGE;
+	static constexpr uint32 GENERIC_LANGUAGE = FWwiseDatabaseLocalizableIdKey::GENERIC_LANGUAGE;
 
-	WwiseDBGuid Guid;
-	unsigned int LanguageId = 0;		// 0 if no Language
+	UPROPERTY() FGuid Guid;
+	UPROPERTY() uint32 LanguageId = 0;		// 0 if no Language
 
-	WwiseDatabaseLocalizableGuidKey()
+	FWwiseDatabaseLocalizableGuidKey()
 	{}
-	WwiseDatabaseLocalizableGuidKey(WwiseDBGuid InGuid, unsigned int InLanguageId) :
-	Guid(InGuid),
-	LanguageId(InLanguageId)
+	FWwiseDatabaseLocalizableGuidKey(FGuid InGuid, uint32 InLanguageId) :
+		Guid(InGuid),
+		LanguageId(InLanguageId)
 	{}
-	bool operator==(const WwiseDatabaseLocalizableGuidKey& Rhs) const
+	bool operator==(const FWwiseDatabaseLocalizableGuidKey& Rhs) const
 	{
 		return Guid == Rhs.Guid
 			&& LanguageId == Rhs.LanguageId;
 	}
-	bool operator<(const WwiseDatabaseLocalizableGuidKey& Rhs) const
+	bool operator<(const FWwiseDatabaseLocalizableGuidKey& Rhs) const
 	{
 		return (Guid < Rhs.Guid)
 			|| (Guid == Rhs.Guid && LanguageId < Rhs.LanguageId);
 	}
 };
 
-struct WWISEPROJECTDATABASE_API WwiseDatabaseLocalizableNameKey
+USTRUCT()
+struct WWISEPROJECTDATABASE_API FWwiseDatabaseLocalizableNameKey
 {
+	GENERATED_BODY()
 
-	static constexpr unsigned int GENERIC_LANGUAGE = WwiseDatabaseLocalizableIdKey::GENERIC_LANGUAGE;
+	static constexpr uint32 GENERIC_LANGUAGE = FWwiseDatabaseLocalizableIdKey::GENERIC_LANGUAGE;
 
-	WwiseDBString Name;
-	unsigned int LanguageId = 0;		// 0 if no Language
+	UPROPERTY() FName Name;
+	UPROPERTY() uint32 LanguageId = 0;		// 0 if no Language
 
-	WwiseDatabaseLocalizableNameKey()
+	FWwiseDatabaseLocalizableNameKey()
 	{}
-	WwiseDatabaseLocalizableNameKey(WwiseDBString InName, unsigned int InLanguageId) :
-		Name(*InName),
+	FWwiseDatabaseLocalizableNameKey(FName InName, uint32 InLanguageId) :
+		Name(InName),
 		LanguageId(InLanguageId)
 	{}
-
-	bool operator==(const WwiseDatabaseLocalizableNameKey& Rhs) const
+	bool operator==(const FWwiseDatabaseLocalizableNameKey& Rhs) const
 	{
 		return Name == Rhs.Name
 			&& LanguageId == Rhs.LanguageId;
 	}
-	bool operator<(const WwiseDatabaseLocalizableNameKey& Rhs) const
+	bool operator<(const FWwiseDatabaseLocalizableNameKey& Rhs) const
 	{
-		return (Name < Rhs.Name)
+		return (Name.FastLess(Rhs.Name))
 			|| (Name == Rhs.Name && LanguageId < Rhs.LanguageId);
 	}
 };
 
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseMediaIdKey& FileId);
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseLocalizableIdKey& LocalizableId);
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseGroupValueKey& LocalizableGroupValue);
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseLocalizableGroupValueKey& LocalizableGroupValue);
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseLocalizableIdKey& EventId);
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseLocalizableGuidKey& LocalizableGuid);
-unsigned int WWISEPROJECTDATABASE_API GetTypeHash(const WwiseDatabaseLocalizableNameKey& LocalizableName);
-
-inline unsigned int GetTypeHash(const WwiseDBShortId& ShortId)
-{
-	return ShortId;
-}
-
-inline unsigned int WwiseDBHashCombine(unsigned int A, unsigned int C)
-{
-	unsigned int B = 0x9e3779b9;
-	A += B;
-
-	A -= B; A -= C; A ^= (C>>13);
-	B -= C; B -= A; B ^= (A<<8);
-	C -= A; C -= B; C ^= (B>>13);
-	A -= B; A -= C; A ^= (C>>12);
-	B -= C; B -= A; B ^= (A<<16);
-	C -= A; C -= B; C ^= (B>>5);
-	A -= B; A -= C; A ^= (C>>3);
-	B -= C; B -= A; B ^= (A<<10);
-	C -= A; C -= B; C ^= (B>>15);
-
-	return C;
-}
-
-typedef WwiseDatabaseLocalizableGuidKey LocalizableGuidKey;
-typedef WwiseDatabaseLocalizableIdKey LocalizableIdKey;
-typedef WwiseDatabaseLocalizableNameKey LocalizableNameKey;
-typedef WwiseDatabaseMediaIdKey MediaIdKey;
-typedef WwiseDatabaseLocalizableGroupValueKey LocalizableGroupValueKey;
-typedef WwiseDatabaseGroupValueKey GroupValueKey;
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseMediaIdKey& FileId);
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseLocalizableIdKey& LocalizableId);
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseGroupValueKey& LocalizableGroupValue);
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseLocalizableGroupValueKey& LocalizableGroupValue);
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseLocalizableIdKey& EventId);
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseLocalizableGuidKey& LocalizableGuid);
+uint32 WWISEPROJECTDATABASE_API GetTypeHash(const FWwiseDatabaseLocalizableNameKey& LocalizableName);

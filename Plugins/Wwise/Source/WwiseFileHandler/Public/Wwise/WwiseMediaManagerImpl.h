@@ -28,8 +28,8 @@ public:
 
 	const TCHAR* GetManagingTypeName() const override { return TEXT("Media"); }
 
-	void LoadMedia(const FWwiseMediaCookedData& InMediaCookedData, FLoadMediaCallback&& InCallback) override;
-	void UnloadMedia(const FWwiseMediaCookedData& InMediaCookedData, FUnloadMediaCallback&& InCallback) override;
+	void LoadMedia(const FWwiseMediaCookedData& InMediaCookedData, const FString& InRootPath, FLoadMediaCallback&& InCallback) override;
+	void UnloadMedia(const FWwiseMediaCookedData& InMediaCookedData, const FString& InRootPath, FUnloadMediaCallback&& InCallback) override;
 	void SetGranularity(AkUInt32 InStreamingGranularity) override;
 	
 	virtual void SetMedia(AkSourceSettings& InSource, FLoadMediaCallback&& InCallback) override;
@@ -49,7 +49,7 @@ protected:
 	TArray<AkSourceSettings> UnsetMediaOps;
 	TArray<FLoadMediaCallback> UnsetMediaCallbacks;
 
-	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseMediaCookedData& InMediaCookedData);
+	virtual FWwiseFileStateSharedPtr CreateOp(const FWwiseMediaCookedData& InMediaCookedData, const FString& InRootPath);
 	
 	static FWwiseExecutionQueue* GetBankExecutionQueue();
 	virtual void DoSetMedia();

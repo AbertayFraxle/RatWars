@@ -19,26 +19,26 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataRootPaths.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
-WwiseMetadataSoundBanksInfoAttributes::WwiseMetadataSoundBanksInfoAttributes(WwiseMetadataLoader& Loader):
-	Platform(Loader.GetString(this, "Platform"_wwise_db)),
-	BasePlatform(Loader.GetString(this, "BasePlatform"_wwise_db)),
-	SchemaVersion(Loader.GetWwiseShortId(this, "SchemaVersion"_wwise_db)),
-	SoundBankVersion(Loader.GetWwiseShortId(this, "SoundBankVersion"_wwise_db))
+FWwiseMetadataSoundBanksInfoAttributes::FWwiseMetadataSoundBanksInfoAttributes(FWwiseMetadataLoader& Loader):
+	Platform(Loader.GetString(this, TEXT("Platform"))),
+	BasePlatform(Loader.GetString(this, TEXT("BasePlatform"))),
+	SchemaVersion(Loader.GetUint32(this, TEXT("SchemaVersion"))),
+	SoundBankVersion(Loader.GetUint32(this, TEXT("SoundBankVersion")))
 {
-	Loader.LogParsed("SoundBanksInfoAttributes"_wwise_db);
+	Loader.LogParsed(TEXT("SoundBanksInfoAttributes"));
 }
 
-WwiseMetadataSoundBanksInfo::WwiseMetadataSoundBanksInfo(WwiseMetadataLoader& Loader) :
-	WwiseMetadataSoundBanksInfoAttributes(Loader),
-	RootPaths(Loader.GetObjectPtr<WwiseMetadataRootPaths>(this, "RootPaths"_wwise_db)),
-	DialogueEvents(Loader.GetArray<WwiseMetadataDialogueEvent>(this, "DialogueEvents"_wwise_db)),
-	SoundBanks(Loader.GetArray<WwiseMetadataSoundBank>(this, "SoundBanks"_wwise_db)),
-	FileHash(Loader.GetGuid(this, "FileHash"_wwise_db))
+FWwiseMetadataSoundBanksInfo::FWwiseMetadataSoundBanksInfo(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataSoundBanksInfoAttributes(Loader),
+	RootPaths(Loader.GetObjectPtr<FWwiseMetadataRootPaths>(this, TEXT("RootPaths"))),
+	DialogueEvents(Loader.GetArray<FWwiseMetadataDialogueEvent>(this, TEXT("DialogueEvents"))),
+	SoundBanks(Loader.GetArray<FWwiseMetadataSoundBank>(this, TEXT("SoundBanks"))),
+	FileHash(Loader.GetGuid(this, TEXT("FileHash")))
 {
-	Loader.LogParsed("SoundBanksInfo"_wwise_db);
+	Loader.LogParsed(TEXT("SoundBanksInfo"));
 }
 
-WwiseMetadataSoundBanksInfo::~WwiseMetadataSoundBanksInfo()
+FWwiseMetadataSoundBanksInfo::~FWwiseMetadataSoundBanksInfo()
 {
 	if (RootPaths)
 	{

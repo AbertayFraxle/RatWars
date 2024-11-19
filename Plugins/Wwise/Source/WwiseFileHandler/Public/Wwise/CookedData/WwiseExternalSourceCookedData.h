@@ -17,8 +17,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/WwiseUnrealVersion.h"
-
 #include "WwiseExternalSourceCookedData.generated.h"
 
 USTRUCT(BlueprintType)
@@ -30,7 +28,7 @@ struct WWISEFILEHANDLER_API FWwiseExternalSourceCookedData
 	 * @brief User-defined Cookie for the External Source
 	*/
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "Wwise")
-	int32 Cookie{ 0 };
+	int32 Cookie = 0;
 
 	/**
 	 * @brief Optional debug name. Can be empty in release, contain the name, or the full path of the asset.
@@ -40,17 +38,9 @@ struct WWISEFILEHANDLER_API FWwiseExternalSourceCookedData
 
 	FWwiseExternalSourceCookedData();
 
-	void Serialize(FArchive& Ar, UObject* Owner);
+	void Serialize(FArchive& Ar);
 
 	FString GetDebugString() const;
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	void PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const;
-#endif
-
-	bool operator<(const FWwiseExternalSourceCookedData& Rhs) const
-	{
-		return Cookie < Rhs.Cookie;
-	}
 };
 
 inline uint32 GetTypeHash(const FWwiseExternalSourceCookedData& InCookedData)

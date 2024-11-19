@@ -58,7 +58,7 @@ public:
 #endif
 
 #if WITH_EDITOR
-	AKAUDIO_API bool AddNewEvent(FFrameNumber Time, UAkAudioEvent* Event);
+	AKAUDIO_API bool AddNewEvent(FFrameNumber Time, UAkAudioEvent* Event, const FString& EventName = FString());
 
     void WorkUnitChangesDetectedFromSection(UMovieSceneAkAudioEventSection* in_pSection);
 #endif

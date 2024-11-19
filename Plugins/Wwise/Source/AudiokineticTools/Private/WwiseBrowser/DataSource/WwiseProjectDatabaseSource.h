@@ -21,7 +21,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Misc/TextFilter.h"
 #include "Wwise/Ref/WwiseRefCollections.h"
 
-struct WwiseMetadataBasicReference;
+struct FWwiseMetadataBasicReference;
 
 struct WwiseItemTreePath
 {
@@ -73,7 +73,7 @@ private:
 	void BuildEffectShareSets(const WwisePluginShareSetGlobalIdsMap& EffectShareSets);
 	bool ParseTreePath(const FString& ObjectPath, WwiseItemTreePath& OutItemPath);
 
-	bool BuildFolderHierarchy(const WwiseMetadataBasicReference& WwiseItem, EWwiseItemType::Type ItemType,
+	bool BuildFolderHierarchy(const FWwiseMetadataBasicReference& WwiseItem, EWwiseItemType::Type ItemType,
 		const FWwiseTreeItemPtr
 		CurrentRootFolder, uint32 GroupId = 0);
 

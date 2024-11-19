@@ -19,10 +19,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Stats/ResourceLoader.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 #include <inttypes.h>
 
 FWwiseTriggerCookedData::FWwiseTriggerCookedData(): TriggerId(0)
@@ -43,13 +39,6 @@ void FWwiseTriggerCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseTriggerCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "T" << TriggerId; 
-}
-#endif
 
 FString FWwiseTriggerCookedData::GetDebugString() const
 {

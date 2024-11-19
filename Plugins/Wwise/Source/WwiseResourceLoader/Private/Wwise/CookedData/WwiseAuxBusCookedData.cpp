@@ -19,10 +19,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Stats/ResourceLoader.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 #include <inttypes.h>
 
 FWwiseAuxBusCookedData::FWwiseAuxBusCookedData():
@@ -46,44 +42,6 @@ void FWwiseAuxBusCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-void FWwiseAuxBusCookedData::SerializeBulkData(FArchive& Ar, const FWwisePackagedFileSerializationOptions& Options)
-{
-	for (auto& SoundBank : SoundBanks)
-	{
-		SoundBank.SerializeBulkData(Ar, Options);
-	}
-	for (auto& MediaItem : Media)
-	{
-		MediaItem.SerializeBulkData(Ar, Options);
-	}
-}
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseAuxBusCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "AuxBus";
-	Writer.BeginObject();
-	Writer << "Id" << AuxBusId;
-	
-	Writer << "SBs";
-	Writer.BeginArray();
-	for (auto& SoundBank : SoundBanks)
-	{
-		SoundBank.PreSave(SaveContext, Writer);
-	}
-	Writer.EndArray();
-
-	Writer << "Ms";
-	Writer.BeginArray();
-	for (auto& MediaItem : Media)
-	{
-		MediaItem.PreSave(SaveContext, Writer);
-	}
-	Writer.EndArray();
-	Writer.EndObject();
-}
-#endif
 
 FString FWwiseAuxBusCookedData::GetDebugString() const
 {

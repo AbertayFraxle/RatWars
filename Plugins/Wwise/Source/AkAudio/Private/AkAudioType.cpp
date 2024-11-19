@@ -22,7 +22,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkSettings.h"
 #include "AkCustomVersion.h"
 #include "Platforms/AkPlatformInfo.h"
-#include "Wwise/API/WwiseSoundEngineAPI.h"
 #if UE_5_4_OR_LATER
 #include "UObject/AssetRegistryTagsContext.h"
 #endif
@@ -50,7 +49,6 @@ void UAkAudioType::Serialize(FArchive& Ar)
 
 #if WITH_EDITORONLY_DATA
 	CheckWwiseObjectInfo();
-	EnsureResourceCookerCreated(Ar.CookingTarget());
 #endif
 	LogSerializationState(Ar);
 }
@@ -90,27 +88,11 @@ void UAkAudioType::BeginDestroy()
 
 void UAkAudioType::FinishDestroy()
 {
-	if (HasAnyFlags(RF_ClassDefaultObject))
-	{
-		return Super::FinishDestroy();
-	}
-
 	{
 		SCOPED_AKAUDIO_EVENT_2(TEXT("UAkAudioType::FinishDestroy"));
 		UE_LOG(LogAkAudio, VeryVerbose, TEXT("UAkAudioType::FinishDestroy[%p]"), this);
 
-		while (ResourceUnload.IsValid() && !ResourceUnload.WaitFor(0) &&
-			IsInGameThread())
-		{
-			{
-				auto* SoundEngine = IWwiseSoundEngineAPI::Get();
-				if (UNLIKELY(!SoundEngine->IsInitialized()))
-				{
-					break;
-				}
-				SoundEngine->RenderAudio();
-			}
-		}
+		ResourceUnload.Wait();
 	}
 	Super::FinishDestroy();
 }
@@ -171,22 +153,6 @@ void UAkAudioType::WaitForResourceUnloaded()
 	SCOPED_AKAUDIO_EVENT_3(TEXT("UAkAudioType::WaitForResourceUnloaded"));
 	ResourceUnload.Wait();
 	ResourceUnload.Reset();
-}
-
-void UAkAudioType::EnsureResourceCookerCreated(const ITargetPlatform* TargetPlatform)
-{
-	if (TargetPlatform == nullptr)
-	{
-		return;
-	}
-
-	if (auto* AkSettings = GetDefault<UAkSettings>())
-	{
-		if (AkSettings->AreSoundBanksGenerated())
-		{
-			FAkAudioModule::CreateResourceCookerForPlatform(TargetPlatform);
-		}
-	}
 }
 
 void UAkAudioType::CheckWwiseObjectInfo()
@@ -292,19 +258,7 @@ void UAkAudioType::GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) cons
 	OutTags.Add(FAssetRegistryTag(GET_MEMBER_NAME_CHECKED(FWwiseObjectInfo, WwiseName), WwiseInfo.WwiseName.ToString(), FAssetRegistryTag::ETagType::TT_Hidden));
 }
 #endif // UE_5_4_OR_LATER
-
 #endif // WITH_EDITOR
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void UAkAudioType::HashDependenciesForCook(FCbFieldViewIterator Args, UE::Cook::FCookDependencyContext& Context)
-{
-	TArray<uint8> Memory;
-	Memory.AddUninitialized(Args.GetSize());
-	FMutableMemoryView MemoryView(Memory.GetData(), Memory.Num());
-	Args.CopyTo(MemoryView);
-	Context.Update(Memory.GetData(), Memory.Num());
-}
-#endif
 
 void UAkAudioType::BeginCacheForCookedPlatformData(const ITargetPlatform* TargetPlatform)
 {
@@ -317,19 +271,17 @@ void UAkAudioType::BeginCacheForCookedPlatformData(const ITargetPlatform* Target
 			{
 				return;
 			}
-			FAkAudioModule::AkAudioModuleInstance->CreateResourceCookerForPlatform(TargetPlatform);
+			auto PlatformID = UAkPlatformInfo::GetSharedPlatformInfo(TargetPlatform->IniPlatformName());
+			FWwiseResourceCooker::CreateForPlatform(TargetPlatform, PlatformID, EWwiseExportDebugNameRule::Name);
 		}
 	}
 }
 
-bool UAkAudioType::IsAssetOutOfDate(const WwiseAnyRef& CurrentWwiseRef)
+bool UAkAudioType::IsAssetOutOfDate(const FWwiseAnyRef& CurrentWwiseRef)
 {
 	FWwiseObjectInfo* ObjectInfo = GetInfoMutable();
-
-	int A, B, C, D;
-	CurrentWwiseRef.GetGuid().GetGuidValues(A, B, C, D);
-	if (FGuid(A, B, C, D) != ObjectInfo->WwiseGuid
-		|| FName(*CurrentWwiseRef.GetName()) != ObjectInfo->WwiseName
+	if (CurrentWwiseRef.GetGuid() != ObjectInfo->WwiseGuid
+		|| CurrentWwiseRef.GetName() != ObjectInfo->WwiseName
 		|| CurrentWwiseRef.GetId() != ObjectInfo->WwiseShortId) 
 	{
 		return true;
@@ -338,15 +290,13 @@ bool UAkAudioType::IsAssetOutOfDate(const WwiseAnyRef& CurrentWwiseRef)
 	return false;
 }
 
-void UAkAudioType::FillInfo(const WwiseAnyRef& CurrentWwiseRef)
+void UAkAudioType::FillInfo(const FWwiseAnyRef& CurrentWwiseRef)
 {
 	FWwiseObjectInfo* ObjectInfo = GetInfoMutable();
 
-	int A, B, C, D;
-	CurrentWwiseRef.GetGuid().GetGuidValues(A, B, C, D);
-	ObjectInfo->WwiseGuid = FGuid(A, B, C, D);
+	ObjectInfo->WwiseGuid = CurrentWwiseRef.GetGuid();
 	ObjectInfo->WwiseShortId = CurrentWwiseRef.GetId();
-	ObjectInfo->WwiseName = FName(*CurrentWwiseRef.GetName());
+	ObjectInfo->WwiseName = CurrentWwiseRef.GetName();
 }
 
 FName UAkAudioType::GetAssetDefaultName()

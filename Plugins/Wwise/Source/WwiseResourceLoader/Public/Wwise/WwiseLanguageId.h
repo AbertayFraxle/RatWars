@@ -32,6 +32,7 @@ struct WWISERESOURCELOADER_API FWwiseLanguageId
 		LanguageId(InLanguageId),
 		LanguageName(InLanguageName)
 	{
+		check(!LanguageName.IsNone());
 	}
 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "Wwise")

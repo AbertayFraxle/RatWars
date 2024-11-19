@@ -35,9 +35,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 		TaskPriority = AkJobWorkerSchedulerInternals::Task##__job__
 
 static_assert(AK_NUM_JOB_TYPES == 3, "Update the stat groups and switch cases below for new job types!");
-AK_DECLARE_JOB_TYPE(Generic, "WwiseSoundEngine Generic Job", EWwiseTaskPriority::High)
-AK_DECLARE_JOB_TYPE(AudioProcessing, "WwiseSoundEngine Audio Processing Job", EWwiseTaskPriority::High)
-AK_DECLARE_JOB_TYPE(SpatialAudio, "WwiseSoundEngine Spatial Audio Job", EWwiseTaskPriority::High)
+AK_DECLARE_JOB_TYPE(Generic, "Wwise Generic Job", EWwiseTaskPriority::High)
+AK_DECLARE_JOB_TYPE(AudioProcessing, "Wwise Audio Processing Job", EWwiseTaskPriority::High)
+AK_DECLARE_JOB_TYPE(SpatialAudio, "Wwise Spatial Audio Job", EWwiseTaskPriority::High)
 
 static void OnJobWorkerRequest(AkJobWorkerFunc in_fnJobWorker, AkJobType in_jobType, AkUInt32 in_uNumWorkers, void* in_pUserData)
 {

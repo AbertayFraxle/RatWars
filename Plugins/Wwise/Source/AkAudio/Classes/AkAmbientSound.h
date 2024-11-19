@@ -36,11 +36,11 @@ public:
 
 	/** AkAudioEvent to play. Deprecated as UE4.7 integration: Use AkComponent->AkAudioEvent instead */
 	UPROPERTY()
-	TObjectPtr<class UAkAudioEvent> AkAudioEvent_DEPRECATED = nullptr;
+	class UAkAudioEvent * AkAudioEvent_DEPRECATED = nullptr;
 
 	/** AkComponent to handle playback */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=AkAmbientSound, meta=(ShowOnlyInnerProperties) )
-	TObjectPtr<class UAkComponent> AkComponent = nullptr;
+	class UAkComponent* AkComponent = nullptr;
 	
 	/** Stop playback if the owner is destroyed */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AkAmbientSound, SimpleDisplay)

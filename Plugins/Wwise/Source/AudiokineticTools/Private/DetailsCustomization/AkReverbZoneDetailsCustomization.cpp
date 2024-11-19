@@ -37,8 +37,6 @@ TSharedRef<IDetailCustomization> FAkReverbZoneDetailsCustomization::MakeInstance
 
 void FAkReverbZoneDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailLayout)
 {
-	FWwiseDetailsCustomization::CustomizeDetails(DetailLayout);
-	
 	DetailLayout.EditCategory("ReverbZone", FText::GetEmpty(), ECategoryPriority::Important);
 }
 

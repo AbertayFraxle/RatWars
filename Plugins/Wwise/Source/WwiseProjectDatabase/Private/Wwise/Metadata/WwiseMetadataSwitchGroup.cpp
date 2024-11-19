@@ -18,10 +18,10 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataSwitchGroup.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
-WwiseMetadataSwitchGroup::WwiseMetadataSwitchGroup(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader),
-	GameParameterRef(Loader.GetObjectPtr<WwiseMetadataGameParameterReference>(this, "GameParameterRef"_wwise_db)),
-	Switches(Loader.GetArray<WwiseMetadataSwitch>(this, "Switches"_wwise_db))
+FWwiseMetadataSwitchGroup::FWwiseMetadataSwitchGroup(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader),
+	GameParameterRef(Loader.GetObjectPtr<FWwiseMetadataGameParameterReference>(this, TEXT("GameParameterRef"))),
+	Switches(Loader.GetArray<FWwiseMetadataSwitch>(this, TEXT("Switches")))
 {
-	Loader.LogParsed("SwitchGroup"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("SwitchGroup"), Id, Name);
 }

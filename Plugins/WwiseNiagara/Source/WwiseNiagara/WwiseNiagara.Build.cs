@@ -31,8 +31,8 @@ public class WwiseNiagara : ModuleRules
 			"NiagaraCore",
 
 			"AkAudio",
-			"WwiseLowLevelUtils",
 			"WwiseSoundEngine",
+			"WwiseUtils"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {

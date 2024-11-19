@@ -24,10 +24,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 void FAkAudioMixerModule::StartupModule()
 {
-	UE_LOG(LogAkAudio, Warning,
-	       TEXT(
-		       "FAkAudioMixerModule::StartupModule Use of AKAudioMixer is deprecated. Consider using AudioLink instead (https://www.audiokinetic.com/en/library/edge/?source=UE4&id=using_audio_link.html)"
-	       ));
 }
 
 

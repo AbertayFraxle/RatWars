@@ -18,69 +18,70 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataEvent.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 #include "Wwise/Metadata/WwiseMetadataPluginGroup.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-WwiseMetadataEventReference::WwiseMetadataEventReference(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader),
-	MaxAttenuation(Loader.GetFloat(this, "MaxAttenuation"_wwise_db, WwiseRequiredMetadata::Optional)),
-	DurationType(DurationTypeFromString(Loader.GetString(this, "DurationType"_wwise_db))),
-	DurationMin(Loader.GetFloat(this, "DurationMin"_wwise_db, WwiseRequiredMetadata::Optional)),
-	DurationMax(Loader.GetFloat(this, "DurationMax"_wwise_db, WwiseRequiredMetadata::Optional))
+FWwiseMetadataEventReference::FWwiseMetadataEventReference(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader),
+	MaxAttenuation(Loader.GetFloat(this, TEXT("MaxAttenuation"), EWwiseRequiredMetadata::Optional)),
+	DurationType(DurationTypeFromString(Loader.GetString(this, TEXT("DurationType")))),
+	DurationMin(Loader.GetFloat(this, TEXT("DurationMin"), EWwiseRequiredMetadata::Optional)),
+	DurationMax(Loader.GetFloat(this, TEXT("DurationMax"), EWwiseRequiredMetadata::Optional))
 {
-	//IncLoadedSize(sizeof(WwiseMetadataEventDurationType));
-	Loader.LogParsed("EventReference"_wwise_db, Id, Name);
+	IncLoadedSize(sizeof(EWwiseMetadataEventDurationType));
+	Loader.LogParsed(TEXT("EventReference"), Id, Name);
 }
 
-WwiseMetadataEventDurationType WwiseMetadataEventReference::DurationTypeFromString(const WwiseDBString& TypeString)
+EWwiseMetadataEventDurationType FWwiseMetadataEventReference::DurationTypeFromString(const FName& TypeString)
 {
-	if (TypeString == "OneShot"_wwise_db)
+	if (TypeString == "OneShot")
 	{
-		return WwiseMetadataEventDurationType::OneShot;
+		return EWwiseMetadataEventDurationType::OneShot;
 	}
-	else if (TypeString == "Infinite"_wwise_db)
+	else if (TypeString == "Infinite")
 	{
-		return WwiseMetadataEventDurationType::Infinite;
+		return EWwiseMetadataEventDurationType::Infinite;
 	}
-	else if (TypeString == "Mixed"_wwise_db)
+	else if (TypeString == "Mixed")
 	{
-		return WwiseMetadataEventDurationType::Mixed;
+		return EWwiseMetadataEventDurationType::Mixed;
 	}
-	else if (!(TypeString == "Unknown"_wwise_db))
+	else if (!(TypeString == "Unknown"))
 	{
-		WWISE_DB_LOG(Warning, "Wwise/Metadata/WwiseMetadataEventReference: Unknown DurationType: %s", *TypeString);
+		UE_LOG(LogWwiseProjectDatabase, Warning, TEXT("FWwiseMetadataEventReference: Unknown DurationType: %s"), *TypeString.ToString());
 	}
-	return WwiseMetadataEventDurationType::Unknown;
+	return EWwiseMetadataEventDurationType::Unknown;
 }
 
-WwiseMetadataEvent::WwiseMetadataEvent(WwiseMetadataLoader& Loader) :
-	WwiseMetadataEventReference(Loader),
-	MediaRefs(Loader.GetArray<WwiseMetadataMediaReference>(this, "MediaRefs"_wwise_db)),
-	ExternalSourceRefs(Loader.GetArray<WwiseMetadataExternalSourceReference>(this, "ExternalSourceRefs"_wwise_db)),
-	PluginRefs(Loader.GetObjectPtr<WwiseMetadataPluginReferenceGroup>(this, "PluginRefs"_wwise_db)),
-	ActionSetFX(Loader.GetArray<WwiseMetadataActionSetFXEntry>(this, "ActionSetFX"_wwise_db)),
-	AuxBusRefs(Loader.GetArray<WwiseMetadataBusReference>(this, "AuxBusRefs"_wwise_db)),
-	SwitchContainers(Loader.GetArray<WwiseMetadataSwitchContainer>(this, "SwitchContainers"_wwise_db)),
-	ActionPostEvent(Loader.GetArray<WwiseMetadataActionPostEventEntry>(this, "ActionPostEvent"_wwise_db)),
-	ActionSetState(Loader.GetArray<WwiseMetadataActionSetStateEntry>(this, "ActionSetState"_wwise_db)),
-	ActionSetSwitch(Loader.GetArray<WwiseMetadataActionSetSwitchEntry>(this, "ActionSetSwitch"_wwise_db)),
-	ActionTrigger(Loader.GetArray<WwiseMetadataActionTriggerEntry>(this, "ActionTrigger"_wwise_db))
+FWwiseMetadataEvent::FWwiseMetadataEvent(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataEventReference(Loader),
+	MediaRefs(Loader.GetArray<FWwiseMetadataMediaReference>(this, TEXT("MediaRefs"))),
+	ExternalSourceRefs(Loader.GetArray<FWwiseMetadataExternalSourceReference>(this, TEXT("ExternalSourceRefs"))),
+	PluginRefs(Loader.GetObjectPtr<FWwiseMetadataPluginReferenceGroup>(this, TEXT("PluginRefs"))),
+	AuxBusRefs(Loader.GetArray<FWwiseMetadataBusReference>(this, TEXT("AuxBusRefs"))),
+	SwitchContainers(Loader.GetArray<FWwiseMetadataSwitchContainer>(this, TEXT("SwitchContainers"))),
+	ActionPostEvent(Loader.GetArray<FWwiseMetadataActionPostEventEntry>(this, TEXT("ActionPostEvent"))),
+	ActionSetState(Loader.GetArray<FWwiseMetadataActionSetStateEntry>(this, TEXT("ActionSetState"))),
+	ActionSetSwitch(Loader.GetArray<FWwiseMetadataActionSetSwitchEntry>(this, TEXT("ActionSetSwitch"))),
+	ActionTrigger(Loader.GetArray<FWwiseMetadataActionTriggerEntry>(this, TEXT("ActionTrigger"))),
+	ActionSetFX(Loader.GetArray<FWwiseMetadataActionSetFXEntry>(this, TEXT("ActionSetFX")))
 {
-	Loader.LogParsed("Event"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("Event"), Id, Name);
 }
 
-bool WwiseMetadataEvent::IsMandatory() const
+bool FWwiseMetadataEvent::IsMandatory() const
 {
 	return
-		(ActionPostEvent.Size() > 0)
-		|| (ActionSetState.Size() > 0)
-		|| (ActionSetSwitch.Size() > 0)
-		|| (ActionTrigger.Size() > 0)
-		|| (ActionSetFX.Size() > 0)
-		|| (AuxBusRefs.Size() > 0)
-		|| (ExternalSourceRefs.Size() > 0)
-		|| (MediaRefs.Size() > 0)
+		(ActionPostEvent.Num() > 0)
+		|| (ActionSetState.Num() > 0)
+		|| (ActionSetSwitch.Num() > 0)
+		|| (ActionTrigger.Num() > 0)
+		|| (ActionSetFX.Num() > 0)
+		|| (AuxBusRefs.Num() > 0)
+		|| (ExternalSourceRefs.Num() > 0)
+		|| (MediaRefs.Num() > 0)
 		|| (PluginRefs && (
-			(PluginRefs->Custom.Size() > 0)
-			|| (PluginRefs->ShareSets.Size() > 0)
-			|| (PluginRefs->AudioDevices.Size() > 0)))
-		|| (SwitchContainers.Size() == 0);
+			(PluginRefs->Custom.Num() > 0)
+			|| (PluginRefs->ShareSets.Num() > 0)
+			|| (PluginRefs->AudioDevices.Num() > 0)))
+		|| (SwitchContainers.Num() == 0);
 }

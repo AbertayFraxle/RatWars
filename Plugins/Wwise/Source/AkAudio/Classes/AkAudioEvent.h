@@ -68,7 +68,7 @@ public:
 		FWwiseLocalizedEventCookedData EventCookedData;
 
 	UPROPERTY(meta = (DeprecatedProperty, DeprecationMessage = "Used for migration"))
-		TObjectPtr<UAkAudioBank> RequiredBank_DEPRECATED = nullptr;
+		UAkAudioBank* RequiredBank_DEPRECATED = nullptr;
 
 public:
 	/**
@@ -375,13 +375,7 @@ public:
 private:
 	void OnBeginPIE(const bool bIsSimulating);
 	FDelegateHandle OnBeginPIEDelegateHandle;
-#endif // WITH_EDITOR
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-public:
-	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
 #endif
-
 #if WITH_EDITORONLY_DATA
 public:
 	virtual void FillInfo() override;

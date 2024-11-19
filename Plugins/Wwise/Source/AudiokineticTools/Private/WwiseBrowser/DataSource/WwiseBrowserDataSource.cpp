@@ -24,7 +24,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "WaapiDataSource.h"
 #include "WwiseProjectDatabaseSource.h"
 #include "Templates/SharedPointer.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 #include "IAudiokineticTools.h"
 #include "AssetManagement/AkAssetDatabase.h"
 #include "AssetRegistry/AssetRegistryModule.h"
@@ -630,14 +630,13 @@ bool FWwiseBrowserDataSource::IsMoved(FWwiseTreeItemPtr CurrItem)
 		return false;
 	}
 	FString Out;
-	WwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
-	WwiseAnyRef* Ref = nullptr;
-	WwiseDBArray<WwiseAnyRef> Refs;
-	WwiseDBGuid Guid = WwiseDBGuid(CurrItem->ItemId.A, CurrItem->ItemId.B, CurrItem->ItemId.C, CurrItem->ItemId.D);
-	DataStructure.GetCurrentPlatformData()->Guids.MultiFind(WwiseDatabaseLocalizableGuidKey(Guid, 0), Refs);
+	FWwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
+	FWwiseAnyRef* Ref = nullptr;
+	TArray<FWwiseAnyRef> Refs;
+	DataStructure.GetCurrentPlatformData()->Guids.MultiFind(FWwiseDatabaseLocalizableGuidKey(CurrItem->ItemId, 0), Refs);
 	for(auto& InRef : Refs)
 	{
-		if(InRef.GetType() != WwiseRefType::SoundBank)
+		if(InRef.GetType() != EWwiseRefType::SoundBank)
 		{
 			Ref = &InRef;
 			break;

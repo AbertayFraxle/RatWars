@@ -38,8 +38,8 @@ public:
 	using FLoadMediaCallback = TUniqueFunction<void(bool bSuccess)>;
 	using FUnloadMediaCallback = TUniqueFunction<void()>;
 
-	virtual void LoadMedia(const FWwiseMediaCookedData& InMediaCookedData, FLoadMediaCallback&& InCallback) = 0;
-	virtual void UnloadMedia(const FWwiseMediaCookedData& InMediaCookedData, FUnloadMediaCallback&& InCallback) = 0;
+	virtual void LoadMedia(const FWwiseMediaCookedData& InMediaCookedData, const FString& InRootPath, FLoadMediaCallback&& InCallback) = 0;
+	virtual void UnloadMedia(const FWwiseMediaCookedData& InMediaCookedData, const FString& InRootPath, FUnloadMediaCallback&& InCallback) = 0;
 	virtual void SetGranularity(uint32 Uint32) = 0;
 
 	virtual void SetMedia(AkSourceSettings& InSource, FLoadMediaCallback&& InCallback) = 0;

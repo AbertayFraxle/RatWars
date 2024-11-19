@@ -72,25 +72,25 @@ FWwiseExternalSourceManagerImpl::~FWwiseExternalSourceManagerImpl()
 }
 
 void FWwiseExternalSourceManagerImpl::LoadExternalSource(
-	const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 	const FWwiseLanguageCookedData& InLanguage, FLoadExternalSourceCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseExternalSourceManagerImpl::LoadExternalSource"));
-	FileHandlerExecutionQueue.Async(WWISEFILEHANDLER_ASYNC_NAME("FWwiseExternalSourceManagerImpl::LoadExternalSource"), [this, InExternalSourceCookedData, InLanguage, InCallback = MoveTemp(InCallback)]() mutable
+	FileHandlerExecutionQueue.Async(WWISEFILEHANDLER_ASYNC_NAME("FWwiseExternalSourceManagerImpl::LoadExternalSource"), [this, InExternalSourceCookedData, InRootPath, InLanguage, InCallback = MoveTemp(InCallback)]() mutable
 	{
 		LLM_SCOPE_BYTAG(Audio_Wwise_FileHandler_ExternalSources);
-		LoadExternalSourceImpl(InExternalSourceCookedData, InLanguage, MoveTemp(InCallback));
+		LoadExternalSourceImpl(InExternalSourceCookedData, InRootPath, InLanguage, MoveTemp(InCallback));
 	});
 }
 
 void FWwiseExternalSourceManagerImpl::UnloadExternalSource(
-	const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 	const FWwiseLanguageCookedData& InLanguage, FUnloadExternalSourceCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseExternalSourceManagerImpl::UnloadExternalSource"));
-	FileHandlerExecutionQueue.Async(WWISEFILEHANDLER_ASYNC_NAME("FWwiseExternalSourceManagerImpl::UnloadExternalSource"), [this, InExternalSourceCookedData, InLanguage, InCallback = MoveTemp(InCallback)]() mutable
+	FileHandlerExecutionQueue.Async(WWISEFILEHANDLER_ASYNC_NAME("FWwiseExternalSourceManagerImpl::UnloadExternalSource"), [this, InExternalSourceCookedData, InRootPath, InLanguage, InCallback = MoveTemp(InCallback)]() mutable
 	{
-		UnloadExternalSourceImpl(InExternalSourceCookedData, InLanguage, MoveTemp(InCallback));
+		UnloadExternalSourceImpl(InExternalSourceCookedData, InRootPath, InLanguage, MoveTemp(InCallback));
 	});
 }
 
@@ -101,7 +101,9 @@ void FWwiseExternalSourceManagerImpl::SetGranularity(uint32 InStreamingGranulari
 }
 
 TArray<uint32> FWwiseExternalSourceManagerImpl::PrepareExternalSourceInfos(TArray<AkExternalSourceInfo>& OutInfo,
-	const TArray<FWwiseExternalSourceCookedData>&& InCookedData)
+                                                                           const TArray<FWwiseExternalSourceCookedData>
+                                                                           &&
+                                                                           InCookedData)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT(TEXT("FWwiseExternalSourceManagerImpl::PrepareExternalSourceInfos"));
 	if (InCookedData.Num() == 0)
@@ -135,23 +137,16 @@ TArray<uint32> FWwiseExternalSourceManagerImpl::PrepareExternalSourceInfos(TArra
 }
 
 #if WITH_EDITORONLY_DATA
-void FWwiseExternalSourceManagerImpl::Cook(IWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData,
-	const TCHAR* PackageFilename,
-    const TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)>& WriteAdditionalFile,
-    const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage)
+void FWwiseExternalSourceManagerImpl::Cook(FWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData,
+	TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)> WriteAdditionalFile,
+	const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage)
 {
 	UE_LOG(LogWwiseFileHandler, Error, TEXT("FWwiseExternalSourceManagerImpl::Cook: External Source manager needs to be overridden."));
-}
-
-void FWwiseExternalSourceManagerImpl::SetExternalSourcePath(const FDirectoryPath& DirectoryPath)
-{
-	UE_CLOG(ExternalSourcePath.Path != DirectoryPath.Path, LogWwiseFileHandler, Display, TEXT("FWwiseExternalSourceManagerImpl::SetExternalSourcePath: Updating path to \"%s\""), *DirectoryPath.Path);
-	ExternalSourcePath = DirectoryPath;
 }
 #endif
 
 void FWwiseExternalSourceManagerImpl::LoadExternalSourceImpl(
-	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FWwiseLanguageCookedData& InLanguage,
+	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath, const FWwiseLanguageCookedData& InLanguage,
 	FLoadExternalSourceCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_2(TEXT("FWwiseExternalSourceManagerImpl::LoadExternalSourceImpl"));
@@ -164,7 +159,7 @@ void FWwiseExternalSourceManagerImpl::LoadExternalSourceImpl(
 	else
 	{
 		UE_LOG(LogWwiseFileHandler, VeryVerbose, TEXT("Creating new State for %s %" PRIu32), GetManagingTypeName(), InExternalSourceCookedData.Cookie);
-		State = CreateExternalSourceState(InExternalSourceCookedData);
+		State = CreateExternalSourceState(InExternalSourceCookedData, InRootPath);
 		if (UNLIKELY(!State.IsValid()))
 		{
 			SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseExternalSourceManagerImpl::LoadExternalSourceImpl Callback"));
@@ -177,11 +172,11 @@ void FWwiseExternalSourceManagerImpl::LoadExternalSourceImpl(
 			ExternalSourceStatesById.Add(InExternalSourceCookedData.Cookie, State);
 		}
 	}
-	LoadExternalSourceMedia(InExternalSourceCookedData.Cookie, InExternalSourceCookedData.DebugName, MoveTemp(InCallback));
+	LoadExternalSourceMedia(InExternalSourceCookedData.Cookie, InExternalSourceCookedData.DebugName, InRootPath, MoveTemp(InCallback));
 }
 
 void FWwiseExternalSourceManagerImpl::UnloadExternalSourceImpl(
-	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FWwiseLanguageCookedData& InLanguage,
+	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath, const FWwiseLanguageCookedData& InLanguage,
 	FUnloadExternalSourceCallback&& InCallback)
 {
 	SCOPED_WWISEFILEHANDLER_EVENT_2(TEXT("FWwiseExternalSourceManagerImpl::UnloadExternalSourceImpl"));
@@ -208,7 +203,7 @@ void FWwiseExternalSourceManagerImpl::UnloadExternalSourceImpl(
 		}
 		if (LIKELY(InExternalSourceCookedData.Cookie != 0))
 		{
-			UnloadExternalSourceMedia(InExternalSourceCookedData.Cookie, InExternalSourceCookedData.DebugName, MoveTemp(InCallback));
+			UnloadExternalSourceMedia(InExternalSourceCookedData.Cookie, InExternalSourceCookedData.DebugName, InRootPath, MoveTemp(InCallback));
 		}
 		else
 		{
@@ -219,7 +214,7 @@ void FWwiseExternalSourceManagerImpl::UnloadExternalSourceImpl(
 }
 
 FWwiseExternalSourceStateSharedPtr FWwiseExternalSourceManagerImpl::CreateExternalSourceState(
-	const FWwiseExternalSourceCookedData& InExternalSourceCookedData)
+	const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath)
 {
 	return FWwiseExternalSourceStateSharedPtr(new FWwiseExternalSourceState(InExternalSourceCookedData));
 }
@@ -231,21 +226,21 @@ bool FWwiseExternalSourceManagerImpl::CloseExternalSourceState(FWwiseExternalSou
 
 
 void FWwiseExternalSourceManagerImpl::LoadExternalSourceMedia(const uint32 InExternalSourceCookie,
-	const FName& InExternalSourceName, FLoadExternalSourceCallback&& InCallback)
+	const FName& InExternalSourceName, const FName& InRootPath, FLoadExternalSourceCallback&& InCallback)
 {
 	UE_LOG(LogWwiseFileHandler, Error, TEXT("External Source manager needs to be overridden."));
 	InCallback(false);
 }
 
 void FWwiseExternalSourceManagerImpl::UnloadExternalSourceMedia(const uint32 InExternalSourceCookie,
-	const FName& InExternalSourceName, FUnloadExternalSourceCallback&& InCallback)
+	const FName& InExternalSourceName, const FName& InRootPath, FUnloadExternalSourceCallback&& InCallback)
 {
 	UE_LOG(LogWwiseFileHandler, Error, TEXT("External Source manager needs to be overridden."));
 	InCallback();
 }
 
 uint32 FWwiseExternalSourceManagerImpl::PrepareExternalSourceInfo(AkExternalSourceInfo& OutInfo,
-	const FWwiseExternalSourceCookedData& InCookedData)
+                                                                  const FWwiseExternalSourceCookedData& InCookedData)
 {
 	FRWScopeLock Lock(CookieToMediaLock, FRWScopeLockType::SLT_ReadOnly);
 	
@@ -272,7 +267,7 @@ uint32 FWwiseExternalSourceManagerImpl::PrepareExternalSourceInfo(AkExternalSour
 }
 
 void FWwiseExternalSourceManagerImpl::BindPlayingIdToExternalSources(const uint32 InPlayingId,
-	const TArray<uint32>& InMediaIds)
+                                                                     const TArray<uint32>& InMediaIds)
 {
 	if (InMediaIds.Num() == 0)
 	{

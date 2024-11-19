@@ -32,7 +32,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkSettings.h"
 #include "AkSettingsPerUser.h"
 #include "AkSurfaceReflectorSetComponent.h"
-#include "AkSpatialAudioVolume.h"
 #include "AkReverbZone.h"
 #include "WwiseUnrealDefines.h"
 #include "AssetManagement/AkAssetDatabase.h"
@@ -49,7 +48,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "DetailsCustomization/AkSurfaceReflectorSetDetailsCustomization.h"
 #include "DetailsCustomization/AkSettingsDetailsCustomization.h"
 #include "DetailsCustomization/AkReverbZoneDetailsCustomization.h"
-#include "DetailsCustomization/AkSpatialAudioVolumeActorDetailsCustomization.h"
 #include "LevelEditor.h"
 #include "Editor/UnrealEdEngine.h"
 #include "Factories/ActorFactoryAkAmbientSound.h"
@@ -74,7 +72,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "ProjectDescriptor.h"
 #include "PropertyEditorModule.h"
 #include "Sequencer/MovieSceneAkAudioEventTrackEditor.h"
-#include "Sequencer/MovieSceneWwiseGameParameterTrackEditor.h"
+#include "Sequencer/MovieSceneAkAudioRTPCTrackEditor.h"
 #include "Settings/ProjectPackagingSettings.h"
 #include "AkUnrealEditorHelper.h"
 #include "EditorBuildUtils.h"
@@ -83,7 +81,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Visualizer/AkAcousticPortalVisualizer.h"
 #include "Visualizer/AkComponentVisualizer.h"
 #include "Visualizer/AkSurfaceReflectorSetComponentVisualizer.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SCheckBox.h"
@@ -100,8 +98,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/WwiseProjectDatabaseDelegates.h"
 #include "AkAudioModule.h"
 #include "AssetManagement/StaticPluginWriter.h"
-#include "DetailsCustomization/WwiseDetailsCustomization.h"
-#include "Wwise/WwisePluginStyle.h"
 
 #include "WwiseInitBankLoader/WwiseInitBankLoader.h"
 
@@ -612,13 +608,13 @@ void FAudiokineticToolsModule::StartupModule()
 		.SetDisplayName(NSLOCTEXT("FAudiokineticToolsModule", "BrowserTabTitle", "Wwise Browser"))
 		.SetTooltipText(NSLOCTEXT("FAudiokineticToolsModule", "BrowserTooltipText", "Open the Wwise Browser tab."))
 		.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
-		.SetIcon(FSlateIcon(FWwisePluginStyle::Get()->GetStyleSetName(), FWwisePluginStyle::WwiseIconName));
+		.SetIcon(FSlateIcon(FAkAudioStyle::GetStyleSetName(), "AudiokineticTools.AkBrowserTabIcon"));
 
 	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry"));
 	OnAssetRegistryFilesLoadedHandle = AssetRegistryModule.Get().OnFilesLoaded().AddRaw(this, &FAudiokineticToolsModule::OnAssetRegistryFilesLoaded);
 
 	ISequencerModule& SequencerModule = FModuleManager::LoadModuleChecked<ISequencerModule>(TEXT("Sequencer"));
-	RTPCTrackEditorHandle = SequencerModule.RegisterTrackEditor(FOnCreateTrackEditor::CreateStatic(&FMovieSceneWwiseGameParameterTrackEditor::CreateTrackEditor));
+	RTPCTrackEditorHandle = SequencerModule.RegisterTrackEditor(FOnCreateTrackEditor::CreateStatic(&FMovieSceneAkAudioRTPCTrackEditor::CreateTrackEditor));
 	EventTrackEditorHandle = SequencerModule.RegisterTrackEditor(FOnCreateTrackEditor::CreateStatic(&FMovieSceneAkAudioEventTrackEditor::CreateTrackEditor));
 
 	// Since we are initialized in the PostEngineInit phase, our Ambient Sound actor factory is not registered. We need to register it ourselves.
@@ -638,8 +634,6 @@ void FAudiokineticToolsModule::StartupModule()
 	PropertyModule.RegisterCustomClassLayout(UAkGeometryComponent::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkGeometryComponentDetailsCustomization::MakeInstance));
 	PropertyModule.RegisterCustomClassLayout(UAkSettings::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkSettingsDetailsCustomization::MakeInstance));
 	PropertyModule.RegisterCustomClassLayout(AAkReverbZone::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkReverbZoneDetailsCustomization::MakeInstance));
-	PropertyModule.RegisterCustomClassLayout(UAkPlatformInitializationSettingsBase::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FWwiseDetailsCustomization::MakeInstance));
-	PropertyModule.RegisterCustomClassLayout(AAkSpatialAudioVolume::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkSpatialAudioVolumeActorDetailsCustomization::MakeInstance));
 
 	if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase())
 	{
@@ -662,7 +656,6 @@ void FAudiokineticToolsModule::StartupModule()
 		[this]()
 		{
 			SetStaticPluginsInformation();
-			FAkAudioModule::UpdateWwiseResourceCookerSettings();
 		}
 	);
 	
@@ -698,7 +691,7 @@ void FAudiokineticToolsModule::OnAkAudioInit()
 
 void FAudiokineticToolsModule::OnSoundBanksFolderChanged()
 {
-	FAkAudioModule::UpdateWwiseResourceCookerSettings();
+	FAkAudioModule::AkAudioModuleInstance->UpdateWwiseResourceLoaderSettings();
 	ParseGeneratedSoundBankData();
 }
 

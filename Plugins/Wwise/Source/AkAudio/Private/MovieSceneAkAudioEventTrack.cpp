@@ -38,12 +38,12 @@ UMovieSceneSection* UMovieSceneAkAudioEventTrack::CreateNewSection()
 }
 
 #if WITH_EDITOR
-bool UMovieSceneAkAudioEventTrack::AddNewEvent(FFrameNumber Time, UAkAudioEvent* Event)
+bool UMovieSceneAkAudioEventTrack::AddNewEvent(FFrameNumber Time, UAkAudioEvent* Event, const FString& EventName)
 {
     UMovieSceneAkAudioEventSection* NewSection = NewObject<UMovieSceneAkAudioEventSection>(this);
 	ensure(NewSection);
 
-	bool eventSet = NewSection->SetEvent(Event);
+	bool eventSet = NewSection->SetEvent(Event, EventName);
 	if (eventSet)
 	{
 		const auto Duration = NewSection->GetMaxEventDuration();

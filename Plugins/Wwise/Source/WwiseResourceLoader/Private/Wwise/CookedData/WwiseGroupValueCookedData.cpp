@@ -19,10 +19,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Stats/ResourceLoader.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 #include <inttypes.h>
 
 FWwiseGroupValueCookedData::FWwiseGroupValueCookedData():
@@ -63,16 +59,6 @@ void FWwiseGroupValueCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseGroupValueCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "GV";
-	Writer.BeginObject();
-	Writer << "GV" << static_cast<int8>(Type) << "Gid" << GroupId << "Id" << Id;
-	Writer.EndObject();
-}
-#endif
 
 FString FWwiseGroupValueCookedData::GetDebugString() const
 {

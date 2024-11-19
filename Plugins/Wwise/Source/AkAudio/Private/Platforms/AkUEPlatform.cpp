@@ -118,12 +118,12 @@ TArray<FString> AkUnrealPlatformHelper::GetAllWwiseProjectPlatforms()
 		UE_LOG(LogAkAudio, Error, TEXT("GetAllWwiseProjectPlatforms: ProjectDatabase not loaded"));
 		return {};
 	}
-	const WwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
+	const FWwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
 	TArray<FString> Platforms;
 	auto PlatformIds = DataStructure.GetPlatforms();
 	for(auto& PlatformId : PlatformIds)
 	{
-		Platforms.Add(*PlatformId.GetPlatformName());
+		Platforms.Add(PlatformId.GetPlatformName().ToString());
 	}
 	return Platforms;
 }

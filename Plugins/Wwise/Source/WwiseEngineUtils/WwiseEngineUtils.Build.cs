@@ -27,13 +27,13 @@ public class WwiseEngineUtils : ModuleRules
 			"Core",
 			"Engine",
 			"WwiseSoundEngine",
+#if !UE_5_0_OR_LATER
+			"CoreUObject",
+#endif
 			"WwiseUtils"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
-#if !UE_5_0_OR_LATER
-			"CoreUObject",
-#endif
 		});
 
 #if UE_5_3_OR_LATER

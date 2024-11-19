@@ -42,56 +42,16 @@ namespace AkInitializationSettings_Helpers
 {
 	enum { IsLoggingInitialization = true };
 
-#if WWISE_2024_1_OR_LATER
-	// Hooks to track Primary memory reservation
-	void* AkMemAllocSpanPrimary(size_t size, size_t* extra)
-	{
-		ASYNC_INC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEnginePrimary, size);
-		LLM_SCOPE_BYTAG(Audio_Wwise_SoundEngine);
-		return FMemory::Malloc(size);
-	}
-	void AkMemFreeSpanPrimary(void* address, size_t size, size_t extra)
-	{
-		FMemory::Free(address);
-		ASYNC_DEC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEnginePrimary, size);
-	}
-	
-	// Hooks to track Media memory reservation
-	void* AkMemAllocSpanMedia(size_t size, size_t* extra)
-	{
-		ASYNC_INC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineMedia, size);
-		LLM_SCOPE_BYTAG(Audio_Wwise_SoundEngine);
-		return FMemory::Malloc(size);
-	}
-	void AkMemFreeSpanMedia(void* address, size_t size, size_t extra)
-	{
-		FMemory::Free(address);
-		ASYNC_DEC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineMedia, size);
-	}
-	
-#if !defined(AK_OPTIMIZED)
-	// Hooks to track Profiler memory reservation
-	void* AkMemAllocSpanProfiler(size_t size, size_t* extra)
-	{
-		ASYNC_INC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineProfiler, size);
-		LLM_SCOPE_BYTAG(Audio_Wwise_SoundEngine);
-		return FMemory::Malloc(size);
-	}
-	void AkMemFreeSpanProfiler(void* address, size_t size, size_t extra)
-	{
-		FMemory::Free(address);
-		ASYNC_DEC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineProfiler, size);
-	}
-#endif // !defined(AK_OPTIMIZED)
-	
-#else
 	// expected page size and alignment requirement for all general purpose commits
-	const size_t kAkVmPageSize = 64 * 1024;
+	size_t AkVmPageSize = 64 * 1024;
+
 	void* AkMemAllocVM(size_t size, size_t* /*extra*/)
 	{
 		ASYNC_INC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineVM, size);
 		LLM_SCOPE_BYTAG(Audio_Wwise_SoundEngine);
-		return FMemory::Malloc(size, kAkVmPageSize);
+		void* ptr = FMemory::Malloc(size, AkVmPageSize);
+		checkf((uintptr_t)ptr % AkVmPageSize == 0, TEXT("FMemory::Malloc is not aligned properly. Try lowering the Vm Page Size in the Wwise advanced settings."));
+		return ptr;
 	}
 
 	void AkMemFreeVM(void* address, size_t /*size*/, size_t /*extra*/, size_t release)
@@ -102,7 +62,7 @@ namespace AkInitializationSettings_Helpers
 			ASYNC_DEC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineVM, release);
 		}
 	}
-#endif
+
 	void AkProfilerPushTimer(AkPluginID in_uPluginID, const char* in_pszZoneName)
 	{
 		if (!in_pszZoneName)
@@ -110,16 +70,13 @@ namespace AkInitializationSettings_Helpers
 			in_pszZoneName = "(Unknown)";
 		}
 
-		auto Name = FString(in_pszZoneName);
-		Name = FString(TEXT("WwiseSoundEngine ")) + Name;
-
 #if CPUPROFILERTRACE_ENABLED
-		FCpuProfilerTrace::OutputBeginDynamicEvent(*Name);
+		FCpuProfilerTrace::OutputBeginDynamicEvent(in_pszZoneName);
 #endif
 #if PLATFORM_IMPLEMENTS_BeginNamedEventStatic
-		FPlatformMisc::BeginNamedEventStatic(WwiseNamedEvents::Color1, *Name);
+		FPlatformMisc::BeginNamedEventStatic(WwiseNamedEvents::Color1, in_pszZoneName);
 #else
-		FPlatformMisc::BeginNamedEvent(WwiseNamedEvents::Color1, *Name);
+		FPlatformMisc::BeginNamedEvent(WwiseNamedEvents::Color1, in_pszZoneName);
 #endif
 	}
 
@@ -136,7 +93,7 @@ namespace AkInitializationSettings_Helpers
 		// Filter out audioFrameBoundary bookmarks, because those occur too frequently
 		if (in_uPluginID != AKMAKECLASSID(AkPluginTypeNone, AKCOMPANYID_AUDIOKINETIC, AK::ProfilingID::AudioFrameBoundary))
 		{
-			TRACE_BOOKMARK(TEXT("WwiseSoundEngine %hs Marker"), in_pszMarkerName);
+			TRACE_BOOKMARK(TEXT("AK Marker: %s"), in_pszMarkerName);
 		}
 	}
 }
@@ -154,32 +111,16 @@ FAkInitializationStructure::FAkInitializationStructure()
 	auto* StreamMgr = IWwiseStreamMgrAPI::Get();
 	if (UNLIKELY(!Comm || !MemoryMgr || !MusicEngine || !SoundEngine || !StreamMgr)) return;
 
-	// Set up all of the memory settings
 	MemoryMgr->GetDefaultSettings(MemSettings);
-#if WWISE_2024_1_OR_LATER
-	// Set up memory hooks for tracking stats on each arena
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].fnMemAllocSpan = AkInitializationSettings_Helpers::AkMemAllocSpanPrimary;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].fnMemFreeSpan = AkInitializationSettings_Helpers::AkMemFreeSpanPrimary;
-
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Media].fnMemAllocSpan = AkInitializationSettings_Helpers::AkMemAllocSpanMedia;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Media].fnMemFreeSpan = AkInitializationSettings_Helpers::AkMemFreeSpanMedia;
-
-#if !defined(AK_OPTIMIZED)
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Profiler].fnMemAllocSpan = AkInitializationSettings_Helpers::AkMemAllocSpanProfiler;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Profiler].fnMemFreeSpan = AkInitializationSettings_Helpers::AkMemFreeSpanProfiler;
-#endif // !defined(AK_OPTIMIZED)
-
-#else	
 	MemSettings.pfAllocVM = AkInitializationSettings_Helpers::AkMemAllocVM;
 	MemSettings.pfFreeVM = AkInitializationSettings_Helpers::AkMemFreeVM;
-	MemSettings.uVMPageSize = AkInitializationSettings_Helpers::kAkVmPageSize;
-	// AkSpanCount setting is only available in 2022.1.10+, 2023.1.1+
+
+	// AkSpanCount setting is available in 2022.1.10+, 2023.1.1+, and future versions.
 	// Locking to spanCount_Small greatly reduces the amount of memory reserved by Wwise.
-	#if (WWISE_2022_1_OR_LATER && AK_WWISE_SOUNDENGINE_SUBMINOR_VERSION >= 10) || (WWISE_2023_1_OR_LATER && AK_WWISE_SOUNDENGINE_SUBMINOR_VERSION >= 1) || WWISE_2024_1_OR_LATER
-		MemSettings.uVMSpanCount = AkSpanCount_Small;
-		MemSettings.uDeviceSpanCount = AkSpanCount_Small;
-	#endif
-#endif // WWISE_2024_1_OR_LATER
+#if (WWISE_2022_1_OR_LATER && AK_WWISE_SOUNDENGINE_SUBMINOR_VERSION >= 10) || (WWISE_2023_1_OR_LATER && AK_WWISE_SOUNDENGINE_SUBMINOR_VERSION >= 1) || WWISE_2024_1_OR_LATER
+	MemSettings.uVMSpanCount = AkSpanCount_Small;
+	MemSettings.uDeviceSpanCount = AkSpanCount_Small;
+#endif
 
 	StreamMgr->GetDefaultSettings(StreamManagerSettings);
 
@@ -198,8 +139,6 @@ FAkInitializationStructure::FAkInitializationStructure()
 	InitSettings.fnProfilerPushTimer = AkInitializationSettings_Helpers::AkProfilerPushTimer;
 	InitSettings.fnProfilerPopTimer = AkInitializationSettings_Helpers::AkProfilerPopTimer;
 	InitSettings.fnProfilerPostMarker = AkInitializationSettings_Helpers::AkProfilerPostMarker;
-
-	InitSettings.bUseSoundBankMgrThread = !!AK_ENABLE_BANK_MGR_THREAD;
 	
 	SoundEngine->GetDefaultPlatformInitSettings(PlatformInitSettings);
 
@@ -283,13 +222,6 @@ void FAkSpatialAudioSettings::FillInitializationStructure(FAkInitializationStruc
 	SpatialAudioInitSettings.uLoadBalancingSpread = LoadBalancingSpread;
 	SpatialAudioInitSettings.bEnableGeometricDiffractionAndTransmission = EnableGeometricDiffractionAndTransmission;
 	SpatialAudioInitSettings.bCalcEmitterVirtualPosition = CalcEmitterVirtualPosition;
-#if WWISE_2024_1_OR_LATER
-	SpatialAudioInitSettings.eTransmissionOperation = (AkTransmissionOperation)TransmissionOperation;
-	SpatialAudioInitSettings.fMaxDiffractionAngleDegrees = MaxDiffractionAngleDegrees;
-	SpatialAudioInitSettings.fSmoothingConstantMs = SmoothingConstantMs;
-	SpatialAudioInitSettings.uMaxDiffractionPaths = MaxDiffractionPaths;
-	SpatialAudioInitSettings.uMaxGlobalReflectionPaths = MaxGlobalReflectionPaths;
-#endif
 }
 
 
@@ -365,8 +297,6 @@ void FAkCommonInitializationSettings::FillInitializationStructure(FAkInitializat
 	PlatformInitSettings.uNumRefillsInVoice = NumberOfRefillsInVoice;
 
 	SpatialAudioSettings.FillInitializationStructure(InitializationStructure);
-	
-	MemoryArenaSettings.FillInitializationStructure(InitializationStructure);
 
 	InitializationStructure.MusicSettings.fStreamingLookAheadRatio = StreamingLookAheadRatio;
 }
@@ -439,7 +369,7 @@ static void UELocalOutputFunc(
 
 		else
 		{
-#if WITH_EDITOR
+#if UE_EDITOR
 			UE_LOG(LogWwiseMonitor, Warning, TEXT("%s"), *AkError);
 #else
 			UE_LOG(LogWwiseMonitor, Error, TEXT("%s"), *AkError);
@@ -467,6 +397,9 @@ namespace FAkSoundEngineInitialization
 
 		FAkInitializationStructure InitializationStructure;
 		InitializationSettings->FillInitializationStructure(InitializationStructure);
+		
+		AkInitializationSettings_Helpers::AkVmPageSize = InitializationSettings->AdvancedSettings.VmPageSize;
+		InitializationStructure.MemSettings.uVMPageSize = AkInitializationSettings_Helpers::AkVmPageSize;
 
 		UE_CLOG(AkInitializationSettings_Helpers::IsLoggingInitialization, LogAkAudio, Verbose, TEXT("Initializing Platform"));
 		FAkPlatform::PreInitialize(InitializationStructure);
@@ -613,27 +546,3 @@ namespace FAkSoundEngineInitialization
 		}
 	}
 }
-
-//////////////////////////////////////////////////////////////////////////
-// FAkMemoryArenaInitializationSettings
-
-void FAkMemoryArenaInitializationSettings::FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const
-{
-#if WWISE_2024_1_OR_LATER
-	AkMemSettings& MemSettings = InitializationStructure.MemSettings;
-
-	// Apply Primary mem arena customizations
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].uSbaInitSize = PrimarySbaInitSize;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].uTlsfInitSize = PrimaryTlsfInitSize;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].uTlsfSpanSize = PrimaryTlsfSpanSize;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].uMemReservedLimit = PrimaryMemReservedLimit;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Primary].uAllocSizeHuge = PrimaryAllocSizeHuge;
-
-	// Apply Media mem arena customizations
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Media].uTlsfInitSize = MediaTlsfInitSize;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Media].uTlsfSpanSize = MediaTlsfSpanSize;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Media].uMemReservedLimit = MediaMemReservedLimit;
-	MemSettings.memoryArenaSettings[AkMemoryMgrArena_Media].uAllocSizeHuge = MediaAllocSizeHuge;
-#endif
-}
-

@@ -17,19 +17,226 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/Stats/ResourceLoader.h"
+#include "WwiseResourceLoaderModule.h"
 #include "Wwise/WwiseExecutionQueue.h"
-#include "Wwise/WwiseResourceLoader.h"
-#include "Wwise/WwiseResourceLoaderState.h"
-#include "Wwise/WwiseSwitchContainerLoadedGroupValueInfo.h"
+#include "Wwise/CookedData/WwiseAuxBusCookedData.h"
+#include "Wwise/CookedData/WwiseEventCookedData.h"
+#include "Wwise/CookedData/WwiseShareSetCookedData.h"
+#include "Wwise/Loaded/WwiseLoadedAuxBus.h"
+#include "Wwise/Loaded/WwiseLoadedSoundBank.h"
+#include "Wwise/Loaded/WwiseLoadedEvent.h"
+#include "Wwise/Loaded/WwiseLoadedExternalSource.h"
+#include "Wwise/Loaded/WwiseLoadedGroupValue.h"
+#include "Wwise/Loaded/WwiseLoadedInitBank.h"
+#include "Wwise/Loaded/WwiseLoadedMedia.h"
+#include "Wwise/Loaded/WwiseLoadedShareSet.h"
 
-class WWISERESOURCELOADER_API FWwiseResourceLoaderImpl : public FWwiseResourceLoader
+#include "Wwise/WwiseResourceLoaderFuture.h"
+#include "Wwise/WwiseSharedGroupValueKey.h"
+#include "Wwise/WwiseSharedLanguageId.h"
+#include "Wwise/WwiseSharedPlatformId.h"
+
+#include "Wwise/Stats/ResourceLoader.h"
+
+#if WITH_EDITORONLY_DATA
+#include "Engine/EngineTypes.h"
+#include "UObject/SoftObjectPath.h"
+#endif
+
+#include "WwiseResourceLoaderImpl.generated.h"
+
+class IWwiseSoundBankManager;
+class IWwiseMediaManager;
+class IWwiseExternalSourceManager;
+/**
+ * @brief What reload strategy should be used for language changes
+*/
+UENUM()
+enum EWwiseReloadLanguage
+{
+	/// Don't reload anything. The game is fully responsible to reload elements. This doesn't call
+	/// any operation on the SoundEngine side, so everything will keep on working as usual.
+	Manual,
+
+	/// Reloads immediately without stopping anything. Game is responsible for stopping and restarting
+	/// possibly affected sounds or else they might cause audible breaks. This is useful when some
+	/// sounds can keep on playing, such as music and ambient sounds, while the dialogues are being
+	/// internally reloaded.
+	/// 
+	/// Depending on the quantity of currently loaded localized banks, the operation can take a long time.
+	/// 
+	/// \warning Affected events needs to be restarted once the operation is done.
+	Immediate,
+
+	/// Stops all sounds first, unloads all the localized banks, and reloads the new language. This will
+	/// cause an audible break while the operation is done.
+	/// 
+	/// Depending on the quantity of currently loaded localized banks, the operation can take a long time.
+	/// 
+	/// \warning Affected events needs to be restarted once the operation is done.
+	Safe
+};
+
+/**
+ * @brief Whether the WwiseResourceLoader is allowed to load/unload assets
+*/
+enum class EWwiseResourceLoaderState
+{
+	/// Do not allow the WwiseResourceLoader to load/unload assets
+	AlwaysDisabled,
+	/// Allow the WwiseResourceLoader to load/unload assets
+	Enabled,
+};
+
+struct WWISERESOURCELOADER_API FWwiseSwitchContainerLeafGroupValueUsageCount
+{
+	/**
+	 * @brief SwitchContainer Leaf this structure represents.
+	*/
+	const FWwiseSwitchContainerLeafCookedData& Key;
+
+	/**
+	 * @brief Number of GroupValues present in this key that are already loaded.
+	*/
+	TSet<FWwiseGroupValueCookedData> LoadedGroupValues;
+
+	/**
+	 * @brief Resources represented by the Key that were successfully loaded.
+	*/
+	struct WWISERESOURCELOADER_API FLoadedData
+	{
+		FLoadedData();
+		TArray<const FWwiseSoundBankCookedData*> LoadedSoundBanks;
+		TArray<const FWwiseExternalSourceCookedData*> LoadedExternalSources;
+		TArray<const FWwiseMediaCookedData*> LoadedMedia;
+		int IsProcessing{0};
+		bool IsLoaded() const;
+	} LoadedData;
+
+	FWwiseSwitchContainerLeafGroupValueUsageCount(const FWwiseSwitchContainerLeafCookedData& InKey);
+
+	bool HaveAllKeys() const;
+};
+
+struct WWISERESOURCELOADER_API FWwiseSwitchContainerLoadedGroupValueInfo
+{
+	/**
+	 * @brief GroupValue key this structure represents.
+	*/
+	FWwiseSharedGroupValueKey Key;
+
+	/**
+	 * @brief Number of times this particular GroupValue got loaded in the currently loaded maps.
+	 * 
+	 * Any value higher than 0 means the Leaves might be required.
+	*/
+	int GroupValueCount;
+
+	/**
+	 * @brief Leaves that uses this particular GroupValue.
+	 * 
+	 * @note The ownership of this pointer is uniquely created and discarded during SwitchContainerLeaf loading and unloading.
+	*/
+	TSet<TSharedRef<FWwiseSwitchContainerLeafGroupValueUsageCount, ESPMode::ThreadSafe>> Leaves;
+
+	FWwiseSwitchContainerLoadedGroupValueInfo(const FWwiseSharedGroupValueKey& InKey) :
+		Key(InKey),
+		GroupValueCount(0),
+		Leaves()
+	{}
+
+	bool ResourcesAreLoaded() const
+	{
+		check(GroupValueCount >= 0);
+
+		return GroupValueCount > 0;
+	}
+
+	bool operator ==(const FWwiseSwitchContainerLoadedGroupValueInfo& InRhs) const
+	{
+		return Key == InRhs.Key;
+	}
+
+	bool operator !=(const FWwiseSwitchContainerLoadedGroupValueInfo& InRhs) const
+	{
+		return Key != InRhs.Key;
+	}
+
+	bool operator <(const FWwiseSwitchContainerLoadedGroupValueInfo& InRhs) const
+	{
+		return Key < InRhs.Key;
+	}
+
+	bool operator <=(const FWwiseSwitchContainerLoadedGroupValueInfo& InRhs) const
+	{
+		return Key <= InRhs.Key;
+	}
+
+	bool operator >(const FWwiseSwitchContainerLoadedGroupValueInfo& InRhs) const
+	{
+		return Key > InRhs.Key;
+	}
+
+	bool operator >=(const FWwiseSwitchContainerLoadedGroupValueInfo& InRhs) const
+	{
+		return Key >= InRhs.Key;
+	}
+
+	bool operator ==(const FWwiseSharedGroupValueKey& InRhs) const
+	{
+		return Key == InRhs;
+	}
+
+	bool operator !=(const FWwiseSharedGroupValueKey& InRhs) const
+	{
+		return Key != InRhs;
+	}
+};
+inline uint32 GetTypeHash(const FWwiseSwitchContainerLoadedGroupValueInfo& InValue)
+{
+	return GetTypeHash(InValue.Key);
+}
+
+class WWISERESOURCELOADER_API FWwiseResourceLoaderImpl
 {
 public:
 	using FWwiseSetLanguageFuture = TWwiseFuture<void>;
 	using FWwiseSetLanguagePromise = TWwisePromise<void>;
 
+	static FWwiseResourceLoaderImpl* Instantiate()
+	{
+		if (auto* Module = IWwiseResourceLoaderModule::GetModule())
+		{
+			return Module->InstantiateResourceLoaderImpl();
+		}
+		return nullptr;
+	}
+
 	EWwiseResourceLoaderState WwiseResourceLoaderState = EWwiseResourceLoaderState::Enabled;
+
+	/**
+	 * @brief Currently targeted platform for this runtime
+	*/
+	FWwiseSharedPlatformId CurrentPlatform;
+
+	/**
+	 * @brief Currently targeted language for this runtime
+	*/
+	FWwiseLanguageCookedData CurrentLanguage;
+
+	/**
+	 * @brief Location in the staged product where the SoundBank medias are found
+	*/
+	FString StagePath;
+
+#if WITH_EDITORONLY_DATA
+	/**
+	 * @brief Location where the Wwise Generated SoundBanks product is found on disk relative to the project
+	*/
+	FDirectoryPath GeneratedSoundBanksPath;
+#endif
+
+	ENamedThreads::Type TaskThread = ENamedThreads::AnyThread;
 
 	/**
 	 * Constructor used when creating a default Resource Loader implementation. You should not create or use one yourself,
@@ -50,50 +257,58 @@ public:
 
 	virtual ~FWwiseResourceLoaderImpl() {}
 
+	FName GetUnrealExternalSourcePath() const;
+	FString GetUnrealPath() const;
+	FString GetUnrealPath(const FName& InPath) const { return GetUnrealPath(InPath.ToString()); }
+	FString GetUnrealPath(const FString& InPath) const;
+
+	FString GetUnrealStagePath(const FName& InPath) const;
+	FString GetUnrealStagePath(const FString& InPath) const;
+#if WITH_EDITORONLY_DATA
+	FString GetUnrealGeneratedSoundBanksPath(const FName& InPath) const { return GetUnrealGeneratedSoundBanksPath(InPath.ToString());}
+	FString GetUnrealGeneratedSoundBanksPath(const FString& InPath) const;
+#endif
+
 	virtual EWwiseResourceLoaderState GetResourceLoaderState();
 	virtual void SetResourceLoaderState(EWwiseResourceLoaderState State);
-	virtual bool IsEnabled() const override;
-	virtual void Disable() override;
-	virtual void Enable() override;
+	virtual bool IsEnabled();
+	virtual void Disable();
+	virtual void Enable();
 
-	virtual void UpdateLanguage(FWwiseSetLanguagePromise&& Promise, const FWwiseLanguageCookedData& InLanguage, EWwiseReloadLanguage InReloadLanguage) override;
-	virtual void SetPlatform(const FWwiseSharedPlatformId& InPlatform) override;
+	virtual void SetLanguageAsync(FWwiseSetLanguagePromise&& Promise, const FWwiseLanguageCookedData& InLanguage, EWwiseReloadLanguage InReloadLanguage);
+	void SetPlatform(const FWwiseSharedPlatformId& InPlatform);
 
-	virtual FWwiseLoadedAssetLibraryPtr CreateAssetLibraryNode(const FWwiseAssetLibraryCookedData& InAssetLibraryCookedData) override;
-	virtual void LoadAssetLibraryNode(FWwiseLoadedAssetLibraryPromise&& Promise, FWwiseLoadedAssetLibraryPtr&& InAssetLibraryListNode) override;
-	virtual void UnloadAssetLibraryNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedAssetLibraryPtr&& InAssetLibraryListNode) override;
+	virtual FWwiseLoadedAuxBusPtr CreateAuxBusNode(const FWwiseLocalizedAuxBusCookedData& InAuxBusCookedData, const FWwiseLanguageCookedData* InLanguageOverride);
+	virtual void LoadAuxBusAsync(FWwiseLoadedAuxBusPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode);
+	virtual void UnloadAuxBusAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode);
 
-	virtual FWwiseLoadedAuxBusPtr CreateAuxBusNode(const FWwiseLocalizedAuxBusCookedData& InAuxBusCookedData, const FWwiseLanguageCookedData* InLanguageOverride) override;
-	virtual void LoadAuxBusNode(FWwiseLoadedAuxBusPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode) override;
-	virtual void UnloadAuxBusNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedAuxBusPtr&& InAuxBusListNode) override;
+	virtual FWwiseLoadedEventPtr CreateEventNode(const FWwiseLocalizedEventCookedData& InEventCookedData, const FWwiseLanguageCookedData* InLanguageOverride);
+	virtual void LoadEventAsync(FWwiseLoadedEventPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode);
+	virtual void UnloadEventAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode);
 
-	virtual FWwiseLoadedEventPtr CreateEventNode(const FWwiseLocalizedEventCookedData& InEventCookedData, const FWwiseLanguageCookedData* InLanguageOverride) override;
-	virtual void LoadEventNode(FWwiseLoadedEventPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode) override;
-	virtual void UnloadEventNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedEventPtr&& InEventListNode) override;
+	virtual FWwiseLoadedExternalSourcePtr CreateExternalSourceNode(const FWwiseExternalSourceCookedData& InExternalSourceCookedData);
+	virtual void LoadExternalSourceAsync(FWwiseLoadedExternalSourcePromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode);
+	virtual void UnloadExternalSourceAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode);
 
-	virtual FWwiseLoadedExternalSourcePtr CreateExternalSourceNode(const FWwiseExternalSourceCookedData& InExternalSourceCookedData) override;
-	virtual void LoadExternalSourceNode(FWwiseLoadedExternalSourcePromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode) override;
-	virtual void UnloadExternalSourceNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedExternalSourcePtr&& InExternalSourceListNode) override;
+	virtual FWwiseLoadedGroupValuePtr CreateGroupValueNode(const FWwiseGroupValueCookedData& InGroupValueCookedData);
+	virtual void LoadGroupValueAsync(FWwiseLoadedGroupValuePromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode);
+	virtual void UnloadGroupValueAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode);
 
-	virtual FWwiseLoadedGroupValuePtr CreateGroupValueNode(const FWwiseGroupValueCookedData& InGroupValueCookedData) override;
-	virtual void LoadGroupValueNode(FWwiseLoadedGroupValuePromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode) override;
-	virtual void UnloadGroupValueNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedGroupValuePtr&& InGroupValueListNode) override;
+	virtual FWwiseLoadedInitBankPtr CreateInitBankNode(const FWwiseInitBankCookedData& InInitBankCookedData);
+	virtual void LoadInitBankAsync(FWwiseLoadedInitBankPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode);
+	virtual void UnloadInitBankAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode);
 
-	virtual FWwiseLoadedInitBankPtr CreateInitBankNode(const FWwiseInitBankCookedData& InInitBankCookedData) override;
-	virtual void LoadInitBankNode(FWwiseLoadedInitBankPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode) override;
-	virtual void UnloadInitBankNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedInitBankPtr&& InInitBankListNode) override;
+	virtual FWwiseLoadedMediaPtr CreateMediaNode(const FWwiseMediaCookedData& InMediaCookedData);
+	virtual void LoadMediaAsync(FWwiseLoadedMediaPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode);
+	virtual void UnloadMediaAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode);
 
-	virtual FWwiseLoadedMediaPtr CreateMediaNode(const FWwiseMediaCookedData& InMediaCookedData) override;
-	virtual void LoadMediaNode(FWwiseLoadedMediaPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode) override;
-	virtual void UnloadMediaNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedMediaPtr&& InMediaListNode) override;
+	virtual FWwiseLoadedShareSetPtr CreateShareSetNode(const FWwiseLocalizedShareSetCookedData& InShareSetCookedData, const FWwiseLanguageCookedData* InLanguageOverride);
+	virtual void LoadShareSetAsync(FWwiseLoadedShareSetPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode);
+	virtual void UnloadShareSetAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode);
 
-	virtual FWwiseLoadedShareSetPtr CreateShareSetNode(const FWwiseLocalizedShareSetCookedData& InShareSetCookedData, const FWwiseLanguageCookedData* InLanguageOverride) override;
-	virtual void LoadShareSetNode(FWwiseLoadedShareSetPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode) override;
-	virtual void UnloadShareSetNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedShareSetPtr&& InShareSetListNode) override;
-
-	virtual FWwiseLoadedSoundBankPtr CreateSoundBankNode(const FWwiseLocalizedSoundBankCookedData& InSoundBankCookedData, const FWwiseLanguageCookedData* InLanguageOverride) override;
-	virtual void LoadSoundBankNode(FWwiseLoadedSoundBankPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode) override;
-	virtual void UnloadSoundBankNode(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode) override;
+	virtual FWwiseLoadedSoundBankPtr CreateSoundBankNode(const FWwiseLocalizedSoundBankCookedData& InSoundBankCookedData, const FWwiseLanguageCookedData* InLanguageOverride);
+	virtual void LoadSoundBankAsync(FWwiseLoadedSoundBankPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode);
+	virtual void UnloadSoundBankAsync(FWwiseResourceUnloadPromise&& Promise, FWwiseLoadedSoundBankPtr&& InSoundBankListNode);
 
 	// Checks whether no element remains pending in the Resource Loader at this point. Used for unit testing. 
 	bool IsEmpty() const
@@ -119,15 +334,6 @@ protected:
 
 	FCriticalSection ListUpdateCriticalSection;
 	
-	/**
-	 * @brief List of all the loaded Asset Library Wwise Objects.
-	 *
-	 * This list is maintained through the LoadAssetLibraryAsync and UnloadAssetLibraryAsync operations.
-	 *
-	 * @note To modify this list, you must call the operation asynchronously through ListExecutionQueue.
-	*/
-	FWwiseLoadedAssetLibraryList LoadedAssetLibraryList;
-
 	/**
 	 * @brief List of all the loaded Auxiliary Bus Wwise Objects.
 	 *
@@ -257,7 +463,6 @@ protected:
 	virtual void UnloadSwitchContainerLeafResources(FWwiseResourceUnloadPromise&& Promise, TSharedRef<FWwiseSwitchContainerLeafGroupValueUsageCount, ESPMode::ThreadSafe> UsageCount);
 	virtual void DeleteSwitchContainerLeafGroupValueUsageCount(FWwiseResourceUnloadPromise&& Promise, TSharedRef<FWwiseSwitchContainerLeafGroupValueUsageCount, ESPMode::ThreadSafe>& UsageCount);
 
-	virtual void AttachAssetLibraryNode(FWwiseLoadedAssetLibraryListNode* AssetLibraryListNode);
 	virtual void AttachAuxBusNode(FWwiseLoadedAuxBusListNode* AuxBusListNode);
 	virtual void AttachEventNode(FWwiseLoadedEventListNode* EventListNode);
 	virtual void AttachExternalSourceNode(FWwiseLoadedExternalSourceListNode* ExternalSourceListNode);
@@ -267,7 +472,6 @@ protected:
 	virtual void AttachShareSetNode(FWwiseLoadedShareSetListNode* ShareSetListNode);
 	virtual void AttachSoundBankNode(FWwiseLoadedSoundBankListNode* SoundBankListNode);
 
-	virtual void DetachAssetLibraryNode(FWwiseLoadedAssetLibraryListNode* AssetLibraryListNode);
 	virtual void DetachAuxBusNode(FWwiseLoadedAuxBusListNode* AuxBusListNode);
 	virtual void DetachEventNode(FWwiseLoadedEventListNode* EventListNode);
 	virtual void DetachExternalSourceNode(FWwiseLoadedExternalSourceListNode* ExternalSourceListNode);
@@ -324,6 +528,7 @@ public:
 #endif
 		static WWISE_RESOURCELOADERIMPL_TEST_CONST bool bMockSleepOnMediaLoad;
 	};
+
 };
 
 template <typename T>
@@ -385,7 +590,7 @@ inline const FWwiseLanguageCookedData* FWwiseResourceLoaderImpl::GetLanguageMapK
 		return &CurrentLanguage;
 	}
 
-	UE_LOG(LogWwiseResourceLoader, Log, TEXT("GetLanguageMapKey: Could not find language %s while processing asset %s."),
+	UE_LOG(LogWwiseResourceLoader, Warning, TEXT("GetLanguageMapKey: Could not find language %s while processing asset %s."),
 		*CurrentLanguage.GetLanguageName().ToString(), *InDebugName.ToString());
 	return nullptr;
 }

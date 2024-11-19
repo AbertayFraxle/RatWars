@@ -217,7 +217,7 @@ bool UNiagaraDataInterfaceWwiseEvent::PerInstanceTick(void* PerInstanceData, FNi
 		PIData->EventToPost = EventToPost;
 
 		PIData->GameParameters.Empty();
-		for (const auto& GameParameter : GameParameters)
+		for (const auto GameParameter : GameParameters)
 		{
 			PIData->GameParameters.Add(GameParameter);
 		}

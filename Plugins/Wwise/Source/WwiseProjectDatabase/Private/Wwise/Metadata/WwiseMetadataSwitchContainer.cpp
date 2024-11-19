@@ -19,19 +19,19 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataPluginGroup.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
-WwiseMetadataSwitchContainer::WwiseMetadataSwitchContainer(WwiseMetadataLoader& Loader) :
-	SwitchValue(Loader.GetLoaderObject<WwiseMetadataSwitchValue>(this, "SwitchValue"_wwise_db)),
-	MediaRefs(Loader.GetArray<WwiseMetadataMediaReference>(this, "MediaRefs"_wwise_db)),
-	ExternalSourceRefs(Loader.GetArray<WwiseMetadataExternalSourceReference>(this, "ExternalSourceRefs"_wwise_db)),
-	PluginRefs(Loader.GetObjectPtr<WwiseMetadataPluginReferenceGroup>(this, "PluginRefs"_wwise_db)),
-	Children(Loader.GetArray<WwiseMetadataSwitchContainer>(this, "Children"_wwise_db))
+FWwiseMetadataSwitchContainer::FWwiseMetadataSwitchContainer(FWwiseMetadataLoader& Loader) :
+	SwitchValue(Loader.GetObject<FWwiseMetadataSwitchValue>(this, TEXT("SwitchValue"))),
+	MediaRefs(Loader.GetArray<FWwiseMetadataMediaReference>(this, TEXT("MediaRefs"))),
+	ExternalSourceRefs(Loader.GetArray<FWwiseMetadataExternalSourceReference>(this, TEXT("ExternalSourceRefs"))),
+	PluginRefs(Loader.GetObjectPtr<FWwiseMetadataPluginReferenceGroup>(this, TEXT("PluginRefs"))),
+	Children(Loader.GetArray<FWwiseMetadataSwitchContainer>(this, TEXT("Children")))
 {
-	Loader.LogParsed("SwitchContainer"_wwise_db);
+	Loader.LogParsed(TEXT("SwitchContainer"));
 }
 
-WwiseDBSet<WwiseMetadataMediaReference> WwiseMetadataSwitchContainer::GetAllMedia() const
+TSet<FWwiseMetadataMediaReference> FWwiseMetadataSwitchContainer::GetAllMedia() const
 {
-	WwiseDBSet<WwiseMetadataMediaReference> Result(MediaRefs);
+	TSet<FWwiseMetadataMediaReference> Result(MediaRefs);
 	for (const auto& Child : Children)
 	{
 		Result.Append(Child.GetAllMedia());
@@ -39,9 +39,9 @@ WwiseDBSet<WwiseMetadataMediaReference> WwiseMetadataSwitchContainer::GetAllMedi
 	return Result;
 }
 
-WwiseDBSet<WwiseMetadataExternalSourceReference> WwiseMetadataSwitchContainer::GetAllExternalSources() const
+TSet<FWwiseMetadataExternalSourceReference> FWwiseMetadataSwitchContainer::GetAllExternalSources() const
 {
-	WwiseDBSet<WwiseMetadataExternalSourceReference> Result(ExternalSourceRefs);
+	TSet<FWwiseMetadataExternalSourceReference> Result(ExternalSourceRefs);
 	for (const auto& Child : Children)
 	{
 		Result.Append(Child.GetAllExternalSources());
@@ -49,13 +49,13 @@ WwiseDBSet<WwiseMetadataExternalSourceReference> WwiseMetadataSwitchContainer::G
 	return Result;
 }
 
-WwiseDBSet<WwiseMetadataPluginReference> WwiseMetadataSwitchContainer::GetAllCustomPlugins() const
+TSet<FWwiseMetadataPluginReference> FWwiseMetadataSwitchContainer::GetAllCustomPlugins() const
 {
 	if (!PluginRefs)
 	{
 		return {};
 	}
-	WwiseDBSet<WwiseMetadataPluginReference> Result(PluginRefs->Custom);
+	TSet<FWwiseMetadataPluginReference> Result(PluginRefs->Custom);
 	for (const auto& Child : Children)
 	{
 		Result.Append(Child.GetAllCustomPlugins());
@@ -63,13 +63,13 @@ WwiseDBSet<WwiseMetadataPluginReference> WwiseMetadataSwitchContainer::GetAllCus
 	return Result;
 }
 
-WwiseDBSet<WwiseMetadataPluginReference> WwiseMetadataSwitchContainer::GetAllPluginShareSets() const
+TSet<FWwiseMetadataPluginReference> FWwiseMetadataSwitchContainer::GetAllPluginShareSets() const
 {
 	if (!PluginRefs)
 	{
 		return {};
 	}
-	WwiseDBSet<WwiseMetadataPluginReference> Result(PluginRefs->ShareSets);
+	TSet<FWwiseMetadataPluginReference> Result(PluginRefs->ShareSets);
 	for (const auto& Child : Children)
 	{
 		Result.Append(Child.GetAllPluginShareSets());
@@ -77,13 +77,13 @@ WwiseDBSet<WwiseMetadataPluginReference> WwiseMetadataSwitchContainer::GetAllPlu
 	return Result;
 }
 
-WwiseDBSet<WwiseMetadataPluginReference> WwiseMetadataSwitchContainer::GetAllAudioDevices() const
+TSet<FWwiseMetadataPluginReference> FWwiseMetadataSwitchContainer::GetAllAudioDevices() const
 {
 	if (!PluginRefs)
 	{
 		return {};
 	}
-	WwiseDBSet<WwiseMetadataPluginReference> Result(PluginRefs->AudioDevices);
+	TSet<FWwiseMetadataPluginReference> Result(PluginRefs->AudioDevices);
 	for (const auto& Child : Children)
 	{
 		Result.Append(Child.GetAllAudioDevices());

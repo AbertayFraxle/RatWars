@@ -30,22 +30,22 @@ public:
 
 	const TCHAR* GetManagingTypeName() const override { return TEXT("MockExternalSource"); }
 
-	virtual void LoadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
-		const FWwiseLanguageCookedData& InLanguage, FLoadExternalSourceCallback&& InCallback) override
+	virtual void LoadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
+	                                const FWwiseLanguageCookedData& InLanguage, FLoadExternalSourceCallback&& InCallback) override
 	{
 		SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseMockExternalSourceManager::LoadExternalSource"))
 
 		// NOTE We are assuming a correspondence between Cookie and MediaId. This need not be the case, see the WwiseSimpleExtSrcManager for an example implementation of CookieMediaId maps
-		IncrementFileStateUseAsync(InExternalSourceCookedData.Cookie, EWwiseFileStateOperationOrigin::Loading, [this, InExternalSourceCookedData]() mutable 
+		IncrementFileStateUseAsync(InExternalSourceCookedData.Cookie, EWwiseFileStateOperationOrigin::Loading, [this, InExternalSourceCookedData, InRootPath]() mutable 
 		{
-			return CreateOp(InExternalSourceCookedData);
+			return CreateOp(InExternalSourceCookedData, InRootPath);
 		}, [InCallback = MoveTemp(InCallback)](const FWwiseFileStateSharedPtr, bool bInResult)
 		{
 			InCallback(bInResult);
 		});
 	}
 	
-	virtual void UnloadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData,
+	virtual void UnloadExternalSource(const FWwiseExternalSourceCookedData& InExternalSourceCookedData, const FName& InRootPath,
 		const FWwiseLanguageCookedData& InLanguage, FUnloadExternalSourceCallback&& InCallback) override
 	{
 		SCOPED_WWISEFILEHANDLER_EVENT_4(TEXT("FWwiseMockExternalSourceManager::UnLoadExternalSource"))
@@ -66,16 +66,9 @@ public:
 
 
 #if WITH_EDITORONLY_DATA
-	virtual void Cook(IWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData,
-		const TCHAR* PackageFilename,
-		const TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)>& WriteAdditionalFile, const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage) override {}
-
-	virtual void SetExternalSourcePath(const FDirectoryPath& DirectoryPath) override { return; }
-	virtual const FDirectoryPath& GetExternalSourcePath() const override
-	{
-		static const FDirectoryPath Path{};
-		return Path;
-	}
+	virtual void Cook(FWwiseResourceCooker& InResourceCooker, const FWwiseExternalSourceCookedData& InCookedData,
+		TFunctionRef<void(const TCHAR* Filename, void* Data, int64 Size)> WriteAdditionalFile,
+		const FWwiseSharedPlatformId& InPlatform, const FWwiseSharedLanguageId& InLanguage) override {}
 #endif
 
 	bool IsEmpty()
@@ -90,7 +83,7 @@ protected:
 		FWwiseFileHandlerBase::OnDeleteState(InShortId, InFileState, InOperationOrigin, MoveTemp(InCallback));
 	}
 	
-	FWwiseFileStateSharedPtr CreateOp(FWwiseExternalSourceCookedData InExternalSourceCookedData)
+	FWwiseFileStateSharedPtr CreateOp(FWwiseExternalSourceCookedData InExternalSourceCookedData, FName Name)
 	{
 		auto* FileState = new FWwiseMockFileState(InExternalSourceCookedData.Cookie);
 		return FWwiseFileStateSharedPtr(FileState);

@@ -19,40 +19,40 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefGameParameter : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefGameParameter : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::GameParameter;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::GameParameter;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType GameParameterIndex;
 
-	WwiseRefGameParameter() {}
-	WwiseRefGameParameter(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefGameParameter() {}
+	FWwiseRefGameParameter(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InGameParameterIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		GameParameterIndex(InGameParameterIndex)
 	{}
-	const WwiseMetadataGameParameter* GetGameParameter() const;
+	const FWwiseMetadataGameParameter* GetGameParameter() const;
 
-	WwiseDBShortId GameParameterId() const;
-	WwiseDBGuid GameParameterGuid() const;
-	const WwiseDBString*  GameParameterName() const;
-	const WwiseDBString*  GameParameterObjectPath() const;
+	uint32 GameParameterId() const;
+	FGuid GameParameterGuid() const;
+	FName GameParameterName() const;
+	FName GameParameterObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefGameParameter& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefGameParameter& Rhs) const
 	{
-		return WwiseRefSoundBank::operator ==(Rhs)
+		return FWwiseRefSoundBank::operator ==(Rhs)
 			&& GameParameterIndex == Rhs.GameParameterIndex;
 	}
-	bool operator!=(const WwiseRefGameParameter& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefGameParameter& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefGameParameter::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefGameParameter::FGlobalIdsMap
 {
 	WwiseGameParameterGlobalIdsMap GlobalIdsMap;
 };

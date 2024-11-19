@@ -17,22 +17,25 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/AdapterTypes/WwiseWrapperTypes.h"
 #include "Wwise/Metadata/WwiseMetadataCollections.h"
-#include "Wwise/WwiseSharedDBPlatformId.h"
+#include "Wwise/WwiseSharedPlatformId.h"
 
-struct WwiseGeneratedFiles
+#include "Containers/Array.h"
+#include "Containers/UnrealString.h"
+#include "Containers/Map.h"
+
+struct WWISEPROJECTDATABASE_API FWwiseGeneratedFiles
 {
-	using FileTuple = WwiseDBTuple<WwiseDBString, WwiseDateTime>;
-	using FileDateTimeMap = WwiseDBMap<WwiseDBString, WwiseDateTime>;
+	using FileTuple = TTuple<FString, FDateTime>;
+	using FileDateTimeMap = TMap<FString, FDateTime>;
 
-	struct FGeneratedRootFiles
+	struct WWISEPROJECTDATABASE_API FGeneratedRootFiles
 	{
 		FileTuple ProjectInfoFile;
 		FileTuple WwiseIDsFile;
 	};
 
-	struct FPlatformFiles
+	struct WWISEPROJECTDATABASE_API FPlatformFiles
 	{
 		FileTuple PlatformInfoFile;
 		FileTuple PluginInfoFile;
@@ -43,10 +46,10 @@ struct WwiseGeneratedFiles
 		FileDateTimeMap MetadataFiles;
 		FileDateTimeMap ExtraFiles;
 
-		WwiseDBArray<WwiseDBString> DirectoriesToWatch;
-		WwiseDBArray<WwiseDBString> LanguageDirectories;
-		WwiseDBArray<WwiseDBString> AutoSoundBankDirectories;
-		WwiseDBString MediaDirectory;
+		TArray<FString> DirectoriesToWatch;
+		TArray<FString> LanguageDirectories;
+		TArray<FString> AutoSoundBankDirectories;
+		FString MediaDirectory;
 
 		bool IsValid() const;
 
@@ -54,7 +57,7 @@ struct WwiseGeneratedFiles
 	};
 
 	FGeneratedRootFiles GeneratedRootFiles;
-	WwiseDBMap<WwiseDBSharedPlatformId, FPlatformFiles> Platforms;
+	TMap<FWwiseSharedPlatformId, FPlatformFiles> Platforms;
 	WwiseMetadataSharedRootFileConstPtr ProjectInfo;
 
 	bool IsValid() const;

@@ -89,12 +89,10 @@ public class AudiokineticTools : ModuleRules
 				"XmlParser",
 
 				"AkAudio",
-				"WwiseAuthoring",
-				"WwiseEditorUtils",
-				"WwiseLowLevelUtils",
 				"WwiseProjectDatabase",
 				"WwiseResourceLoader",
-				"WwiseUtils",
+				"WwiseSoundEngine",
+				"WwiseUtils"
 			}
 		);
 
@@ -103,7 +101,8 @@ public class AudiokineticTools : ModuleRules
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
 				{
-					"WwiseReconcile",
+					"WwiseProjectDatabase",
+					"WwiseReconcile"
 				}
 			);
 		}

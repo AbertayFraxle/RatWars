@@ -38,7 +38,7 @@ FWwiseProjectDatabase* FWwiseProjectDatabaseModule::GetProjectDatabase()
 		Lock.WriteLock();
 		if (LIKELY(!ProjectDatabase))
 		{
-			WWISE_DB_LOG(Log, "Initializing default Project Database.");
+			UE_LOG(LogWwiseProjectDatabase, Display, TEXT("Initializing default Project Database."));
 			ProjectDatabase.Reset(InstantiateProjectDatabase());
 		}
 		Lock.WriteUnlock();
@@ -86,7 +86,7 @@ void FWwiseProjectDatabaseModule::ShutdownModule()
 	Lock.WriteLock();
 	if (ProjectDatabase.IsValid())
 	{
-		WWISE_DB_LOG(Log, "Shutting down default Project Database.");
+		UE_LOG(LogWwiseProjectDatabase, Display, TEXT("Shutting down default Project Database."));
 		ProjectDatabase.Reset();
 	}
 	Lock.WriteUnlock();

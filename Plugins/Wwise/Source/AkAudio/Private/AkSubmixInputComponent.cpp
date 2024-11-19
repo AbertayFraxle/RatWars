@@ -25,7 +25,7 @@ AkSubmixInputComponent.cpp:
 
 #include <inttypes.h>
 
-UDEPRECATED_UAkSubmixInputComponent::UDEPRECATED_UAkSubmixInputComponent(const class FObjectInitializer& ObjectInitializer) :
+UAkSubmixInputComponent::UAkSubmixInputComponent(const class FObjectInitializer& ObjectInitializer) :
 	UAkAudioInputComponent(ObjectInitializer), SubmixListener(MakeShared<FAkSubmixBufferListener>())
 {}
 
@@ -42,7 +42,7 @@ void FAkSubmixBufferListener::OnNewSubmixBuffer(
 	SampleBuffer.Push(InAudioData, InNumSamples);
 }
 
-Audio::FMixerDevice* UDEPRECATED_UAkSubmixInputComponent::GetAudioMixerDevice()
+Audio::FMixerDevice* UAkSubmixInputComponent::GetAudioMixerDevice()
 {
 	UWorld* ThisWorld = GetWorld();
 	if (!ThisWorld || !ThisWorld->bAllowAudioPlayback || ThisWorld->GetNetMode() == NM_DedicatedServer)
@@ -64,7 +64,7 @@ Audio::FMixerDevice* UDEPRECATED_UAkSubmixInputComponent::GetAudioMixerDevice()
 	return nullptr;
 }
 
-int32 UDEPRECATED_UAkSubmixInputComponent::PostAssociatedAudioInputEvent()
+int32 UAkSubmixInputComponent::PostAssociatedAudioInputEvent()
 {
 	if (PlayingID == AK_INVALID_PLAYING_ID)
 	{
@@ -105,7 +105,7 @@ int32 UDEPRECATED_UAkSubmixInputComponent::PostAssociatedAudioInputEvent()
 	return PlayingID;
 }
 
-void UDEPRECATED_UAkSubmixInputComponent::Stop()
+void UAkSubmixInputComponent::Stop()
 {
 	Audio::FMixerDevice* AudioMixerDevice = GetAudioMixerDevice();
 	if (AudioMixerDevice)
@@ -127,7 +127,7 @@ void UDEPRECATED_UAkSubmixInputComponent::Stop()
 	PlayingID = AK_INVALID_PLAYING_ID;
 }
 
-bool UDEPRECATED_UAkSubmixInputComponent::FillSamplesBuffer(uint32 InNumChannels, uint32 InNumSamples, float** InOutBufferToFill)
+bool UAkSubmixInputComponent::FillSamplesBuffer(uint32 InNumChannels, uint32 InNumSamples, float** InOutBufferToFill)
 {
 	check(InNumChannels == SubmixListener->NumChannels);
 	if (SubmixListener->SampleBuffer.Num() >= (InNumChannels * InNumSamples))
@@ -154,7 +154,7 @@ bool UDEPRECATED_UAkSubmixInputComponent::FillSamplesBuffer(uint32 InNumChannels
 	return true;
 }
 
-void UDEPRECATED_UAkSubmixInputComponent::GetChannelConfig(AkAudioFormat& AudioFormat)
+void UAkSubmixInputComponent::GetChannelConfig(AkAudioFormat& AudioFormat)
 {
 	Audio::FMixerDevice* AudioMixerDevice = GetAudioMixerDevice();
 	if (!AudioMixerDevice)

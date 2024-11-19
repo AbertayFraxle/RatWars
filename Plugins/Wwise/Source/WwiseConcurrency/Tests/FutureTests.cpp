@@ -167,25 +167,6 @@ WWISE_TEST_CASE(Concurrency_Future_Smoke, "Wwise::Concurrency::Future_Smoke", "[
 		CHECK(VoidFuture.WaitFor(FTimespan::FromMilliseconds(10)));
 	}
 
-	SECTION("Two Wait")
-	{
-		TWwisePromise<void> VoidPromise;
-		auto VoidFuture( VoidPromise.GetFuture() );
-		VoidPromise.EmplaceValue();
-		VoidFuture.Wait();
-		VoidFuture.Wait();
-	}
-
-	SECTION("Two WaitFor")
-	{
-		TWwisePromise<void> VoidPromise;
-		auto VoidFuture( VoidPromise.GetFuture() );
-		CHECK_FALSE(VoidFuture.WaitFor(0));
-		CHECK_FALSE(VoidFuture.WaitFor(0));
-		VoidPromise.EmplaceValue();
-		CHECK(VoidFuture.WaitFor(0));
-	}
-
 	if (FPlatformProcess::SupportsMultithreading())
 	{
 		SECTION("Wait Not Ready")

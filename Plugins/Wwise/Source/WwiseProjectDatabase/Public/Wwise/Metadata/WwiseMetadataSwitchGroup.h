@@ -19,11 +19,10 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataSwitch.h"
 
-struct WwiseMetadataSwitchGroup : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataSwitchGroup : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataSwitchGroup(){}
-	WwiseMetadataGameParameterReference* GameParameterRef;
-	WwiseDBArray<WwiseMetadataSwitch> Switches;
+	FWwiseMetadataGameParameterReference* GameParameterRef;
+	TArray<FWwiseMetadataSwitch> Switches;
 
-	WwiseMetadataSwitchGroup(WwiseMetadataLoader& Loader);
+	FWwiseMetadataSwitchGroup(FWwiseMetadataLoader& Loader);
 };

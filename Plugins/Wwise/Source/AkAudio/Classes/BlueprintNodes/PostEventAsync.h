@@ -39,7 +39,7 @@ public:
 			class AActor* Actor,
 			UPARAM(meta = (Bitmask, BitmaskEnum = "/Script/AkAudio.EAkCallbackType")) int32 CallbackMask,
 			const FOnAkPostEventCallback& PostEventCallback,
-			bool bStopWhenAttachedToDestroyed = true
+			bool bStopWhenAttachedToDestroyed = false
 		);
 
 public:
@@ -55,7 +55,7 @@ private:
 	AActor* Actor = nullptr;
 	int32 CallbackMask = 0;
 	FOnAkPostEventCallback PostEventCallback;
-	bool bStopWhenAttachedToDestroyed = true;
+	bool bStopWhenAttachedToDestroyed = false;
 	TFuture<AkPlayingID> PlayingIDFuture;
 	FTimerHandle Timer;
 };

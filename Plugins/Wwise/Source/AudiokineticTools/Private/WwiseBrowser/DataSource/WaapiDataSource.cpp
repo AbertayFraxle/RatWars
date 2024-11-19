@@ -29,7 +29,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Async/Async.h"
 #include "Dom/JsonObject.h"
 #include "Misc/Paths.h"
-#include "Wwise/WwiseTreeItem.h"
+#include "WaapiPicker/WwiseTreeItem.h"
 
 FWaapiDataSource::~FWaapiDataSource()
 {
@@ -1071,7 +1071,6 @@ EWwiseConnectionStatus FWaapiDataSource::IsProjectLoaded()
 			return EWwiseConnectionStatus::SettingDisabled;
 		}
 	}
-#if AK_SUPPORT_WAAPI
 	if(FAkWaapiClient::IsProjectLoaded())
 	{
 		if(auto AkWaapiClient = FAkWaapiClient::Get())
@@ -1098,7 +1097,6 @@ EWwiseConnectionStatus FWaapiDataSource::IsProjectLoaded()
 			{
 				UnrealRootOutputPath += "/";
 			}
-			FAkWaapiClient::ConvertProjectPath(WaapiRootOutputPath);
 			if(WaapiRootOutputPath != UnrealRootOutputPath)
 			{
 				return EWwiseConnectionStatus::WrongRootOutputPath;
@@ -1111,7 +1109,6 @@ EWwiseConnectionStatus FWaapiDataSource::IsProjectLoaded()
 	{
 		return EWwiseConnectionStatus::WrongProjectOpened;
 	}
-#endif
 	return EWwiseConnectionStatus::WwiseNotOpen;
 }
 

@@ -58,7 +58,7 @@ const TSharedRef<SWidget> FWwiseReconcileObjectColumn::ConstructRowWidget(FWwise
 	VAlign(VAlign_Center)
 	[
 		SNew(STextBlock)
-		.Text(FText::FromName(FName(*TreeItem.WwiseAnyRef.WwiseAnyRef->GetName())))
+		.Text(FText::FromName(TreeItem.WwiseAnyRef.WwiseAnyRef->GetName()))
 	];
 }
 

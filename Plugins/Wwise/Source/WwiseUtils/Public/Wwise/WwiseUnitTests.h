@@ -61,10 +61,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include <type_traits>
 
 
-#if !UE_5_3_OR_LATER && !defined(FAIL_ON_MESSAGE)
-#define FAIL_ON_MESSAGE(Message) FAutomationTestFramework::Get().GetCurrentTest()->AddExpectedError(Message);
-#endif
-
 // This is an adapted copy of UE5.1's Misc/LowLevelTestAdapter.h for UE4.27 & UE5.0 usage.
 #if !UE_5_1_OR_LATER
 #include "Misc/AssertionMacros.h"

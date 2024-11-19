@@ -18,7 +18,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/WwiseConcurrencyModuleImpl.h"
 
 #include "Misc/QueuedThreadPool.h"
-#include "Wwise/WwiseExecutionQueue.h"
 #include "Wwise/Stats/Concurrency.h"
 
 IMPLEMENT_MODULE(FWwiseConcurrencyModule, WwiseConcurrency)
@@ -29,23 +28,13 @@ FWwiseConcurrencyModule::FWwiseConcurrencyModule()
 
 void FWwiseConcurrencyModule::StartupModule()
 {
-	UE_LOG(LogWwiseConcurrency, Log, TEXT("Initializing default Concurrency."));
-
-	DefaultQueue = new FWwiseExecutionQueue(WWISE_EQ_NAME("Default"));
-	
+	UE_LOG(LogWwiseConcurrency, Display, TEXT("Initializing default Concurrency."));
 	IWwiseConcurrencyModule::StartupModule();
 }
 
 void FWwiseConcurrencyModule::ShutdownModule()
 {
-	UE_LOG(LogWwiseConcurrency, Log, TEXT("Shutting down default Concurrency."));
+	UE_LOG(LogWwiseConcurrency, Display, TEXT("Shutting down default Concurrency."));
 
-	if (DefaultQueue)
-	{
-		auto* Closing{ DefaultQueue };
-		DefaultQueue = nullptr;
-		
-		Closing->CloseAndDelete();
-	}
 	IWwiseConcurrencyModule::ShutdownModule();
 }

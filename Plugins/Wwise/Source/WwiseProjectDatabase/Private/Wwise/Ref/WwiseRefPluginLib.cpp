@@ -17,14 +17,16 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefPluginLib.h"
 #include "Wwise/Metadata/WwiseMetadataPluginInfo.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataPluginLib.h"
 
-const WwiseDBString WwiseRefPluginLib::NAME = "PluginLib"_wwise_db;
+const TCHAR* const FWwiseRefPluginLib::NAME = TEXT("PluginLib");
 
-const WwiseMetadataPluginLib* WwiseRefPluginLib::GetPluginLib() const
+const FWwiseMetadataPluginLib* FWwiseRefPluginLib::GetPluginLib() const
 {
 	const auto* PluginInfo = GetPluginInfo();
-	if (!PluginInfo) [[unlikely]]
+	if (UNLIKELY(!PluginInfo))
 	{
 		return nullptr;
 	}
@@ -35,54 +37,34 @@ const WwiseMetadataPluginLib* WwiseRefPluginLib::GetPluginLib() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get PluginLib index #%zu", PluginLibIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get PluginLib index #%zu"), PluginLibIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefPluginLib::PluginLibId() const
+uint32 FWwiseRefPluginLib::PluginLibId() const
 {
 	const auto* PluginLib = GetPluginLib();
-	if (!PluginLib) [[unlikely]]
+	if (UNLIKELY(!PluginLib))
 	{
 		return 0;
 	}
 	return PluginLib->LibId;
 }
 
-const WwiseDBString* WwiseRefPluginLib::PluginLibName() const
+FName FWwiseRefPluginLib::PluginLibName() const
 {
 	const auto* PluginLib = GetPluginLib();
-	if (!PluginLib) [[unlikely]]
+	if (UNLIKELY(!PluginLib))
 	{
 		return {};
 	}
-	return &PluginLib->LibName;
+	return PluginLib->LibName;
 }
 
-const WwiseDBString* WwiseRefPluginLib::PluginLibDLL() const
+uint32 FWwiseRefPluginLib::Hash() const
 {
-	const auto* PluginLib = GetPluginLib();
-	if (!PluginLib) [[unlikely]]
-	{
-		return {};
-	}
-	return &PluginLib->DLL;
-}
-
-const WwiseDBString* WwiseRefPluginLib::PluginLibStaticLib() const
-{
-	const auto* PluginLib = GetPluginLib();
-	if (!PluginLib) [[unlikely]]
-	{
-		return {};
-	}
-	return &PluginLib->StaticLib;
-}
-
-WwiseDBShortId WwiseRefPluginLib::Hash() const
-{
-	auto Result = WwiseRefPluginInfo::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(PluginLibIndex));
+	auto Result = FWwiseRefPluginInfo::Hash();
+	Result = HashCombine(Result, GetTypeHash(PluginLibIndex));
 	return Result;
 }

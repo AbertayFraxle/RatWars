@@ -90,11 +90,11 @@ public:
 
 	/** The AkAudioEvent asset to post. */
 	UPROPERTY(EditAnywhere, Category = "Audio")
-	TObjectPtr<UAkAudioEvent> EventToPost;
+	UAkAudioEvent* EventToPost;
 
 	/** A set of Game Parameters updated (via their index) in the Set Wwise Persistent Event Game Parameter module */
 	UPROPERTY(EditAnywhere, Category = "Parameters")
-	TArray<TObjectPtr<UAkRtpc>> GameParameters;
+	TArray<UAkRtpc*> GameParameters;
 
 	UPROPERTY(EditAnywhere, AdvancedDisplay, Category = "Audio", meta = (InlineEditConditionToggle))
 	bool bLimitPostsPerTick;

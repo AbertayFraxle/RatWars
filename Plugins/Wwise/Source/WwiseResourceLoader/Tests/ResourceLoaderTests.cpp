@@ -70,7 +70,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedAuxBusPromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadAuxBusNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadAuxBusAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto LoadedNode = LoadFuture.Get();		// Synchronously
 		CHECK(LoadedNode);
 		if (UNLIKELY(!LoadedNode))
@@ -81,7 +81,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadAuxBusNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+		ResourceLoaderImpl.UnloadAuxBusAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -129,7 +129,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedEventPromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -140,7 +140,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -170,7 +170,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedExternalSourcePromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadExternalSourceNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadExternalSourceAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded  = LoadFuture.Get(); // Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -181,7 +181,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadExternalSourceNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadExternalSourceAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -212,7 +212,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedGroupValuePromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -223,7 +223,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -254,7 +254,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedGroupValuePromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -265,7 +265,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -295,7 +295,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedInitBankPromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadInitBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadInitBankAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -306,7 +306,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadInitBankNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadInitBankAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -336,7 +336,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedMediaPromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadMediaNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadMediaAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -347,7 +347,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadMediaNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadMediaAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -383,7 +383,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedShareSetPromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadShareSetNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadShareSetAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -394,7 +394,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadShareSetNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadShareSetAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -428,7 +428,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Loading Node
 		FWwiseLoadedSoundBankPromise LoadPromise;
 		auto LoadFuture = LoadPromise.GetFuture();
-		ResourceLoaderImpl.LoadSoundBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
+		ResourceLoaderImpl.LoadSoundBankAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 		auto Loaded = LoadFuture.Get();		// Synchronously
 		CHECK(Loaded);
 		if (UNLIKELY(!Loaded))
@@ -439,7 +439,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		// Unloading Node
 		FWwiseResourceUnloadPromise UnloadPromise;
 		auto UnloadFuture = UnloadPromise.GetFuture();
-		ResourceLoaderImpl.UnloadSoundBankNode(MoveTemp(UnloadPromise), MoveTemp(Loaded));
+		ResourceLoaderImpl.UnloadSoundBankAsync(MoveTemp(UnloadPromise), MoveTemp(Loaded));
 		UnloadFuture.Get();		// Synchronously
 
 		CHECK(ExternalSourceManager.IsEmpty());
@@ -494,7 +494,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			// Loading Node
 			FWwiseLoadedEventPromise LoadPromise;
 			auto LoadFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedEvent = LoadFuture.Get();		// Synchronously
 			CHECK(LoadedEvent);
 			if (UNLIKELY(!LoadedEvent))
@@ -519,7 +519,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			// Loading Node
 			FWwiseLoadedGroupValuePromise LoadPromise;
 			auto LoadFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedGroupValue = LoadFuture.Get();		// Synchronously
 			CHECK(LoadedGroupValue);
 			if (UNLIKELY(!LoadedGroupValue))
@@ -534,7 +534,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		{
 			FWwiseResourceUnloadPromise UnloadPromise;
 			auto UnloadFuture = UnloadPromise.GetFuture();
-			ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedGroupValue));
+			ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedGroupValue));
 			UnloadFuture.Get();		// Synchronously
 		}
 
@@ -543,7 +543,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		{
 			FWwiseResourceUnloadPromise UnloadPromise;
 			auto UnloadFuture = UnloadPromise.GetFuture();
-			ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedEvent));
+			ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedEvent));
 			UnloadFuture.Get();		// Synchronously
 		}
 
@@ -583,7 +583,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			// Loading Node
 			FWwiseLoadedGroupValuePromise LoadPromise;
 			auto LoadFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedGroupValue = LoadFuture.Get();		// Synchronously
 			CHECK(LoadedGroupValue);
 			if (UNLIKELY(!LoadedGroupValue))
@@ -624,7 +624,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 			// Loading Node
 			FWwiseLoadedEventPromise LoadPromise;
 			auto LoadFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 			LoadedEvent = LoadFuture.Get();		// Synchronously
 			CHECK(LoadedEvent);
 			if (UNLIKELY(!LoadedEvent))
@@ -639,7 +639,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		{
 			FWwiseResourceUnloadPromise UnloadPromise;
 			auto UnloadFuture = UnloadPromise.GetFuture();
-			ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedEvent));
+			ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedEvent));
 			UnloadFuture.Get();		// Synchronously
 		}
 
@@ -648,7 +648,7 @@ WWISE_TEST_CASE(ResourceLoader_Smoke, "Wwise::ResourceLoader::ResourceLoader_Smo
 		{
 			FWwiseResourceUnloadPromise UnloadPromise;
 			auto UnloadFuture = UnloadPromise.GetFuture();
-			ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedGroupValue));
+			ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedGroupValue));
 			UnloadFuture.Get();		// Synchronously
 		}
 
@@ -700,7 +700,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			// Loading Node
 			FWwiseLoadedAuxBusPromise LoadPromise;
 			auto NodeFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadAuxBusNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadAuxBusAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 			// Unloading Node
 			FWwiseResourceUnloadPromise UnloadPromise;
@@ -715,7 +715,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 					return;
 				}
 
-				ResourceLoaderImpl.UnloadAuxBusNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				ResourceLoaderImpl.UnloadAuxBusAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 			});
 		}
 
@@ -789,7 +789,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 				// Loading Node
 				FWwiseLoadedEventPromise LoadPromise;
 				auto NodeFuture = LoadPromise.GetFuture();
-				ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 				// Unloading Node
 				FWwiseResourceUnloadPromise UnloadPromise;
@@ -804,7 +804,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 						return;
 					}
 
-					ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 				});
 			};
 
@@ -822,7 +822,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 				// Loading Node
 				FWwiseLoadedGroupValuePromise LoadPromise;
 				auto NodeFuture = LoadPromise.GetFuture();
-				ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 				// Unloading Node
 				FWwiseResourceUnloadPromise UnloadPromise;
@@ -837,7 +837,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 						return;
 					}
 
-					ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 				});
 			};
 
@@ -894,7 +894,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			// Loading node
 			FWwiseLoadedExternalSourcePromise LoadPromise;
 			auto NodeFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadExternalSourceNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadExternalSourceAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 			// Unloading node
 			FWwiseResourceUnloadPromise UnloadPromise;
@@ -909,7 +909,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 					return;
 				}
 
-				ResourceLoaderImpl.UnloadExternalSourceNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				ResourceLoaderImpl.UnloadExternalSourceAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 			});
 		}
 
@@ -955,7 +955,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			// Loading Node
 			FWwiseLoadedInitBankPromise LoadPromise;
 			auto NodeFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadInitBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadInitBankAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 			// Unloading Node
 			FWwiseResourceUnloadPromise UnloadPromise;
@@ -970,7 +970,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 					return;
 				}
 
-				ResourceLoaderImpl.UnloadInitBankNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				ResourceLoaderImpl.UnloadInitBankAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 			});
 		}
 
@@ -996,7 +996,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 		for (auto i = 0; i < CookedDataCount; ++i)
 		{
 			CookedDatas[i].MediaId = i % FileCount;
-			CookedDatas[i].PackagedFile.bStreaming = !!(i % 2);
+			CookedDatas[i].bStreaming = !!(i % 2);
 		}
 		
 		FWwiseResourceUnloadFuture UnloadFutures[NodeCount];
@@ -1014,7 +1014,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			// Loading Node
 			FWwiseLoadedMediaPromise LoadPromise;
 			auto NodeFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadMediaNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadMediaAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 			// Unloading Node
 			FWwiseResourceUnloadPromise UnloadPromise;
@@ -1029,7 +1029,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 					return;
 				}
 
-				ResourceLoaderImpl.UnloadMediaNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				ResourceLoaderImpl.UnloadMediaAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 			});
 		}
 
@@ -1077,7 +1077,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			// Loading Node
 			FWwiseLoadedShareSetPromise LoadPromise;
 			auto NodeFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadShareSetNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadShareSetAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 			// Unloading Node
 			FWwiseResourceUnloadPromise UnloadPromise;
@@ -1092,7 +1092,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 					return;
 				}
 
-				ResourceLoaderImpl.UnloadShareSetNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				ResourceLoaderImpl.UnloadShareSetAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 			});
 		}
 
@@ -1137,7 +1137,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 			// Loading Node
 			FWwiseLoadedSoundBankPromise LoadPromise;
 			auto NodeFuture = LoadPromise.GetFuture();
-			ResourceLoaderImpl.LoadSoundBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
+			ResourceLoaderImpl.LoadSoundBankAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 			// Unloading Node
 			FWwiseResourceUnloadPromise UnloadPromise;
@@ -1152,7 +1152,7 @@ WWISE_TEST_CASE(ResourceLoader_Async, "Wwise::ResourceLoader::ResourceLoader_Asy
 					return;
 				}
 
-				ResourceLoaderImpl.UnloadSoundBankNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+				ResourceLoaderImpl.UnloadSoundBankAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 			});
 		}
 
@@ -1235,7 +1235,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Loading Node 1
 				FWwiseLoadedEventPromise LoadPromise;
 				LoadFutures[i] = LoadPromise.GetFuture();
-				ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 				LoadFutures[i].Wait();
 			};
 
@@ -1244,7 +1244,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Unloading Event
 				FWwiseResourceUnloadPromise UnloadPromise;
 				UnloadFutures[i] = UnloadPromise.GetFuture();
-				ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), LoadFutures[i].Get());
+				ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), LoadFutures[i].Get());
 			};
 
 			auto DoGroupValue = [&ResourceLoaderImpl, &GroupValueCookedDatas, i, &UnloadFutures]() mutable
@@ -1261,7 +1261,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Loading Node 1
 				FWwiseLoadedGroupValuePromise LoadPromise;
 				auto NodeFuture = LoadPromise.GetFuture();
-				ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 				// Future for completion (Unloading Node 2)
 				FWwiseResourceUnloadPromise UnloadPromise2;
@@ -1283,17 +1283,17 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 
 					if (i&8)
 					{
-						ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise2), MoveTemp(Node));
+						ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise2), MoveTemp(Node));
 					}
 
 					// Unload Node 1
 					FWwiseResourceUnloadPromise UnloadPromise;
 					auto UnloadFuture = UnloadPromise.GetFuture();
-					ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 
 					if (!(i&8))
 					{
-						ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise2), MoveTemp(Node));
+						ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise2), MoveTemp(Node));
 					}
 
 					// Wait for Loading Node 2
@@ -1310,7 +1310,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 						UnloadFuture.Next([&ResourceLoaderImpl, UnloadPromise2 = MoveTemp(UnloadPromise2), LoadedNode](int) mutable
 						{
 							// Unloading Node 2 and terminate
-							ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise2), MoveTemp(LoadedNode));
+							ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise2), MoveTemp(LoadedNode));
 						});
 					});
 				});
@@ -1397,7 +1397,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Loading Node 1
 				FWwiseLoadedEventPromise LoadPromise;
 				auto NodeFuture = LoadPromise.GetFuture();
-				ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 				// Future for completion (Unloading Node 2)
 				FWwiseResourceUnloadPromise UnloadPromise2;
@@ -1420,17 +1420,17 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
                     auto NodeFuture2 = LoadPromise2.GetFuture();
 					if (i&4)
 					{
-						ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise2), MoveTemp(Node2));
+						ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise2), MoveTemp(Node2));
 					}
 
 					// Unloading Node 1
 					FWwiseResourceUnloadPromise UnloadPromise;
 					auto UnloadFuture = UnloadPromise.GetFuture();
-					ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+					ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 
 					if (!(i&4))
 					{
-						ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise2), MoveTemp(Node2));
+						ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise2), MoveTemp(Node2));
 					}
 
 					// Wait for Loading Node 2
@@ -1447,7 +1447,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 						UnloadFuture.Next([&ResourceLoaderImpl, UnloadPromise2 = MoveTemp(UnloadPromise2), LoadedNode](int) mutable
 						{
 							// Unloading Node 2 and terminate
-							ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise2), MoveTemp(LoadedNode));
+							ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise2), MoveTemp(LoadedNode));
 						});
 					});
 				});
@@ -1467,7 +1467,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Loading Node 1
 				FWwiseLoadedGroupValuePromise LoadPromise;
 				LoadFutures[i] = LoadPromise.GetFuture();
-				ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+				ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 				LoadFutures[i].Wait();
 			};
 
@@ -1477,7 +1477,7 @@ WWISE_TEST_CASE(ResourceLoader_EdgeCases, "Wwise::ResourceLoader::ResourceLoader
 				// Future for completion (Unloading Node 2)
 				FWwiseResourceUnloadPromise UnloadPromise2;
 				UnloadFutures[Count+i] = UnloadPromise2.GetFuture();
-				ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise2), LoadFutures[i].Get());
+				ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise2), LoadFutures[i].Get());
 			};
 
 			DoEvent();
@@ -1542,7 +1542,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 			{
 				const auto Rnd = WwiseHashCombineFast(GetTypeHash(Id), 54209201);
 				Medii.MediaId = ++Id;
-				Medii.PackagedFile.bStreaming = (Rnd % 4) == 0; 
+				Medii.bStreaming = (Rnd % 4) == 0; 
 			}
 
 			for (auto& SoundBank : SoundBanks)
@@ -1739,7 +1739,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedAuxBusPromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadAuxBusNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadAuxBusAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1754,7 +1754,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadAuxBusNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadAuxBusAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 
 				}
@@ -1776,7 +1776,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedEventPromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1791,7 +1791,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -1811,7 +1811,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedExternalSourcePromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadExternalSourceNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadExternalSourceAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1826,7 +1826,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadExternalSourceNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadExternalSourceAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -1846,7 +1846,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedInitBankPromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadInitBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadInitBankAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1861,7 +1861,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadInitBankNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadInitBankAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -1881,7 +1881,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedMediaPromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadMediaNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadMediaAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1896,7 +1896,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadMediaNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadMediaAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -1916,7 +1916,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedShareSetPromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadShareSetNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadShareSetAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1931,7 +1931,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadShareSetNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadShareSetAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 
 				}
@@ -1952,7 +1952,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedSoundBankPromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadSoundBankNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadSoundBankAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -1967,7 +1967,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadSoundBankNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadSoundBankAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -1987,7 +1987,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedGroupValuePromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -2002,7 +2002,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -2022,7 +2022,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedGroupValuePromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -2037,7 +2037,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 				break;
@@ -2163,7 +2163,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedEventPromise LoadPromise;
 					EventFutures[0] = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 				}
 				else if (i == NumGroupValues / 4 * 3)
 				{
@@ -2180,7 +2180,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 
@@ -2198,7 +2198,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedEventPromise LoadPromise;
 					EventFutures[1] = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadEventNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadEventAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 				}
 				else if (i == NumGroupValues - 1)
 				{
@@ -2215,7 +2215,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadEventNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadEventAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 
@@ -2232,7 +2232,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 					// Loading Node
 					FWwiseLoadedGroupValuePromise LoadPromise;
 					auto NodeFuture = LoadPromise.GetFuture();
-					ResourceLoaderImpl.LoadGroupValueNode(MoveTemp(LoadPromise), MoveTemp(Node));
+					ResourceLoaderImpl.LoadGroupValueAsync(MoveTemp(LoadPromise), MoveTemp(Node));
 
 					// Unloading Node
 					FWwiseResourceUnloadPromise UnloadPromise;
@@ -2247,7 +2247,7 @@ WWISE_TEST_CASE(ResourceLoader_Stress, "Wwise::ResourceLoader::ResourceLoader_St
 							return;
 						}
 
-						ResourceLoaderImpl.UnloadGroupValueNode(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
+						ResourceLoaderImpl.UnloadGroupValueAsync(MoveTemp(UnloadPromise), MoveTemp(LoadedNode));
 					});
 				}
 

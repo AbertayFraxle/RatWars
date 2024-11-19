@@ -20,23 +20,23 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataBasicReference.h"
 
 
-struct WwiseMetadataGroupValueReference : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataGroupValueReference : public FWwiseMetadataBasicReference
 {
-	WwiseDBShortId GroupId;
+	uint32 GroupId;
 
-	WwiseMetadataGroupValueReference();
-	WwiseMetadataGroupValueReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataGroupValueReference();
+	FWwiseMetadataGroupValueReference(FWwiseMetadataLoader& Loader);
 };
 
-inline WwiseDBShortId GetTypeHash(const WwiseMetadataGroupValueReference& Ref)
+inline uint32 GetTypeHash(const FWwiseMetadataGroupValueReference& Ref)
 {
-	return HashCombine(GetTypeHash((const WwiseMetadataBasicReference&)Ref), GetTypeHash(Ref.Id));
+	return HashCombine(GetTypeHash((const FWwiseMetadataBasicReference&)Ref), GetTypeHash(Ref.Id));
 }
-inline bool operator==(const WwiseMetadataGroupValueReference& Lhs, const WwiseMetadataGroupValueReference& Rhs)
+inline bool operator==(const FWwiseMetadataGroupValueReference& Lhs, const FWwiseMetadataGroupValueReference& Rhs)
 {
-	return (const WwiseMetadataBasicReference&)Lhs == Rhs && Lhs.GroupId == Rhs.GroupId;
+	return (const FWwiseMetadataBasicReference&)Lhs == Rhs && Lhs.GroupId == Rhs.GroupId;
 }
-inline bool operator<(const WwiseMetadataGroupValueReference& Lhs, const WwiseMetadataGroupValueReference& Rhs)
+inline bool operator<(const FWwiseMetadataGroupValueReference& Lhs, const FWwiseMetadataGroupValueReference& Rhs)
 {
-	return (const WwiseMetadataBasicReference&)Lhs < Rhs && Lhs.GroupId < Rhs.GroupId;
+	return (const FWwiseMetadataBasicReference&)Lhs < Rhs && Lhs.GroupId < Rhs.GroupId;
 }

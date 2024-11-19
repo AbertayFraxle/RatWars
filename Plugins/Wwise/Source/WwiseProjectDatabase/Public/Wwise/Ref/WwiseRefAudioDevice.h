@@ -19,41 +19,41 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Ref/WwiseRefSoundBank.h"
 
-class WwiseRefAudioDevice : public WwiseRefSoundBank
+class WWISEPROJECTDATABASE_API FWwiseRefAudioDevice : public FWwiseRefSoundBank
 {
 public:
-	static const WwiseDBString NAME;
-	static constexpr WwiseRefType TYPE = WwiseRefType::AudioDevice;
+	static const TCHAR* const NAME;
+	static constexpr EWwiseRefType TYPE = EWwiseRefType::AudioDevice;
 	struct FGlobalIdsMap;
 
 	WwiseRefIndexType AudioDeviceIndex;
 
-	WwiseRefAudioDevice() {}
-	WwiseRefAudioDevice(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const WwiseDBString& InJsonFilePath,
-		WwiseRefIndexType InSoundBankIndex, WwiseDBShortId InLanguageId,
+	FWwiseRefAudioDevice() {}
+	FWwiseRefAudioDevice(const WwiseMetadataSharedRootFileConstPtr& InRootMediaRef, const FName& InJsonFilePath,
+		WwiseRefIndexType InSoundBankIndex, uint32 InLanguageId,
 		WwiseRefIndexType InAudioDeviceIndex) :
-		WwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
+		FWwiseRefSoundBank(InRootMediaRef, InJsonFilePath, InSoundBankIndex, InLanguageId),
 		AudioDeviceIndex(InAudioDeviceIndex)
 	{}
-	const WwiseMetadataPlugin* GetPlugin() const;
+	const FWwiseMetadataPlugin* GetPlugin() const;
 	WwiseMediaIdsMap GetPluginMedia(const WwiseMediaGlobalIdsMap& GlobalMap) const;
 
-	WwiseDBShortId AudioDeviceId() const;
-	WwiseDBGuid AudioDeviceGuid() const;
-	const WwiseDBString* AudioDeviceName() const;
-	const WwiseDBString* AudioDeviceObjectPath() const;
+	uint32 AudioDeviceId() const;
+	FGuid AudioDeviceGuid() const;
+	FName AudioDeviceName() const;
+	FName AudioDeviceObjectPath() const;
 
-	WwiseDBShortId Hash() const override;
-	WwiseRefType Type() const override { return TYPE; }
-	bool operator==(const WwiseRefAudioDevice& Rhs) const
+	uint32 Hash() const override;
+	EWwiseRefType Type() const override { return TYPE; }
+	bool operator==(const FWwiseRefAudioDevice& Rhs) const
 	{
-		return WwiseRefSoundBank::operator==(Rhs)
+		return FWwiseRefSoundBank::operator==(Rhs)
 			&& AudioDeviceIndex == Rhs.AudioDeviceIndex;
 	}
-	bool operator!=(const WwiseRefAudioDevice& Rhs) const { return !operator==(Rhs); }
+	bool operator!=(const FWwiseRefAudioDevice& Rhs) const { return !operator==(Rhs); }
 };
 
-struct WwiseRefAudioDevice::FGlobalIdsMap
+struct WWISEPROJECTDATABASE_API FWwiseRefAudioDevice::FGlobalIdsMap
 {
 	WwiseAudioDeviceGlobalIdsMap GlobalIdsMap;
 };

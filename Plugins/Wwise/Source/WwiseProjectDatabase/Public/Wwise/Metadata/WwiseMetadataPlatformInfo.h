@@ -17,18 +17,17 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #pragma once
 
-#include "Wwise/AdapterTypes/WwiseGuid.h"
 #include "Wwise/Metadata/WwiseMetadataPlatform.h"
 #include "Wwise/Metadata/WwiseMetadataRootPaths.h"
 #include "Wwise/Metadata/WwiseMetadataSettings.h"
 
-struct WwiseMetadataPlatformInfo : public WwiseMetadataLoadable
+struct WWISEPROJECTDATABASE_API FWwiseMetadataPlatformInfo : public FWwiseMetadataLoadable
 {
-	WwiseMetadataPlatform Platform;
-	WwiseMetadataRootPaths RootPaths;
-	WwiseDBShortId DefaultAlign;
-	WwiseMetadataSettings Settings;
-	WwiseDBGuid FileHash;
+	FWwiseMetadataPlatform Platform;
+	FWwiseMetadataRootPaths RootPaths;
+	uint32 DefaultAlign;
+	FWwiseMetadataSettings Settings;
+	FGuid FileHash;
 
-	WwiseMetadataPlatformInfo(WwiseMetadataLoader& Loader);
+	FWwiseMetadataPlatformInfo(FWwiseMetadataLoader& Loader);
 };

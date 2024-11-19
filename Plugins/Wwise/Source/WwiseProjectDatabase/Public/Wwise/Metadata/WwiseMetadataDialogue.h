@@ -19,19 +19,19 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Metadata/WwiseMetadataBasicReference.h"
 
-struct WwiseMetadataDialogueEventReference : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataDialogueEventReference : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataDialogueEventReference(WwiseMetadataLoader& Loader);
+	FWwiseMetadataDialogueEventReference(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataDialogueArgument : public WwiseMetadataBasicReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataDialogueArgument : public FWwiseMetadataBasicReference
 {
-	WwiseMetadataDialogueArgument(WwiseMetadataLoader& Loader);
+	FWwiseMetadataDialogueArgument(FWwiseMetadataLoader& Loader);
 };
 
-struct WwiseMetadataDialogueEvent : public WwiseMetadataDialogueEventReference
+struct WWISEPROJECTDATABASE_API FWwiseMetadataDialogueEvent : public FWwiseMetadataDialogueEventReference
 {
-	WwiseDBArray<WwiseMetadataDialogueArgument> Arguments;
+	TArray<FWwiseMetadataDialogueArgument> Arguments;
 
-	WwiseMetadataDialogueEvent(WwiseMetadataLoader& Loader);
+	FWwiseMetadataDialogueEvent(FWwiseMetadataLoader& Loader);
 };

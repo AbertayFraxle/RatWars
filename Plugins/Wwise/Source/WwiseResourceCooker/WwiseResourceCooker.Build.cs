@@ -23,30 +23,37 @@ public class WwiseResourceCooker : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(
+		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
 				"Core",
 				"CoreUObject",
 				"Engine",
-				"WwiseResourceLoader",
+				"WwiseResourceLoader"
 			}
 		);
-		
-		PrivateDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"Projects"
-			});
+
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.AddRange(
+				new string[]
+				{
+					"EditorSubsystem",
+					"UnrealEd",
+
+					"WwiseFileHandler"
+				}
+			);
+		}
 
 		if (Target.bBuildWithEditorOnlyData)
 		{
-			PublicDependencyModuleNames.AddRange(new string[] {
-				"WwisePackagingRuntime",
-				"WwiseFileHandler",
-				"WwiseProjectDatabase",
-				"WwiseSoundEngine",
-			});
+			PrivateDependencyModuleNames.AddRange(
+				new string[]
+				{
+					"WwiseProjectDatabase"
+				}
+			);
 		}
 
 #if UE_5_3_OR_LATER

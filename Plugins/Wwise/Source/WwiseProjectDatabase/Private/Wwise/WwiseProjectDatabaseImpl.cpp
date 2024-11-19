@@ -24,14 +24,12 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Async/Async.h"
 #include "Misc/ScopedSlowTask.h"
-#include "Wwise/WwiseStringConverter.h"
-#include "Wwise/Stats/ProjectDatabase.h"
 
 #define LOCTEXT_NAMESPACE "WwiseProjectDatabase"
 
 FWwiseProjectDatabaseImpl::FWwiseProjectDatabaseImpl() :
 	ResourceLoaderOverride(nullptr),
-	LockedDataStructure(new WwiseDataStructure())
+	LockedDataStructure(new FWwiseDataStructure())
 {
 }
 
@@ -39,10 +37,10 @@ FWwiseProjectDatabaseImpl::~FWwiseProjectDatabaseImpl()
 {
 }
 
-void FWwiseProjectDatabaseImpl::UpdateDataStructure(const WwiseDBGuid* InBasePlatformGuid)
+void FWwiseProjectDatabaseImpl::UpdateDataStructure(const FDirectoryPath* InUpdateGeneratedSoundBanksPath, const FGuid* InBasePlatformGuid)
 {
 	SCOPED_WWISEPROJECTDATABASE_EVENT_2(TEXT("FWwiseProjectDatabaseImpl::UpdateDataStructure"));
-	WwiseDBSharedPlatformId Platform;
+	FWwiseSharedPlatformId Platform;
 	FDirectoryPath SourcePath;
 	{
 		auto* ResourceLoader = GetResourceLoader();
@@ -50,18 +48,17 @@ void FWwiseProjectDatabaseImpl::UpdateDataStructure(const WwiseDBGuid* InBasePla
 		{
 			return;
 		}
-		auto SharedPlatform = ResourceLoader->GetCurrentPlatform();
-		Platform = WwiseDBSharedPlatformId(WwiseDBGuid(
-			SharedPlatform.Platform->PlatformGuid.A, SharedPlatform.Platform->PlatformGuid.B,
-			SharedPlatform.Platform->PlatformGuid.C, SharedPlatform.Platform->PlatformGuid.D),
-			FWwiseStringConverter::ToWwiseDBString(*SharedPlatform.Platform->PlatformName.ToString()),
-			FWwiseStringConverter::ToWwiseDBString(*SharedPlatform.Platform->PathRelativeToGeneratedSoundBanks.ToString()));
-		Platform.Platform->ExternalSourceRootPath = FWwiseStringConverter::ToWwiseDBString(SharedPlatform.Platform->ExternalSourceRootPath.ToString());
-		SourcePath = GetGeneratedSoundBanksPath();
+		if (InUpdateGeneratedSoundBanksPath)
+		{
+			ResourceLoader->SetUnrealGeneratedSoundBanksPath(*InUpdateGeneratedSoundBanksPath);
+		}
+
+		Platform = ResourceLoader->GetCurrentPlatform();
+		SourcePath = ResourceLoader->GetUnrealGeneratedSoundBanksPath();
 	}
 
 	{
-		std::scoped_lock WLock(LockedDataStructure->Lock);
+		FWriteScopeLock WLock(LockedDataStructure->Lock);
 		auto& DataStructure = LockedDataStructure.Get();
 
 		if (DisableDefaultPlatforms())
@@ -70,29 +67,27 @@ void FWwiseProjectDatabaseImpl::UpdateDataStructure(const WwiseDBGuid* InBasePla
 			FScopedSlowTask SlowTask(0, LOCTEXT("WwiseProjectDatabaseUpdate", "Retrieving Wwise data structure root..."));
 
 			{
-				WwiseDataStructure UpdatedDataStructure(FWwiseStringConverter::ToWwiseDBString(SourcePath.Path), nullptr);
-				DataStructure = std::move(UpdatedDataStructure);
+				FWwiseDataStructure UpdatedDataStructure(SourcePath, nullptr, nullptr);
+				DataStructure = MoveTemp(UpdatedDataStructure);
 			}
 		}
 		else
 		{
 			UE_LOG(LogWwiseProjectDatabase, Log, TEXT("UpdateDataStructure: Retrieving data structure for %s (Base: %s) in (%s)"),
-				*FWwiseStringConverter::ToFString(Platform.GetPlatformName()), InBasePlatformGuid ? *FWwiseStringConverter::ToFString(InBasePlatformGuid->ToString()) : TEXT("null"), *SourcePath.Path);
+				*Platform.GetPlatformName().ToString(), InBasePlatformGuid ? *InBasePlatformGuid->ToString() : TEXT("null"), *SourcePath.Path);
 			FScopedSlowTask SlowTask(0, FText::Format(
 				LOCTEXT("WwiseProjectDatabaseUpdate", "Retrieving Wwise data structure for platform {0}..."),
-				FText::FromName(*Platform.GetPlatformName())));
+				FText::FromName(Platform.GetPlatformName())));
 
 			{
-				WwiseDBString PlatformName = WwiseDBString(*Platform.GetPlatformName());
-				WwiseDataStructure UpdatedDataStructure(FWwiseStringConverter::ToWwiseDBString(SourcePath.Path), &PlatformName);
-				DataStructure = std::move(UpdatedDataStructure);
+				FWwiseDataStructure UpdatedDataStructure(SourcePath, &Platform.GetPlatformName(), InBasePlatformGuid);
+				DataStructure = MoveTemp(UpdatedDataStructure);
 
 				// Update platform according to data found if different
-				WwiseDBSharedPlatformId FoundSimilarPlatform = Platform;
+				FWwiseSharedPlatformId FoundSimilarPlatform = Platform;
 				for (const auto& LoadedPlatform : DataStructure.Platforms)
 				{
-					WwiseDBPair<const WwiseDBSharedPlatformId, WwisePlatformDataStructure> LoadedPlatformPair(LoadedPlatform);
-					FoundSimilarPlatform = LoadedPlatformPair.GetFirst();
+					FoundSimilarPlatform = LoadedPlatform.Key;
 					if (FoundSimilarPlatform == Platform)
 					{
 						break;
@@ -100,10 +95,10 @@ void FWwiseProjectDatabaseImpl::UpdateDataStructure(const WwiseDBGuid* InBasePla
 				}
 
 				//Update SharedPlatformId with parsed root paths
-				if (DataStructure.Platforms.Contains(FoundSimilarPlatform))
+				if (DataStructure.Platforms.Contains(FoundSimilarPlatform) )
 				{
-					const WwisePlatformDataStructure& PlatformEntry = DataStructure.Platforms.FindRef(FoundSimilarPlatform);
-					FoundSimilarPlatform.Platform->ExternalSourceRootPath = *PlatformEntry.PlatformRef.GetPlatformInfo()->RootPaths.ExternalSourcesOutputRoot;
+					const FWwisePlatformDataStructure& PlatformEntry = DataStructure.Platforms.FindRef(FoundSimilarPlatform);
+					FoundSimilarPlatform.Platform->ExternalSourceRootPath = PlatformEntry.PlatformRef.GetPlatformInfo()->RootPaths.ExternalSourcesOutputRoot;
 				}
 				//Update the resource loader current platform as internal data may have changed
 				auto* ResourceLoader = GetResourceLoader();
@@ -112,28 +107,23 @@ void FWwiseProjectDatabaseImpl::UpdateDataStructure(const WwiseDBGuid* InBasePla
 					return;
 				}
 
-				int A, B, C, D;
-				FoundSimilarPlatform.Platform->PlatformGuid.GetGuidValues(A, B, C, D);
-				FWwiseSharedPlatformId SharedPlatform = FWwiseSharedPlatformId(FGuid(A, B, C, D),
-					*FoundSimilarPlatform.Platform->PlatformName, *FoundSimilarPlatform.Platform->PathRelativeToGeneratedSoundBanks);
-				SharedPlatform.Platform->ExternalSourceRootPath = FName(*FoundSimilarPlatform.Platform->ExternalSourceRootPath);
-				ResourceLoader->SetPlatform(SharedPlatform);
+				ResourceLoader->SetPlatform(FoundSimilarPlatform);
 			}
 
-			if (UNLIKELY(DataStructure.Platforms.Size() == 0))
+			if (UNLIKELY(DataStructure.Platforms.Num() == 0))
 			{
 				if(!InBasePlatformGuid)
 				{
-					WWISE_DB_LOG(Error, "JSON metadata files are not generated. Make sure the SoundBanks are generated and that the \"Generate JSON Metadata\" setting is enabled in your Wwise Project Settings, under the SoundBanks tab.");
+					UE_LOG(LogWwiseProjectDatabase, Error, TEXT("JSON metadata files are not generated. Make sure the SoundBanks are generated and that the \"Generate JSON Metadata\" setting is enabled in your Wwise Project Settings, under the SoundBanks tab."));
 					return;
 				}
 				UE_LOG(LogWwiseProjectDatabase, Error, TEXT("UpdateDataStructure: Could not find suitable platform for %s (Base: %s) in (%s)"),
-					*FWwiseStringConverter::ToFString(Platform.GetPlatformName()), InBasePlatformGuid ? *FWwiseStringConverter::ToFString(InBasePlatformGuid->ToString()) : TEXT("null"), *SourcePath.Path);
+					*Platform.GetPlatformName().ToString(), InBasePlatformGuid ? *InBasePlatformGuid->ToString() : TEXT("null"), *SourcePath.Path);
 				return;
 			}
 		}
 		bIsDatabaseParsed = true;
-		WWISE_DB_LOG(Log, "UpdateDataStructure: Done.");
+		UE_LOG(LogWwiseProjectDatabase, Log, TEXT("UpdateDataStructure: Done."));
 	}
 	if (Get() == this && bShouldBroadcast)		// Only broadcast database updates on main project.
 	{

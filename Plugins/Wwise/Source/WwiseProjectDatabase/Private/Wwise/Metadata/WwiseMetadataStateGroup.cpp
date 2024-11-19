@@ -18,9 +18,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Metadata/WwiseMetadataStateGroup.h"
 #include "Wwise/Metadata/WwiseMetadataLoader.h"
 
-WwiseMetadataStateGroup::WwiseMetadataStateGroup(WwiseMetadataLoader& Loader) :
-	WwiseMetadataBasicReference(Loader),
-	States(Loader.GetArray<WwiseMetadataState>(this, "States"_wwise_db))
+FWwiseMetadataStateGroup::FWwiseMetadataStateGroup(FWwiseMetadataLoader& Loader) :
+	FWwiseMetadataBasicReference(Loader),
+	States(Loader.GetArray<FWwiseMetadataState>(this, TEXT("States")))
 {
-	Loader.LogParsed("StateGroup"_wwise_db, Id, Name);
+	Loader.LogParsed(TEXT("StateGroup"), Id, Name);
 }

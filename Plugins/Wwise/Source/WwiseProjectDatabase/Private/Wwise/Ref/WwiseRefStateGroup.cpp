@@ -18,15 +18,17 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Ref/WwiseRefStateGroup.h"
 
 #include "Wwise/Metadata/WwiseMetadataSoundBank.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
 #include "Wwise/Metadata/WwiseMetadataStateGroup.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 
-const WwiseDBString WwiseRefStateGroup::NAME = "StateGroup"_wwise_db;
+const TCHAR* const FWwiseRefStateGroup::NAME = TEXT("StateGroup");
 
-const WwiseMetadataStateGroup* WwiseRefStateGroup::GetStateGroup() const
+const FWwiseMetadataStateGroup* FWwiseRefStateGroup::GetStateGroup() const
 {
 	const auto* SoundBank = GetSoundBank();
-	if (!SoundBank) [[unlikely]]
+	if (UNLIKELY(!SoundBank))
 	{
 		return nullptr;
 	}
@@ -37,54 +39,54 @@ const WwiseMetadataStateGroup* WwiseRefStateGroup::GetStateGroup() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get State Group index #%zu", StateGroupIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get State Group index #%zu"), StateGroupIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefStateGroup::StateGroupId() const
+uint32 FWwiseRefStateGroup::StateGroupId() const
 {
 	const auto* StateGroup = GetStateGroup();
-	if (!StateGroup) [[unlikely]]
+	if (UNLIKELY(!StateGroup))
 	{
 		return 0;
 	}
 	return StateGroup->Id;
 }
 
-WwiseDBGuid WwiseRefStateGroup::StateGroupGuid() const
+FGuid FWwiseRefStateGroup::StateGroupGuid() const
 {
 	const auto* StateGroup = GetStateGroup();
-	if (!StateGroup) [[unlikely]]
+	if (UNLIKELY(!StateGroup))
 	{
 		return {};
 	}
 	return StateGroup->GUID;
 }
 
-const WwiseDBString* WwiseRefStateGroup::StateGroupName() const
+FName FWwiseRefStateGroup::StateGroupName() const
 {
 	const auto* StateGroup = GetStateGroup();
-	if (!StateGroup) [[unlikely]]
+	if (UNLIKELY(!StateGroup))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &StateGroup->Name;
+	return StateGroup->Name;
 }
 
-const WwiseDBString* WwiseRefStateGroup::StateGroupObjectPath() const
+FName FWwiseRefStateGroup::StateGroupObjectPath() const
 {
 	const auto* StateGroup = GetStateGroup();
-	if (!StateGroup) [[unlikely]]
+	if (UNLIKELY(!StateGroup))
 	{
-		return &emptyString;
+		return {};
 	}
-	return &StateGroup->ObjectPath;
+	return StateGroup->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefStateGroup::Hash() const
+uint32 FWwiseRefStateGroup::Hash() const
 {
-	auto Result = WwiseRefSoundBank::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(StateGroupIndex));
+	auto Result = FWwiseRefSoundBank::Hash();
+	Result = HashCombine(Result, GetTypeHash(StateGroupIndex));
 	return Result;
 }

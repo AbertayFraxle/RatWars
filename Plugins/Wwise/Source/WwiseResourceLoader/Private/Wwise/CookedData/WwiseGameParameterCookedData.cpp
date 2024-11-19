@@ -19,10 +19,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/Stats/ResourceLoader.h"
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-#include "Serialization/CompactBinaryWriter.h"
-#endif
-
 #include <inttypes.h>
 
 FWwiseGameParameterCookedData::FWwiseGameParameterCookedData(): ShortId(0)
@@ -43,13 +39,6 @@ void FWwiseGameParameterCookedData::Serialize(FArchive& Ar)
 		Struct->SerializeTaggedProperties(Ar, (uint8*)this, Struct, nullptr);
 	}
 }
-
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-void FWwiseGameParameterCookedData::PreSave(FObjectPreSaveContext& SaveContext, FCbWriter& Writer) const
-{
-	Writer << "GP" << ShortId;
-}
-#endif
 
 FString FWwiseGameParameterCookedData::GetDebugString() const
 {

@@ -16,23 +16,25 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefRootFile.h"
+#include "Wwise/Stats/ProjectDatabase.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
-const WwiseDBString WwiseRefRootFile::NAME = "RootFile"_wwise_db;
+const TCHAR* const FWwiseRefRootFile::NAME = TEXT("RootFile");
 
-WwiseDBShortId WwiseRefRootFile::Hash() const
+uint32 FWwiseRefRootFile::Hash() const
 {
-	auto Result = WwiseDBHashCombine(GetTypeHash(JsonFilePath), GetTypeHash(static_cast<std::underlying_type<WwiseRefType>::type>(Type())));
+	auto Result = HashCombine(GetTypeHash(JsonFilePath), GetTypeHash(static_cast<std::underlying_type<EWwiseRefType>::type>(Type())));
 	return Result;
 }
 
-bool WwiseRefRootFile::IsValid() const
+bool FWwiseRefRootFile::IsValid() const
 {
 	return static_cast<bool>(RootFileRef);
 }
 
-const WwiseMetadataRootFile* WwiseRefRootFile::GetRootFile() const
+const FWwiseMetadataRootFile* FWwiseRefRootFile::GetRootFile() const
 {
 	const auto* Result = RootFileRef.Get();
-	WWISE_DB_CLOG(!Result, Error, "Could not get Root File Ref");
+	UE_CLOG(!Result, LogWwiseProjectDatabase, Error, TEXT("Could not get Root File Ref"));
 	return Result;
 }

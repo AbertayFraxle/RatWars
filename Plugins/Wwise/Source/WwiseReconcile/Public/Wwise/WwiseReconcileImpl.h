@@ -22,13 +22,13 @@ Copyright (c) 2024 Audiokinetic Inc.
 class WWISERECONCILE_API FWwiseReconcileImpl : public IWwiseReconcile
 {
 protected:
-	virtual bool IsAssetOutOfDate(const FAssetData& AssetData, const WwiseAnyRef& WwiseRef) override;
+	virtual bool IsAssetOutOfDate(const FAssetData& AssetData, const FWwiseAnyRef& WwiseRef) override;
 	virtual void GetAllWwiseRefs() override;
 	
 public:
 	FWwiseReconcileImpl():IWwiseReconcile(){};
 	virtual ~FWwiseReconcileImpl(){};
-	virtual FString GetAssetPackagePath(const WwiseAnyRef& WwiseRef) override;
+	virtual FString GetAssetPackagePath(const FWwiseAnyRef& WwiseRef) override;
 	virtual void GetAllAssets(TArray<FWwiseReconcileItem>& ReconcileItems) override;
 	virtual TArray<FAssetData> CreateAssets(FScopedSlowTask& SlowTask) override;
 	virtual TArray<FAssetData> UpdateExistingAssets(FScopedSlowTask& SlowTask) override;
@@ -37,12 +37,12 @@ public:
 	virtual int32 MoveAssets(FScopedSlowTask& SlowTask) override;
 	virtual int GetNumberOfAssets() override;
 	virtual int32 DeleteAssets(FScopedSlowTask& SlowTask) override;
-	virtual UClass* GetUClassFromWwiseRefType(WwiseRefType RefType) override;
+	virtual UClass* GetUClassFromWwiseRefType(EWwiseRefType RefType) override;
 	virtual void GetAssetChanges(TArray<FWwiseReconcileItem>& ReconcileItems, EWwiseReconcileOperationFlags OperationFlags = EWwiseReconcileOperationFlags::All) override;
 	virtual bool AddToDelete(FWwiseReconcileItem& Item) override;
 	virtual bool AddToCreate(FWwiseReconcileItem& Item) override;
 	virtual bool AddToRename(FWwiseReconcileItem& Item) override;
 	virtual bool AddToUpdate(FWwiseReconcileItem& Item) override;
 	virtual bool AddToMove(FWwiseReconcileItem& Item) override;
-	virtual bool ShouldMove(const WwiseAnyRef& Ref, FAssetData InAssetPath, FString& OutNewAssetPath) override;
+	virtual bool ShouldMove(const FWwiseAnyRef& Ref, FAssetData InAssetPath, FString& OutNewAssetPath) override;
 };

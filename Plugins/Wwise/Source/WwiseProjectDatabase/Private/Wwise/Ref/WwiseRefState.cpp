@@ -16,16 +16,18 @@ Copyright (c) 2024 Audiokinetic Inc.
 *******************************************************************************/
 
 #include "Wwise/Ref/WwiseRefState.h"
+#include "Wwise/Stats/ProjectDatabase.h"
 #include "Wwise/Metadata/WwiseMetadataStateGroup.h"
+#include "Wwise/WwiseProjectDatabaseModule.h"
 
 #include "Wwise/Metadata/WwiseMetadataState.h"
 
-const WwiseDBString WwiseRefState::NAME = "State"_wwise_db;
+const TCHAR* const FWwiseRefState::NAME = TEXT("State");
 
-const WwiseMetadataState* WwiseRefState::GetState() const
+const FWwiseMetadataState* FWwiseRefState::GetState() const
 {
 	const auto* StateGroup = GetStateGroup();
-	if (!StateGroup) [[unlikely]]
+	if (UNLIKELY(!StateGroup))
 	{
 		return nullptr;
 	}
@@ -36,54 +38,54 @@ const WwiseMetadataState* WwiseRefState::GetState() const
 	}
 	else
 	{
-		WWISE_DB_LOG(Error, "Could not get State index #%zu", StateIndex);
+		UE_LOG(LogWwiseProjectDatabase, Error, TEXT("Could not get State index #%zu"), StateIndex);
 		return nullptr;
 	}
 }
 
-WwiseDBShortId WwiseRefState::StateId() const
+uint32 FWwiseRefState::StateId() const
 {
 	const auto* State = GetState();
-	if (!State) [[unlikely]]
+	if (UNLIKELY(!State))
 	{
 		return 0;
 	}
 	return State->Id;
 }
 
-WwiseDBGuid WwiseRefState::StateGuid() const
+FGuid FWwiseRefState::StateGuid() const
 {
 	const auto* State = GetState();
-	if (!State) [[unlikely]]
+	if (UNLIKELY(!State))
 	{
 		return {};
 	}
 	return State->GUID;
 }
 
-WwiseDBString WwiseRefState::StateName() const
+FName FWwiseRefState::StateName() const
 {
 	const auto* State = GetState();
-	if (!State) [[unlikely]]
+	if (UNLIKELY(!State))
 	{
 		return {};
 	}
 	return State->Name;
 }
 
-WwiseDBString WwiseRefState::StateObjectPath() const
+FName FWwiseRefState::StateObjectPath() const
 {
 	const auto* State = GetState();
-	if (!State) [[unlikely]]
+	if (UNLIKELY(!State))
 	{
 		return {};
 	}
 	return State->ObjectPath;
 }
 
-WwiseDBShortId WwiseRefState::Hash() const
+uint32 FWwiseRefState::Hash() const
 {
-	auto Result = WwiseRefStateGroup::Hash();
-	Result = WwiseDBHashCombine(Result, GetTypeHash(StateIndex));
+	auto Result = FWwiseRefStateGroup::Hash();
+	Result = HashCombine(Result, GetTypeHash(StateIndex));
 	return Result;
 }

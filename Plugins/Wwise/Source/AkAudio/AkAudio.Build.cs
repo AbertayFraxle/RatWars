@@ -50,7 +50,7 @@ public class AkAudio : ModuleRules
 				"APEX",
 				"PhysX", 
 #endif
-				"WwisePackaging",
+				"WwiseConcurrency",
 				"WwiseResourceLoader",
 				"WwiseObstructionOcclusion",
 				"WwiseProcessing",
@@ -79,22 +79,14 @@ public class AkAudio : ModuleRules
 				"SlateCore",
 				"XmlParser",
 
-				"WwiseConcurrency",
 				"WwiseFileHandler",
-				"WwiseLowLevelUtils",
 				"WwiseSoundEngine",
-				"WwiseUtils",
+				"WwiseUtils"
 			}
 		);
 
 		if (Target.bBuildEditor)
 		{
-			PublicDependencyModuleNames.AddRange(
-				new string[]
-				{
-				}
-			);
-			
 			PrivateDependencyModuleNames.AddRange(
 				new string[]
 				{
@@ -110,10 +102,7 @@ public class AkAudio : ModuleRules
 					"SharedSettingsWidgets",
 					"SourceControl",
 					"TargetPlatform",
-					"UnrealEd",
-
-					"WwiseAuthoring",
-					"WwiseEditorUtils",
+					"UnrealEd"
 				}
 			);
 		}
@@ -121,9 +110,8 @@ public class AkAudio : ModuleRules
 		if (Target.bBuildWithEditorOnlyData)
 		{
 			PublicDependencyModuleNames.AddRange(
-				new string[]
+				new String[]
 				{
-					"WwisePackagingEditor",
 					"WwiseProjectDatabase"
 				}
 			);

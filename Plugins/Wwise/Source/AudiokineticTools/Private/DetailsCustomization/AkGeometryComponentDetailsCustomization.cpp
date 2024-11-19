@@ -89,8 +89,6 @@ void FAkGeometryComponentDetailsCustomization::CustomizeDetails(const TSharedPtr
 
 void FAkGeometryComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBuilder& InDetailBuilder)
 {
-	FWwiseDetailsCustomization::CustomizeDetails(InDetailBuilder);
-	
 	TArray<TWeakObjectPtr<UObject>> ObjectsBeingCustomized;
 	InDetailBuilder.GetObjectsBeingCustomized(ObjectsBeingCustomized);
 
@@ -165,9 +163,9 @@ void FAkGeometryComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBui
 							if (ComponentBeingCustomized->HasAnyFlags(RF_ArchetypeObject)
 								|| ComponentBeingCustomized->CreationMethod == EComponentCreationMethod::Instance)
 							{
-								TArray<TObjectPtr<UMaterialInterface>> Materials;
+								TArray<UMaterialInterface*> Materials;
 								ComponentBeingCustomized->StaticMeshSurfaceOverride.GetKeys(Materials);
-								for (TObjectPtr<UMaterialInterface> Material : Materials)
+								for (UMaterialInterface* Material : Materials)
 								{
 									ComponentBeingCustomized->StaticMeshSurfaceOverride[Material].AcousticTexture = nullptr;
 									ComponentBeingCustomized->StaticMeshSurfaceOverride[Material].bEnableOcclusionOverride = false;
@@ -185,9 +183,9 @@ void FAkGeometryComponentDetailsCustomization::CustomizeDetails(IDetailLayoutBui
 				]
 			);
 			ComponentBeingCustomized->UpdateStaticMeshOverride();
-			TArray<TObjectPtr<UMaterialInterface>> Materials;
+			TArray<UMaterialInterface*> Materials;
 			ComponentBeingCustomized->StaticMeshSurfaceOverride.GetKeys(Materials);
-			for (TObjectPtr<UMaterialInterface> Material : Materials)
+			for (UMaterialInterface* Material : Materials)
 			{
 				FDetailWidgetRow& SurfacesRow = CategoryBuilder.AddCustomRow(FText::FromString("Texture Surface Occlusion"));
 				SurfacesRow.NameContent()

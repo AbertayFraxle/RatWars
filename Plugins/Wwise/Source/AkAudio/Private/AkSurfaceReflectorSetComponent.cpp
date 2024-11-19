@@ -42,6 +42,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "GeometryEdMode.h"
 #include "LevelEditorViewport.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Engine/Polys.h"
 #endif
 
 #if WITH_EDITOR
@@ -219,6 +220,16 @@ void UAkSurfaceReflectorSetComponent::OnRegister()
 	InitializeParentBrush();
 	SendSurfaceReflectorSet();
 	UpdateSurfaceReflectorSet();
+#if WITH_EDITOR
+	if (AssociatedRoom != nullptr)
+	{
+		UAkRoomComponent* room = Cast<UAkRoomComponent>(AssociatedRoom->GetComponentByClass(UAkRoomComponent::StaticClass()));
+		if (room != nullptr)
+		{
+			UE_LOG(LogAkAudio, Warning, TEXT("AkSurfaceReflectorSetComponent %s is associated to Room %s. The AssociatedRoom property is deprecated, it will be removed in a future version. We recommend not using it and leaving it set to None."), *GetOwner()->GetName(), *room->GetRoomName());
+		}
+	}
+#endif
 }
 
 void UAkSurfaceReflectorSetComponent::InitializeParentBrush(bool fromTick /* = false */)
@@ -270,30 +281,11 @@ void UAkSurfaceReflectorSetComponent::OnUnregister()
 void UAkSurfaceReflectorSetComponent::UpdateAcousticProperties(TArray<FAkSurfacePoly> in_acousticSurfacePoly)
 {
 	AcousticPolys = in_acousticSurfacePoly;
-	bGeometryNeedsUpdate = true;
-	bSurfaceAreaNeedsUpdate = true;
-}
 
-void UAkSurfaceReflectorSetComponent::SetEnableDiffraction(bool bInEnableDiffraction, bool bInEnableDiffractionOnBoundaryEdges)
-{
-	bool bDiffractionChanged = false;
-	bool bBoundaryEdgeDiffractionChanged = false;
-
-	if (bEnableDiffraction != bInEnableDiffraction)
+	if (ReverbDescriptor != nullptr && ParentBrush != nullptr)
 	{
-		bEnableDiffraction = bInEnableDiffraction;
-		bDiffractionChanged = true;
-	}
-
-	if (bEnableDiffractionOnBoundaryEdges != bInEnableDiffractionOnBoundaryEdges)
-	{
-		bEnableDiffractionOnBoundaryEdges = bInEnableDiffractionOnBoundaryEdges;
-		bBoundaryEdgeDiffractionChanged = true;
-	}
-
-	if (bDiffractionChanged || (bEnableDiffraction && bBoundaryEdgeDiffractionChanged))
-	{
-		bGeometryNeedsUpdate = true;
+		ComputeAcousticPolySurfaceArea();
+		DampingEstimationNeedsUpdate = true;
 	}
 }
 
@@ -346,10 +338,37 @@ void UAkSurfaceReflectorSetComponent::ComputeAcousticPolySurfaceArea()
 
 #if WITH_EDITOR
 
-TSet<int> UAkSurfaceReflectorSetComponent::GetSelectedFaceIndices() const
+/**
+ * Had to copy this from Engine/Polygon.cpp, because it's not exported.
+ * Checks to see if the specified vertex is on this poly. Assumes the vertex is on the same
+ * plane as the poly and that the poly is convex.
+ */
+bool OnPoly(const FVector& InVtx, const FPoly& InPoly)
 {
-	TSet<int> selectedFaceIndices;
+	FVector  SidePlaneNormal;
+	FVector3f  Side;
 
+	for (int32 x = 0; x < InPoly.Vertices.Num(); x++)
+	{
+		// Create plane perpendicular to both this side and the polygon's normal.
+		Side = InPoly.Vertices[x] - InPoly.Vertices[(x - 1 < 0) ? InPoly.Vertices.Num() - 1 : x - 1];
+		SidePlaneNormal = FVector(Side ^ InPoly.Normal);
+		SidePlaneNormal.Normalize();
+
+		// If point is not behind all the planes created by this polys edges, it's outside the poly.
+		if (FVector::PointPlaneDist(InVtx, (FVector)InPoly.Vertices[x], SidePlaneNormal) > UE_THRESH_POINT_ON_PLANE)
+		{
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+TSet<int> UAkSurfaceReflectorSetComponent::GetSelectedFaceIndices(int& outNumSelectedFaces) const
+{
+	TSet<int> SelectedNodeIndices;
+	outNumSelectedFaces = 0;
 	// Determine if we are in geometry edit mode.
 	if (GLevelEditorModeTools().IsModeActive(FEditorModeID(TEXT("EM_Geometry"))))
 	{
@@ -360,40 +379,73 @@ TSet<int> UAkSurfaceReflectorSetComponent::GetSelectedFaceIndices() const
 		if (ParentActorBrush != nullptr && ParentBrush != nullptr)
 		{
 			FEdModeGeometry* GeomMode = (FEdModeGeometry*)GLevelEditorModeTools().GetActiveMode(FEditorModeID(TEXT("EM_Geometry")));
-			FEdModeGeometry::TGeomObjectIterator GeomModeIt = GeomMode->GeomObjectItor();
+			TArray<FGeomPoly*> SelectedPolygons;
+			GeomMode->GetSelectedPolygons(SelectedPolygons);
 			const float tolerance = 0.001f;
-			for (; GeomModeIt; ++GeomModeIt)
+			for (auto SelectedPoly : SelectedPolygons)
 			{
-				FGeomObjectPtr Object = *GeomModeIt;
-				if (Object->GetActualBrush() == ParentActorBrush)
+				FGeomObjectPtr Object = GeomMode->GetGeomObject(SelectedPoly->GetParentObjectIndex());
+				if (Object->GetActualBrush() != ParentActorBrush)
 				{
-					// selectedGeometry is a list of selected geometry elements. They can be vertices, edges, or polys
-					TArray<FGeomBase*> selectedGeometry = Object->SelectionOrder;
-					for (FGeomBase* selection : selectedGeometry)
+					continue;
+				}
+
+				bool bFoundFace = false;
+				for (int32 NodeIdx = 0; NodeIdx < ParentBrush->Nodes.Num() && NodeIdx < AcousticPolys.Num(); ++NodeIdx)
+				{
+					if (FMath::IsNearlyEqual((SelectedPoly->GetNormal() - FPlane(ParentBrush->Nodes[NodeIdx].Plane)).Size(), 0.0f, tolerance))
 					{
-						if (!selection->IsVertex())
+						if (FMath::IsNearlyEqual((SelectedPoly->GetMid() - AcousticPolys[NodeIdx].MidPoint).Size(), 0.0f, tolerance))
+						{	
+							// Node corresponds exactly to a the FPoly (poly wasn't split)
+							bFoundFace = true;
+							SelectedNodeIndices.Add(NodeIdx);
+							break;
+						}
+
+						// Check to see if BSP node poly is contained within the FPoly
+						FPoly poly = ParentBrush->Polys->Element[SelectedPoly->ActualPolyIndex];
+						// Make sure the midpoint is on the poly plane, because we've only checked that the normals are the same
+						if (!poly.OnPlane(AcousticPolys[NodeIdx].MidPoint))
 						{
-							// There is no way to distinguish an edge from a poly, and we are unable to downcast.
-							// Check the normal and mid point against the normal and mid point of each face in our model.
-							// If we find the corresponding face, add its index to the selectedFaceIndices list.
-							for (int32 NodeIdx = 0; NodeIdx < ParentBrush->Nodes.Num() && NodeIdx < AcousticPolys.Num(); ++NodeIdx)
+							continue;
+						}
+						bool bPolyContainsNode = true;
+						int32 VertStartIndex = ParentBrush->Nodes[NodeIdx].iVertPool;
+						for (int32 VertexIdx = 0; VertexIdx < ParentBrush->Nodes[NodeIdx].NumVertices; ++VertexIdx)
+						{
+							const FVert* Vert = &ParentBrush->Verts[VertStartIndex + VertexIdx];
+							const FVector VertPos = FVector(ParentBrush->Points[Vert->pVertex]);
+							if (!OnPoly(VertPos, poly))
 							{
-								if (FMath::IsNearlyEqual((selection->GetNormal() - FPlane(ParentBrush->Nodes[NodeIdx].Plane)).Size(), 0.0f, tolerance)
-									&& FMath::IsNearlyEqual((selection->GetMid() - AcousticPolys[NodeIdx].MidPoint).Size(), 0.0f, tolerance))
-								{
-									selectedFaceIndices.Add(NodeIdx);
-									break;
-								}
+								bPolyContainsNode = false;
+								break;
 							}
 						}
+
+						if (bPolyContainsNode)
+						{
+							// Add node to SelectedIndices, but don't break as there are likely other nodes
+							// contained by the poly, because the face was split
+							bFoundFace = true;
+							SelectedNodeIndices.Add(NodeIdx);
+						}
 					}
-					break;
+				}
+
+				if (bFoundFace)
+				{
+					outNumSelectedFaces += 1;
+				}
+				else
+				{
+					UE_LOG(LogAkAudio, Warning, TEXT("UAkSurfaceReflectorSetComponent::GetSelectedFaceIndices: %s: Failed to match selected poly face with acoustic surface node."), *GetOwner()->GetName());
 				}
 			}
 		}
 	}
 
-	return selectedFaceIndices;
+	return SelectedNodeIndices;
 }
 
 void UAkSurfaceReflectorSetComponent::CacheAcousticProperties()
@@ -468,6 +520,11 @@ void UAkSurfaceReflectorSetComponent::PostEditChangeProperty(FPropertyChangedEve
 	if (ParentBrush != nullptr)
 	{
 		UpdatePolys();
+	}
+
+	if (AssociatedRoom && !Cast<UAkRoomComponent>(AssociatedRoom->GetComponentByClass(UAkRoomComponent::StaticClass())))
+	{
+		UE_LOG(LogAkAudio, Warning, TEXT("%s: The Surface Reflector Set's Associated Room is not of type UAkRoomComponent."), *GetOwner()->GetName());
 	}
 
 	const FName MemberPropertyName = (PropertyChangedEvent.MemberProperty != nullptr) ? PropertyChangedEvent.MemberProperty->GetFName() : NAME_None;
@@ -1008,18 +1065,6 @@ void UAkSurfaceReflectorSetComponent::TickComponent(float DeltaTime, enum ELevel
 		WasSelected = false;
 		UpdateText(false);
 	}
-
-	if (bSurfaceAreaNeedsUpdate && ReverbDescriptor != nullptr && ParentBrush != nullptr)
-	{
-		ComputeAcousticPolySurfaceArea();
-		DampingEstimationNeedsUpdate = true;
-	}
-
-	if (bGeometryNeedsUpdate)
-	{
-		SendSurfaceReflectorSet();
-		bGeometryNeedsUpdate = false;
-	}
 }
 #endif // WITH_EDITOR
 
@@ -1230,99 +1275,21 @@ void UAkSurfaceReflectorSetComponent::RemoveSurfaceReflectorSet()
 
 void UAkSurfaceReflectorSetComponent::UpdateSurfaceReflectorSet()
 {
-	SendGeometryInstanceToWwise(GetOwner()->ActorToWorld().Rotator(), GetOwner()->GetActorLocation(), GetOwner()->ActorToWorld().GetScale3D(), bEnableSurfaceReflectors, bSolid, bBypassPortalSubtraction);
-}
-
-void UAkSurfaceReflectorSetComponent::SetEnable(bool bInEnable)
-{
-	if (bEnableSurfaceReflectors == bInEnable)
+	AkRoomID roomID = AkRoomID();
+	if (AssociatedRoom)
 	{
-		return;
+		UAkRoomComponent* room = Cast<UAkRoomComponent>(AssociatedRoom->GetComponentByClass(UAkRoomComponent::StaticClass()));
+
+		if (room != nullptr)
+			roomID = room->GetRoomID();
 	}
 
-	bEnableSurfaceReflectors = bInEnable;
+	SendGeometryInstanceToWwise(GetOwner()->ActorToWorld().Rotator(), GetOwner()->GetActorLocation(), GetOwner()->ActorToWorld().GetScale3D(), roomID, bEnableSurfaceReflectors);
 
-	if (bEnableSurfaceReflectors)
+	if (ReverbDescriptor != nullptr && ParentBrush != nullptr)
 	{
-		SendSurfaceReflectorSet();
-		UpdateSurfaceReflectorSet();
-	}
-	else
-	{
-		RemoveSurfaceReflectorSet();
-	}
-}
-
-void UAkSurfaceReflectorSetComponent::SetSurfaceProperties(TArray<int>& InSurfaceIndexesToEdit, FAkSurfacePoly InSurfaceProperties)
-{
-	for (int i = 0; i < InSurfaceIndexesToEdit.Num(); i++) 
-	{
-		if (AcousticPolys[InSurfaceIndexesToEdit[i]].Occlusion != InSurfaceProperties.Occlusion)
-		{
-			AcousticPolys[InSurfaceIndexesToEdit[i]].Occlusion = InSurfaceProperties.Occlusion;
-			// Transmission Loss changes only need to be update in the geometry if EnableSurface is true
-			if (InSurfaceProperties.EnableSurface)
-			{
-				bGeometryNeedsUpdate = true;
-			}
-		}
-
-		if (AcousticPolys[InSurfaceIndexesToEdit[i]].Texture != InSurfaceProperties.Texture || AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface != InSurfaceProperties.EnableSurface)
-		{
-			AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface = InSurfaceProperties.EnableSurface;
-			AcousticPolys[InSurfaceIndexesToEdit[i]].Texture = InSurfaceProperties.Texture;
-			bGeometryNeedsUpdate = true;
-			bSurfaceAreaNeedsUpdate = true;
-		}
-	}
-}
-
-void UAkSurfaceReflectorSetComponent::SetEnableSurface(TArray<int>& InSurfaceIndexesToEdit, bool bInEnableSurface)
-{
-	for (int i = 0; i < InSurfaceIndexesToEdit.Num(); i++) 
-	{
-		if (AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface != bInEnableSurface)
-		{
-			AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface = bInEnableSurface;
-			bGeometryNeedsUpdate = true;
-			bSurfaceAreaNeedsUpdate = true;
-		}
-	}
-}
-
-void UAkSurfaceReflectorSetComponent::SetAcousticTexture(TArray<int>& InSurfaceIndexesToEdit, UAkAcousticTexture* InAcousticTexture, bool bInEnableSurface)
-{
-	for (int i = 0; i < InSurfaceIndexesToEdit.Num(); i++) 
-	{
-		if (AcousticPolys[InSurfaceIndexesToEdit[i]].Texture != InAcousticTexture || AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface != bInEnableSurface)
-		{
-			AcousticPolys[InSurfaceIndexesToEdit[i]].Texture = InAcousticTexture;
-			AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface = bInEnableSurface;
-			bGeometryNeedsUpdate = true;
-			bSurfaceAreaNeedsUpdate = true;
-		}
-	}
-}
-
-void UAkSurfaceReflectorSetComponent::SetTransmissionLoss(TArray<int>& InSurfaceIndexesToEdit, float InTransmissionLoss, bool bInEnableSurface)
-{
-	for (int i = 0; i < InSurfaceIndexesToEdit.Num(); i++) 
-	{
-		if (AcousticPolys[InSurfaceIndexesToEdit[i]].Occlusion != InTransmissionLoss)
-		{
-			AcousticPolys[InSurfaceIndexesToEdit[i]].Occlusion = InTransmissionLoss;
-			// Transmission Loss changes only need an update if EnableSurface is true
-			if (bInEnableSurface)
-			{
-				bGeometryNeedsUpdate = true;
-			}
-		}
-		if (AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface != bInEnableSurface)
-		{
-			AcousticPolys[InSurfaceIndexesToEdit[i]].EnableSurface = bInEnableSurface;
-			bGeometryNeedsUpdate = true;
-			bSurfaceAreaNeedsUpdate = true;
-		}
+		ComputeAcousticPolySurfaceArea();
+		DampingEstimationNeedsUpdate = true;
 	}
 }
 

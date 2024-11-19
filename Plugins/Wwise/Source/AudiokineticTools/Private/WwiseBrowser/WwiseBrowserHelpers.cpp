@@ -457,6 +457,7 @@ bool WwiseBrowserHelpers::CanCreateAsset(const FWwiseTreeItemPtr& Item)
 
 FLinearColor WwiseBrowserHelpers::GetTextColor(bool bUpToDate)
 {
+	FColor Color;
 	return bUpToDate ? FLinearColor::Gray : FLinearColor(1.f, 0.33f, 0);
 }
 

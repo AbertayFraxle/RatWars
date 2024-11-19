@@ -23,8 +23,11 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 class WWISEFILEHANDLER_API FWwiseSoundBankFileState : public FWwiseFileState, public FWwiseSoundBankCookedData
 {
+public:
+	const FString RootPath;
+
 protected:
-	FWwiseSoundBankFileState(const FWwiseSoundBankCookedData& InCookedData);
+	FWwiseSoundBankFileState(const FWwiseSoundBankCookedData& InCookedData, const FString& InRootPath);
 
 public:
 	~FWwiseSoundBankFileState() override;
@@ -39,7 +42,7 @@ public:
 	const uint8* Ptr;
 	int64 FileSize;
 
-	FWwiseInMemorySoundBankFileState(const FWwiseSoundBankCookedData& InCookedData);
+	FWwiseInMemorySoundBankFileState(const FWwiseSoundBankCookedData& InCookedData, const FString& InRootPath);
 	~FWwiseInMemorySoundBankFileState() override { Term(); }
 
 	bool LoadAsMemoryView() const;

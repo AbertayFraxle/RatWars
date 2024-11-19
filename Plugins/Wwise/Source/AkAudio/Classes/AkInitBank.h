@@ -59,10 +59,6 @@ public:
 	void LoadInitBank();
 	void UnloadInitBank(bool bAsync);
 
-#if WITH_EDITORONLY_DATA && UE_5_5_OR_LATER
-	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
-#endif
-
 protected:
 	void Serialize(FArchive& Ar) override;
 
