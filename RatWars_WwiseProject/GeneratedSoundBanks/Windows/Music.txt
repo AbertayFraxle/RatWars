@@ -1,0 +1,63 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3886502571	Play_HATEFUL			\Default Work Unit\Play_HATEFUL	
+
+State Group	ID	Name			Wwise Object Path	Notes
+	2183912641	MusicSegment			\Default Work Unit\MusicSegment	
+
+State	ID	Name	State Group			Notes
+	748895195	None	MusicSegment			
+	1646090112	segment_14	MusicSegment			
+	1646090113	segment_15	MusicSegment			
+	1646090114	segment_16	MusicSegment			
+	1646090115	segment_17	MusicSegment			
+	1646090116	segment_10	MusicSegment			
+	1646090117	segment_11	MusicSegment			
+	1646090118	segment_12	MusicSegment			
+	1646090119	segment_13	MusicSegment			
+	1646090124	segment_18	MusicSegment			
+	1646090125	segment_19	MusicSegment			
+	1662867824	segment_07	MusicSegment			
+	1662867825	segment_06	MusicSegment			
+	1662867826	segment_05	MusicSegment			
+	1662867827	segment_04	MusicSegment			
+	1662867828	segment_03	MusicSegment			
+	1662867829	segment_02	MusicSegment			
+	1662867830	segment_01	MusicSegment			
+	1662867838	segment_09	MusicSegment			
+	1662867839	segment_08	MusicSegment			
+	1696423000	segment_25	MusicSegment			
+	1696423001	segment_24	MusicSegment			
+	1696423003	segment_26	MusicSegment			
+	1696423004	segment_21	MusicSegment			
+	1696423005	segment_20	MusicSegment			
+	1696423006	segment_23	MusicSegment			
+	1696423007	segment_22	MusicSegment			
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	11996023	21-Final Loop Transition	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\21-Final Loop Transition_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\11-FinalLoop\21-Final Loop Transition\21-Final Loop Transition		1547552
+	49582116	10-LoopEnd	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\10-LoopEnd_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\06-HighSynth\10-LoopEnd\10-LoopEnd		3118288
+	62245044	25-OF ALL ELSE LOOP	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\25-OF ALL ELSE LOOP_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\12-OfAllElse\25-OF ALL ELSE LOOP\25-OF ALL ELSE LOOP		1589060
+	70891469	12-Transition	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\12-Transition_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\07-Lighter\12-Transition\12-Transition		349708
+	181317921	22-Final Loop	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\22-Final Loop_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\11-FinalLoop\22-Final Loop\22-Final Loop		1578988
+	294400331	09-Long Loop	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\09-Long Loop_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\05-LongLoop\09-Long Loop\09-Long Loop		3180976
+	300846105	02-Suspense	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\02-Suspense_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\01-IntroSuspense\02-Suspense\02-Suspense		1589656
+	389102413	18-LoopRefrain	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\18-LoopRefrain_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\09-Refrain\18-LoopRefrain\18-LoopRefrain		1589064
+	412412372	20-Bass Buildup	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\20-Bass Buildup_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\10-BassBuildup\20-Bass Buildup\20-Bass Buildup		4768920
+	510369466	03-Transition	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\03-Transition_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\02-Verse1\03-Transition\03-Transition		1787536
+	520016084	08-Refrain	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\08-Refrain_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\05-LongLoop\08-Refrain\08-Refrain		1682452
+	556877399	01-Intro	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\01-Intro_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\01-IntroSuspense\01-Intro\01-Intro		2184476
+	605314117	11-Dancey Part	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\11-Dancey Part_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\06-HighSynth\11-Dancey Part\11-Dancey Part		2785160
+	618183375	15-Heavy Again	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\15-Heavy Again_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\08-Heavy\15-Heavy Again\15-Heavy Again		2370340
+	627257909	23-Transition to ALL ELSE	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\23-Transition to ALL ELSE_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\12-OfAllElse\23-Transition to ALL ELSE\23-Transition to ALL ELSE		404236
+	659927045	13-Lighter Section	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\13-Lighter Section_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\07-Lighter\13-Lighter Section\13-Lighter Section		3175244
+	742880957	26-Final Outro	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\26-Final Outro_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\13-EndPart\26-Final Outro\26-Final Outro		41180
+	756658763	07-Bass Begins	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\07-Bass Begins_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\04-LiesOnLies\07-Bass Begins\07-Bass Begins		3183624
+	805149301	14-Transition	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\14-Transition_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\08-Heavy\14-Transition\14-Transition		108992
+	870739064	17-Real Refrain	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\17-Real Refrain_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\09-Refrain\17-Real Refrain\17-Real Refrain		742160
+	902810354	16-Another Transition	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\16-Another Transition_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\09-Refrain\16-Another Transition\16-Another Transition		747688
+	930454313	05-PreChorus	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\05-PreChorus_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\03-VocalStart\05-PreChorus\05-PreChorus		397616
+	954518308	06-Vocals	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\06-Vocals_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\03-VocalStart\06-Vocals\06-Vocals		3185484
+	974897334	04-Verse Loop	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\04-Verse Loop_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\02-Verse1\04-Verse Loop\04-Verse Loop		1986024
+	1022774792	24-OF ALL ELSE	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\24-OF ALL ELSE_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\12-OfAllElse\24-OF ALL ELSE\24-OF ALL ELSE		1582164
+	1050255536	19-TransitionToBass	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Windows\SFX\numbered\19-TransitionToBass_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\HATEFUL\numbered\10-BassBuildup\19-TransitionToBass\19-TransitionToBass		2035956
+

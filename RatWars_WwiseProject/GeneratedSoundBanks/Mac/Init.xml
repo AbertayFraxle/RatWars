@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<SoundBanks>
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{FC762FE7-0852-992D-3E83-B1C2D3022D9F}">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+			<Plugins>
+				<AudioDevices>
+					<Plugin Id="2317455096" Name="No_Output" ObjectPath="\Audio Devices\Default Work Unit\No_Output" GUID="{4123256E-A586-4CAE-A99D-A507A31E8AEB}" LibName="No Output" LibId="11862023"/>
+					<Plugin Id="3859886410" Name="System" ObjectPath="\Audio Devices\Default Work Unit\System" GUID="{467A36AF-E149-4990-840D-E1B1FA7B4856}" LibName="System" LibId="11403271"/>
+				</AudioDevices>
+			</Plugins>
+			<Busses>
+				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
+			</Busses>
+			<StateGroups>
+				<StateGroup Id="2183912641" Name="MusicSegment" ObjectPath="\States\Default Work Unit\MusicSegment" GUID="{89AA16A0-1CC7-4B91-A31F-28B4885421D2}">
+					<States>
+						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\MusicSegment\None" GUID="{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"/>
+						<State Id="1646090112" Name="segment_14" ObjectPath="\States\Default Work Unit\MusicSegment\segment_14" GUID="{77C43F16-B755-4C26-BE66-1AC6376D143C}"/>
+						<State Id="1646090113" Name="segment_15" ObjectPath="\States\Default Work Unit\MusicSegment\segment_15" GUID="{2B4CC0F2-86CA-4A6F-91E1-67BC09FB7EB4}"/>
+						<State Id="1646090114" Name="segment_16" ObjectPath="\States\Default Work Unit\MusicSegment\segment_16" GUID="{1851E230-0072-46EA-BC20-475D7AEB884F}"/>
+						<State Id="1646090115" Name="segment_17" ObjectPath="\States\Default Work Unit\MusicSegment\segment_17" GUID="{6071F7E7-143C-4D1D-9639-A979E3761552}"/>
+						<State Id="1646090116" Name="segment_10" ObjectPath="\States\Default Work Unit\MusicSegment\segment_10" GUID="{49346EEC-C306-44EE-8BC9-6E04857D0A57}"/>
+						<State Id="1646090117" Name="segment_11" ObjectPath="\States\Default Work Unit\MusicSegment\segment_11" GUID="{C3978D48-7623-4952-AEA3-B364F08705EC}"/>
+						<State Id="1646090118" Name="segment_12" ObjectPath="\States\Default Work Unit\MusicSegment\segment_12" GUID="{9D554CA0-78FD-44C3-A0F0-F6D296AFE3F9}"/>
+						<State Id="1646090119" Name="segment_13" ObjectPath="\States\Default Work Unit\MusicSegment\segment_13" GUID="{5A583031-2A8E-4C38-9A23-39A08E348B65}"/>
+						<State Id="1646090124" Name="segment_18" ObjectPath="\States\Default Work Unit\MusicSegment\segment_18" GUID="{C2EA6B58-8163-4A70-BC95-8FF177D25205}"/>
+						<State Id="1646090125" Name="segment_19" ObjectPath="\States\Default Work Unit\MusicSegment\segment_19" GUID="{70707C60-E31F-44BD-BF04-DA52377B80EE}"/>
+						<State Id="1662867824" Name="segment_07" ObjectPath="\States\Default Work Unit\MusicSegment\segment_07" GUID="{FA0D50E1-A862-4BCA-BF28-B252698417F3}"/>
+						<State Id="1662867825" Name="segment_06" ObjectPath="\States\Default Work Unit\MusicSegment\segment_06" GUID="{23610BC0-10F9-4CAF-BA7D-7177FE4CE83C}"/>
+						<State Id="1662867826" Name="segment_05" ObjectPath="\States\Default Work Unit\MusicSegment\segment_05" GUID="{76B9553A-1CAF-4B86-85EB-32A2FF60ABB1}"/>
+						<State Id="1662867827" Name="segment_04" ObjectPath="\States\Default Work Unit\MusicSegment\segment_04" GUID="{CA4DB975-761A-4618-A09F-59C9BED379B4}"/>
+						<State Id="1662867828" Name="segment_03" ObjectPath="\States\Default Work Unit\MusicSegment\segment_03" GUID="{CAFAF600-C888-4D01-8643-232F48647012}"/>
+						<State Id="1662867829" Name="segment_02" ObjectPath="\States\Default Work Unit\MusicSegment\segment_02" GUID="{3E7CBF84-F1D1-4065-8174-B414C58BA63A}"/>
+						<State Id="1662867830" Name="segment_01" ObjectPath="\States\Default Work Unit\MusicSegment\segment_01" GUID="{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"/>
+						<State Id="1662867838" Name="segment_09" ObjectPath="\States\Default Work Unit\MusicSegment\segment_09" GUID="{08D60F1D-4C8F-46FB-8C8C-075D9E240F25}"/>
+						<State Id="1662867839" Name="segment_08" ObjectPath="\States\Default Work Unit\MusicSegment\segment_08" GUID="{8D090A38-0BA2-445B-9688-AEBE57A944EB}"/>
+						<State Id="1696423000" Name="segment_25" ObjectPath="\States\Default Work Unit\MusicSegment\segment_25" GUID="{DAB94018-4ACA-40B2-BE52-2C79FB9B4951}"/>
+						<State Id="1696423001" Name="segment_24" ObjectPath="\States\Default Work Unit\MusicSegment\segment_24" GUID="{14FD15D8-2793-4EDA-BEB4-43A109CFCCC0}"/>
+						<State Id="1696423003" Name="segment_26" ObjectPath="\States\Default Work Unit\MusicSegment\segment_26" GUID="{12740E7D-5057-48AF-B769-99AE0E806C54}"/>
+						<State Id="1696423004" Name="segment_21" ObjectPath="\States\Default Work Unit\MusicSegment\segment_21" GUID="{BFC5B753-51CF-4F43-B862-163E71EDCCAD}"/>
+						<State Id="1696423005" Name="segment_20" ObjectPath="\States\Default Work Unit\MusicSegment\segment_20" GUID="{8A56F66C-E091-4CE6-85AC-56F7CC5D38AB}"/>
+						<State Id="1696423006" Name="segment_23" ObjectPath="\States\Default Work Unit\MusicSegment\segment_23" GUID="{DF8B4F66-B1EB-4563-8BCB-94851FFF1633}"/>
+						<State Id="1696423007" Name="segment_22" ObjectPath="\States\Default Work Unit\MusicSegment\segment_22" GUID="{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"/>
+					</States>
+				</StateGroup>
+			</StateGroups>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{D54F873D-33E9-3440-3134-3DCE11864746}</FileHash>
+</SoundBanksInfo>
