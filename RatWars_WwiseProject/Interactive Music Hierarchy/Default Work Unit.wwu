@@ -263,6 +263,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{8F222099-8135-4404-839F-DD669294E2FD}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -489,6 +498,15 @@
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="1"/>
 																	<Property Name="TimeMs" Type="Real64" Value="10343.375"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{757F023B-3BEB-4D99-AD29-D4499D203A5A}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>
 															</MusicCue>
 														</Local>
@@ -722,6 +740,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{1F447C6D-BAA0-4DB8-9A0B-E9E2ECDD2344}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -851,6 +878,15 @@
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="1"/>
 																	<Property Name="TimeMs" Type="Real64" Value="16580.875"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{7E10E9C2-5C33-41D7-9EDF-D8243DEB4382}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>
 															</MusicCue>
 														</Local>
@@ -1085,6 +1121,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{A2344F5D-17BE-4C5B-9AF3-36729983F52A}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -1311,6 +1356,15 @@
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="1"/>
 																	<Property Name="TimeMs" Type="Real64" Value="14505.5416666667"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{753E997F-39C6-41AF-8051-EB042E7A3AB1}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>
 															</MusicCue>
 														</Local>
@@ -1544,6 +1598,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{0A3F5638-CFF5-4841-86F6-CE14F194B46C}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -1769,6 +1832,15 @@
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="1"/>
 																	<Property Name="TimeMs" Type="Real64" Value="12345.0208333333"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{1C7B3AF4-9F48-4932-AB35-5C4B46F12312}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>
 															</MusicCue>
 														</Local>
@@ -2098,6 +2170,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{075B976A-00F0-4349-8575-69C83035BBA6}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -2328,6 +2409,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{0B6E63AB-C4E9-4EFC-9A21-FFDCD9CBA42E}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -2554,6 +2644,15 @@
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="1"/>
 																	<Property Name="TimeMs" Type="Real64" Value="8223.39583333333"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{454C5F86-213B-4639-BF54-20E885952786}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>
 															</MusicCue>
 														</Local>
@@ -2884,6 +2983,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="LoopBegin" ID="{A46F9B14-319E-4F1C-9A88-E71EFFD65C3C}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -3033,7 +3141,6 @@
 							<Reference>
 								<Local>
 									<MultiSwitchEntry Name="" ID="{BD99466F-B689-414A-A8B0-259B3882A312}">
-										<ReferenceList/>
 										<ObjectLists>
 											<ObjectList Name="EntryPath">
 												<Reference>
