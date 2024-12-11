@@ -9,7 +9,7 @@
 	</RootPaths>
 	<DialogueEvents/>
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{FC762FE7-0852-992D-3E83-B1C2D3022D9F}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{9AD6048F-7DDF-6841-EB8B-5C4F5E9C63FB}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -22,6 +22,12 @@
 			<Busses>
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
+			<GameParameters>
+				<GameParameter Id="596299267" Name="SynthVolume" ObjectPath="\Game Parameters\Default Work Unit\SynthVolume" GUID="{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"/>
+				<GameParameter Id="640585335" Name="EffectsVolume" ObjectPath="\Game Parameters\Default Work Unit\EffectsVolume" GUID="{103403E9-2F32-4FA6-BF25-14177EDBB55E}"/>
+				<GameParameter Id="2630770510" Name="VocalVolume" ObjectPath="\Game Parameters\Default Work Unit\VocalVolume" GUID="{009E7C30-AC65-4E65-930B-F06C935B3F60}"/>
+				<GameParameter Id="3019350247" Name="DrumVolume" ObjectPath="\Game Parameters\Default Work Unit\DrumVolume" GUID="{75BBA363-EDA7-4D5B-8DCD-2492AC4BD042}"/>
+			</GameParameters>
 			<StateGroups>
 				<StateGroup Id="2183912641" Name="MusicSegment" ObjectPath="\States\Default Work Unit\MusicSegment" GUID="{89AA16A0-1CC7-4B91-A31F-28B4885421D2}">
 					<States>
@@ -56,114 +62,314 @@
 				</StateGroup>
 			</StateGroups>
 		</SoundBank>
-		<SoundBank Id="3991942870" Type="User" GUID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}" Language="SFX" Hash="{A26A63D8-408A-9677-090C-7E8359F59826}">
+		<SoundBank Id="3991942870" Type="User" GUID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}" Language="SFX" Hash="{77819637-DF9B-E370-0D54-2E3F228BBD3B}">
 			<ObjectPath>\SoundBanks\Default Work Unit\Music</ObjectPath>
 			<ShortName>Music</ShortName>
 			<Path>Music.bnk</Path>
 			<Media>
-				<File Id="11996023" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\21-Final Loop Transition.wav</ShortName>
-					<CachePath>SFX/numbered/21-Final Loop Transition_FBC78EF0.wem</CachePath>
+				<File Id="4335750" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-22.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-22_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="49582116" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\10-LoopEnd.wav</ShortName>
-					<CachePath>SFX/numbered/10-LoopEnd_FBC78EF0.wem</CachePath>
+				<File Id="14601773" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-01.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-01_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="62245044" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\25-OF ALL ELSE LOOP.wav</ShortName>
-					<CachePath>SFX/numbered/25-OF ALL ELSE LOOP_FBC78EF0.wem</CachePath>
+				<File Id="16933846" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-02.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-02_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="70891469" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\12-Transition.wav</ShortName>
-					<CachePath>SFX/numbered/12-Transition_FBC78EF0.wem</CachePath>
+				<File Id="58195949" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-17.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-17_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="181317921" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\22-Final Loop.wav</ShortName>
-					<CachePath>SFX/numbered/22-Final Loop_FBC78EF0.wem</CachePath>
+				<File Id="59607191" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-18.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-18_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="294400331" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\09-Long Loop.wav</ShortName>
-					<CachePath>SFX/numbered/09-Long Loop_FBC78EF0.wem</CachePath>
+				<File Id="61100032" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-02.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-02_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="300846105" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\02-Suspense.wav</ShortName>
-					<CachePath>SFX/numbered/02-Suspense_FBC78EF0.wem</CachePath>
+				<File Id="78150488" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-03.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-03_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="389102413" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\18-LoopRefrain.wav</ShortName>
-					<CachePath>SFX/numbered/18-LoopRefrain_FBC78EF0.wem</CachePath>
+				<File Id="85207392" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-19.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-19_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="412412372" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\20-Bass Buildup.wav</ShortName>
-					<CachePath>SFX/numbered/20-Bass Buildup_FBC78EF0.wem</CachePath>
+				<File Id="95860188" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-12.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-12_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="510369466" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\03-Transition.wav</ShortName>
-					<CachePath>SFX/numbered/03-Transition_FBC78EF0.wem</CachePath>
+				<File Id="118162370" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-20.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-20_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="520016084" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\08-Refrain.wav</ShortName>
-					<CachePath>SFX/numbered/08-Refrain_FBC78EF0.wem</CachePath>
+				<File Id="142536866" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-23.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-23_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="556877399" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\01-Intro.wav</ShortName>
-					<CachePath>SFX/numbered/01-Intro_FBC78EF0.wem</CachePath>
+				<File Id="146390498" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-10.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-10_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="605314117" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\11-Dancey Part.wav</ShortName>
-					<CachePath>SFX/numbered/11-Dancey Part_FBC78EF0.wem</CachePath>
+				<File Id="160551658" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-23.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-23_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="618183375" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\15-Heavy Again.wav</ShortName>
-					<CachePath>SFX/numbered/15-Heavy Again_FBC78EF0.wem</CachePath>
+				<File Id="164256059" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-05.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-05_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="627257909" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\23-Transition to ALL ELSE.wav</ShortName>
-					<CachePath>SFX/numbered/23-Transition to ALL ELSE_FBC78EF0.wem</CachePath>
+				<File Id="177313669" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-08.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-08_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="659927045" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\13-Lighter Section.wav</ShortName>
-					<CachePath>SFX/numbered/13-Lighter Section_FBC78EF0.wem</CachePath>
+				<File Id="180655868" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-08.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-08_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="195555444" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-07.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-07_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="212802296" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-01.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-01_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="214154766" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-15.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-15_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="228531806" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-21.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-21_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="237199711" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-15.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-15_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="239955643" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-11.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-11_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="267755926" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-07.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-07_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="282128578" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-17.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-17_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="296741113" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-19.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-19_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="327752722" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-18.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-18_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="349269093" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-20.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-20_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="354619930" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-25.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-25_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="370606360" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-10.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-10_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="373235486" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-22.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-22_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="380706409" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-08.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-08_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="403905594" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-25.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-25_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="413796122" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-24.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-24_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="419319704" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-18.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-18_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="471273366" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-16.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-16_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="481855345" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-15.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-15_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="509565016" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-01.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-01_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="513953752" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-12.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-12_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="564598151" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-06.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-06_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="565931166" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-22.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-22_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="570345039" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-17.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-17_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="573425474" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-02.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-02_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="583803980" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-09.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-09_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="603938441" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-04.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-04_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="609688289" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-16.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-16_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="619565587" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-19.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-19_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="630511594" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-14.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-14_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="633159164" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-06.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-06_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="663050299" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-13.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-13_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="671931262" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-24.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-24_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="676522323" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-11.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-11_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="679928541" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-23.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-23_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="696588412" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-03.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-03_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="710745721" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-09.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-09_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="741013778" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-03.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-03_FBC78EF0.wem</CachePath>
 				</File>
 				<File Id="742880957" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>numbered\26-Final Outro.wav</ShortName>
 					<CachePath>SFX/numbered/26-Final Outro_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="756658763" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\07-Bass Begins.wav</ShortName>
-					<CachePath>SFX/numbered/07-Bass Begins_FBC78EF0.wem</CachePath>
+				<File Id="749547894" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-24.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-24_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="805149301" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\14-Transition.wav</ShortName>
-					<CachePath>SFX/numbered/14-Transition_FBC78EF0.wem</CachePath>
+				<File Id="749951978" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-12.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-12_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="870739064" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\17-Real Refrain.wav</ShortName>
-					<CachePath>SFX/numbered/17-Real Refrain_FBC78EF0.wem</CachePath>
+				<File Id="754905645" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-10.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-10_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="902810354" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\16-Another Transition.wav</ShortName>
-					<CachePath>SFX/numbered/16-Another Transition_FBC78EF0.wem</CachePath>
+				<File Id="790178300" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-04.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-04_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="930454313" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\05-PreChorus.wav</ShortName>
-					<CachePath>SFX/numbered/05-PreChorus_FBC78EF0.wem</CachePath>
+				<File Id="793799790" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-05.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-05_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="954518308" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\06-Vocals.wav</ShortName>
-					<CachePath>SFX/numbered/06-Vocals_FBC78EF0.wem</CachePath>
+				<File Id="808173365" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-04.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-04_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="974897334" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\04-Verse Loop.wav</ShortName>
-					<CachePath>SFX/numbered/04-Verse Loop_FBC78EF0.wem</CachePath>
+				<File Id="812277341" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-05.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-05_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="1022774792" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\24-OF ALL ELSE.wav</ShortName>
-					<CachePath>SFX/numbered/24-OF ALL ELSE_FBC78EF0.wem</CachePath>
+				<File Id="854926430" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-13.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-13_FBC78EF0.wem</CachePath>
 				</File>
-				<File Id="1050255536" Language="SFX" Streaming="false" Location="Memory">
-					<ShortName>numbered\19-TransitionToBass.wav</ShortName>
-					<CachePath>SFX/numbered/19-TransitionToBass_FBC78EF0.wem</CachePath>
+				<File Id="862726695" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-16.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-16_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="882187473" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-21.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-21_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="897351673" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-20.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-20_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="908805987" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-14.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-14_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="912532128" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-06.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-06_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="918747025" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-07.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-07_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="931858479" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-13.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-13_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="970905130" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\synths\synths-11.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/synths/synths-11_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="978106736" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-21.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-21_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="981018647" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\effects\effects-09.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/effects/effects-09_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1004310905" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-25.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-25_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="1021963390" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>numbered-tracks\drums\drums-14.wav</ShortName>
+					<CachePath>SFX/numbered-tracks/drums/drums-14_FBC78EF0.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
@@ -172,86 +378,136 @@
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867830" GUID="{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"/>
 							<MediaRefs>
-								<MediaRef Id="300846105"/>
-								<MediaRef Id="556877399"/>
+								<MediaRef Id="14601773"/>
+								<MediaRef Id="16933846"/>
+								<MediaRef Id="61100032"/>
+								<MediaRef Id="212802296"/>
+								<MediaRef Id="509565016"/>
+								<MediaRef Id="573425474"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867829" GUID="{3E7CBF84-F1D1-4065-8174-B414C58BA63A}"/>
 							<MediaRefs>
-								<MediaRef Id="510369466"/>
-								<MediaRef Id="974897334"/>
+								<MediaRef Id="78150488"/>
+								<MediaRef Id="603938441"/>
+								<MediaRef Id="696588412"/>
+								<MediaRef Id="741013778"/>
+								<MediaRef Id="790178300"/>
+								<MediaRef Id="808173365"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867828" GUID="{CAFAF600-C888-4D01-8643-232F48647012}"/>
 							<MediaRefs>
-								<MediaRef Id="930454313"/>
-								<MediaRef Id="954518308"/>
+								<MediaRef Id="164256059"/>
+								<MediaRef Id="564598151"/>
+								<MediaRef Id="633159164"/>
+								<MediaRef Id="793799790"/>
+								<MediaRef Id="812277341"/>
+								<MediaRef Id="912532128"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867827" GUID="{CA4DB975-761A-4618-A09F-59C9BED379B4}"/>
 							<MediaRefs>
-								<MediaRef Id="756658763"/>
+								<MediaRef Id="195555444"/>
+								<MediaRef Id="267755926"/>
+								<MediaRef Id="918747025"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867826" GUID="{76B9553A-1CAF-4B86-85EB-32A2FF60ABB1}"/>
 							<MediaRefs>
-								<MediaRef Id="294400331"/>
-								<MediaRef Id="520016084"/>
+								<MediaRef Id="177313669"/>
+								<MediaRef Id="180655868"/>
+								<MediaRef Id="380706409"/>
+								<MediaRef Id="583803980"/>
+								<MediaRef Id="710745721"/>
+								<MediaRef Id="981018647"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867825" GUID="{23610BC0-10F9-4CAF-BA7D-7177FE4CE83C}"/>
 							<MediaRefs>
-								<MediaRef Id="49582116"/>
-								<MediaRef Id="605314117"/>
+								<MediaRef Id="146390498"/>
+								<MediaRef Id="239955643"/>
+								<MediaRef Id="370606360"/>
+								<MediaRef Id="676522323"/>
+								<MediaRef Id="754905645"/>
+								<MediaRef Id="970905130"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867824" GUID="{FA0D50E1-A862-4BCA-BF28-B252698417F3}"/>
 							<MediaRefs>
-								<MediaRef Id="70891469"/>
-								<MediaRef Id="659927045"/>
+								<MediaRef Id="95860188"/>
+								<MediaRef Id="513953752"/>
+								<MediaRef Id="663050299"/>
+								<MediaRef Id="749951978"/>
+								<MediaRef Id="854926430"/>
+								<MediaRef Id="931858479"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867839" GUID="{8D090A38-0BA2-445B-9688-AEBE57A944EB}"/>
 							<MediaRefs>
-								<MediaRef Id="618183375"/>
-								<MediaRef Id="805149301"/>
+								<MediaRef Id="214154766"/>
+								<MediaRef Id="237199711"/>
+								<MediaRef Id="481855345"/>
+								<MediaRef Id="630511594"/>
+								<MediaRef Id="908805987"/>
+								<MediaRef Id="1021963390"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867838" GUID="{08D60F1D-4C8F-46FB-8C8C-075D9E240F25}"/>
 							<MediaRefs>
-								<MediaRef Id="389102413"/>
-								<MediaRef Id="870739064"/>
-								<MediaRef Id="902810354"/>
+								<MediaRef Id="58195949"/>
+								<MediaRef Id="59607191"/>
+								<MediaRef Id="282128578"/>
+								<MediaRef Id="327752722"/>
+								<MediaRef Id="419319704"/>
+								<MediaRef Id="471273366"/>
+								<MediaRef Id="570345039"/>
+								<MediaRef Id="609688289"/>
+								<MediaRef Id="862726695"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1646090116" GUID="{49346EEC-C306-44EE-8BC9-6E04857D0A57}"/>
 							<MediaRefs>
-								<MediaRef Id="412412372"/>
-								<MediaRef Id="1050255536"/>
+								<MediaRef Id="85207392"/>
+								<MediaRef Id="118162370"/>
+								<MediaRef Id="296741113"/>
+								<MediaRef Id="349269093"/>
+								<MediaRef Id="619565587"/>
+								<MediaRef Id="897351673"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1646090117" GUID="{C3978D48-7623-4952-AEA3-B364F08705EC}"/>
 							<MediaRefs>
-								<MediaRef Id="11996023"/>
-								<MediaRef Id="181317921"/>
+								<MediaRef Id="4335750"/>
+								<MediaRef Id="228531806"/>
+								<MediaRef Id="373235486"/>
+								<MediaRef Id="565931166"/>
+								<MediaRef Id="882187473"/>
+								<MediaRef Id="978106736"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1646090118" GUID="{9D554CA0-78FD-44C3-A0F0-F6D296AFE3F9}"/>
 							<MediaRefs>
-								<MediaRef Id="62245044"/>
-								<MediaRef Id="627257909"/>
-								<MediaRef Id="1022774792"/>
+								<MediaRef Id="142536866"/>
+								<MediaRef Id="160551658"/>
+								<MediaRef Id="354619930"/>
+								<MediaRef Id="403905594"/>
+								<MediaRef Id="413796122"/>
+								<MediaRef Id="671931262"/>
+								<MediaRef Id="679928541"/>
+								<MediaRef Id="749547894"/>
+								<MediaRef Id="1004310905"/>
 							</MediaRefs>
 						</SwitchContainer>
 						<SwitchContainer>
@@ -263,6 +519,11 @@
 					</SwitchContainers>
 				</Event>
 			</Events>
+			<GameParameters>
+				<GameParameter Id="596299267" Name="SynthVolume" ObjectPath="\Game Parameters\Default Work Unit\SynthVolume" GUID="{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"/>
+				<GameParameter Id="640585335" Name="EffectsVolume" ObjectPath="\Game Parameters\Default Work Unit\EffectsVolume" GUID="{103403E9-2F32-4FA6-BF25-14177EDBB55E}"/>
+				<GameParameter Id="3019350247" Name="DrumVolume" ObjectPath="\Game Parameters\Default Work Unit\DrumVolume" GUID="{75BBA363-EDA7-4D5B-8DCD-2492AC4BD042}"/>
+			</GameParameters>
 			<StateGroups>
 				<StateGroup Id="2183912641" Name="MusicSegment" ObjectPath="\States\Default Work Unit\MusicSegment" GUID="{89AA16A0-1CC7-4B91-A31F-28B4885421D2}">
 					<States>
@@ -298,5 +559,5 @@
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F0D6C160-642D-16B6-2BF9-DA0B2C66CA13}</FileHash>
+	<FileHash>{8844A1E8-FA34-9E22-00B4-DCB7D91E5E13}</FileHash>
 </SoundBanksInfo>

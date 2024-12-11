@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{4EFBCFFF-CCA4-DBEC-98CD-1AE1DEBF9CF2}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{54F74688-9968-5363-5F09-87B54B06D235}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
@@ -14,6 +14,12 @@
 			<Busses>
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
+			<GameParameters>
+				<GameParameter Id="596299267" Name="SynthVolume" ObjectPath="\Game Parameters\Default Work Unit\SynthVolume" GUID="{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"/>
+				<GameParameter Id="640585335" Name="EffectsVolume" ObjectPath="\Game Parameters\Default Work Unit\EffectsVolume" GUID="{103403E9-2F32-4FA6-BF25-14177EDBB55E}"/>
+				<GameParameter Id="2630770510" Name="VocalVolume" ObjectPath="\Game Parameters\Default Work Unit\VocalVolume" GUID="{009E7C30-AC65-4E65-930B-F06C935B3F60}"/>
+				<GameParameter Id="3019350247" Name="DrumVolume" ObjectPath="\Game Parameters\Default Work Unit\DrumVolume" GUID="{75BBA363-EDA7-4D5B-8DCD-2492AC4BD042}"/>
+			</GameParameters>
 			<StateGroups>
 				<StateGroup Id="2183912641" Name="MusicSegment" ObjectPath="\States\Default Work Unit\MusicSegment" GUID="{89AA16A0-1CC7-4B91-A31F-28B4885421D2}">
 					<States>
@@ -49,5 +55,5 @@
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{103BCB0D-32D0-A770-9A60-888AEA020DDF}</FileHash>
+	<FileHash>{473260D9-992F-3E68-518F-3DF780EEEA62}</FileHash>
 </SoundBanksInfo>

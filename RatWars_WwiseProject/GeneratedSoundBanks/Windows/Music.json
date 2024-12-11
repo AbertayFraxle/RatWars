@@ -10,138 +10,450 @@
     "Type": "User",
     "GUID": "{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}",
     "Language": "SFX",
-    "Hash": "{A26A63D8-408A-9677-090C-7E8359F59826}",
+    "Hash": "{77819637-DF9B-E370-0D54-2E3F228BBD3B}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Music",
     "ShortName": "Music",
     "Path": "Music.bnk",
     "Media": [
      {
-      "Id": "11996023",
+      "Id": "4335750",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\21-Final Loop Transition.wav",
-      "CachePath": "SFX/numbered/21-Final Loop Transition_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-22.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-22_FBC78EF0.wem"
      },
      {
-      "Id": "49582116",
+      "Id": "14601773",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\10-LoopEnd.wav",
-      "CachePath": "SFX/numbered/10-LoopEnd_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-01.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-01_FBC78EF0.wem"
      },
      {
-      "Id": "62245044",
+      "Id": "16933846",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\25-OF ALL ELSE LOOP.wav",
-      "CachePath": "SFX/numbered/25-OF ALL ELSE LOOP_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-02.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-02_FBC78EF0.wem"
      },
      {
-      "Id": "70891469",
+      "Id": "58195949",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\12-Transition.wav",
-      "CachePath": "SFX/numbered/12-Transition_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-17.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-17_FBC78EF0.wem"
      },
      {
-      "Id": "181317921",
+      "Id": "59607191",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\22-Final Loop.wav",
-      "CachePath": "SFX/numbered/22-Final Loop_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-18.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-18_FBC78EF0.wem"
      },
      {
-      "Id": "294400331",
+      "Id": "61100032",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\09-Long Loop.wav",
-      "CachePath": "SFX/numbered/09-Long Loop_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-02.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-02_FBC78EF0.wem"
      },
      {
-      "Id": "300846105",
+      "Id": "78150488",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\02-Suspense.wav",
-      "CachePath": "SFX/numbered/02-Suspense_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-03.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-03_FBC78EF0.wem"
      },
      {
-      "Id": "389102413",
+      "Id": "85207392",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\18-LoopRefrain.wav",
-      "CachePath": "SFX/numbered/18-LoopRefrain_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-19.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-19_FBC78EF0.wem"
      },
      {
-      "Id": "412412372",
+      "Id": "95860188",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\20-Bass Buildup.wav",
-      "CachePath": "SFX/numbered/20-Bass Buildup_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-12.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-12_FBC78EF0.wem"
      },
      {
-      "Id": "510369466",
+      "Id": "118162370",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\03-Transition.wav",
-      "CachePath": "SFX/numbered/03-Transition_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-20.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-20_FBC78EF0.wem"
      },
      {
-      "Id": "520016084",
+      "Id": "142536866",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\08-Refrain.wav",
-      "CachePath": "SFX/numbered/08-Refrain_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-23.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-23_FBC78EF0.wem"
      },
      {
-      "Id": "556877399",
+      "Id": "146390498",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\01-Intro.wav",
-      "CachePath": "SFX/numbered/01-Intro_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-10.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-10_FBC78EF0.wem"
      },
      {
-      "Id": "605314117",
+      "Id": "160551658",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\11-Dancey Part.wav",
-      "CachePath": "SFX/numbered/11-Dancey Part_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-23.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-23_FBC78EF0.wem"
      },
      {
-      "Id": "618183375",
+      "Id": "164256059",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\15-Heavy Again.wav",
-      "CachePath": "SFX/numbered/15-Heavy Again_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-05.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-05_FBC78EF0.wem"
      },
      {
-      "Id": "627257909",
+      "Id": "177313669",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\23-Transition to ALL ELSE.wav",
-      "CachePath": "SFX/numbered/23-Transition to ALL ELSE_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-08.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-08_FBC78EF0.wem"
      },
      {
-      "Id": "659927045",
+      "Id": "180655868",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\13-Lighter Section.wav",
-      "CachePath": "SFX/numbered/13-Lighter Section_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-08.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-08_FBC78EF0.wem"
+     },
+     {
+      "Id": "195555444",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-07.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-07_FBC78EF0.wem"
+     },
+     {
+      "Id": "212802296",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-01.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-01_FBC78EF0.wem"
+     },
+     {
+      "Id": "214154766",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-15.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-15_FBC78EF0.wem"
+     },
+     {
+      "Id": "228531806",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-21.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-21_FBC78EF0.wem"
+     },
+     {
+      "Id": "237199711",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-15.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-15_FBC78EF0.wem"
+     },
+     {
+      "Id": "239955643",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-11.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-11_FBC78EF0.wem"
+     },
+     {
+      "Id": "267755926",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-07.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-07_FBC78EF0.wem"
+     },
+     {
+      "Id": "282128578",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-17.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-17_FBC78EF0.wem"
+     },
+     {
+      "Id": "296741113",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-19.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-19_FBC78EF0.wem"
+     },
+     {
+      "Id": "327752722",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-18.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-18_FBC78EF0.wem"
+     },
+     {
+      "Id": "349269093",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-20.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-20_FBC78EF0.wem"
+     },
+     {
+      "Id": "354619930",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-25.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-25_FBC78EF0.wem"
+     },
+     {
+      "Id": "370606360",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-10.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-10_FBC78EF0.wem"
+     },
+     {
+      "Id": "373235486",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-22.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-22_FBC78EF0.wem"
+     },
+     {
+      "Id": "380706409",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-08.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-08_FBC78EF0.wem"
+     },
+     {
+      "Id": "403905594",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-25.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-25_FBC78EF0.wem"
+     },
+     {
+      "Id": "413796122",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-24.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-24_FBC78EF0.wem"
+     },
+     {
+      "Id": "419319704",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-18.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-18_FBC78EF0.wem"
+     },
+     {
+      "Id": "471273366",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-16.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-16_FBC78EF0.wem"
+     },
+     {
+      "Id": "481855345",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-15.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-15_FBC78EF0.wem"
+     },
+     {
+      "Id": "509565016",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-01.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-01_FBC78EF0.wem"
+     },
+     {
+      "Id": "513953752",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-12.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-12_FBC78EF0.wem"
+     },
+     {
+      "Id": "564598151",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-06.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-06_FBC78EF0.wem"
+     },
+     {
+      "Id": "565931166",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-22.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-22_FBC78EF0.wem"
+     },
+     {
+      "Id": "570345039",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-17.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-17_FBC78EF0.wem"
+     },
+     {
+      "Id": "573425474",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-02.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-02_FBC78EF0.wem"
+     },
+     {
+      "Id": "583803980",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-09.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-09_FBC78EF0.wem"
+     },
+     {
+      "Id": "603938441",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-04.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-04_FBC78EF0.wem"
+     },
+     {
+      "Id": "609688289",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-16.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-16_FBC78EF0.wem"
+     },
+     {
+      "Id": "619565587",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-19.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-19_FBC78EF0.wem"
+     },
+     {
+      "Id": "630511594",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-14.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-14_FBC78EF0.wem"
+     },
+     {
+      "Id": "633159164",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-06.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-06_FBC78EF0.wem"
+     },
+     {
+      "Id": "663050299",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-13.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-13_FBC78EF0.wem"
+     },
+     {
+      "Id": "671931262",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-24.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-24_FBC78EF0.wem"
+     },
+     {
+      "Id": "676522323",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-11.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-11_FBC78EF0.wem"
+     },
+     {
+      "Id": "679928541",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-23.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-23_FBC78EF0.wem"
+     },
+     {
+      "Id": "696588412",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-03.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-03_FBC78EF0.wem"
+     },
+     {
+      "Id": "710745721",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-09.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-09_FBC78EF0.wem"
+     },
+     {
+      "Id": "741013778",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-03.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-03_FBC78EF0.wem"
      },
      {
       "Id": "742880957",
@@ -152,76 +464,164 @@
       "CachePath": "SFX/numbered/26-Final Outro_FBC78EF0.wem"
      },
      {
-      "Id": "756658763",
+      "Id": "749547894",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\07-Bass Begins.wav",
-      "CachePath": "SFX/numbered/07-Bass Begins_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-24.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-24_FBC78EF0.wem"
      },
      {
-      "Id": "805149301",
+      "Id": "749951978",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\14-Transition.wav",
-      "CachePath": "SFX/numbered/14-Transition_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-12.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-12_FBC78EF0.wem"
      },
      {
-      "Id": "870739064",
+      "Id": "754905645",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\17-Real Refrain.wav",
-      "CachePath": "SFX/numbered/17-Real Refrain_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-10.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-10_FBC78EF0.wem"
      },
      {
-      "Id": "902810354",
+      "Id": "790178300",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\16-Another Transition.wav",
-      "CachePath": "SFX/numbered/16-Another Transition_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-04.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-04_FBC78EF0.wem"
      },
      {
-      "Id": "930454313",
+      "Id": "793799790",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\05-PreChorus.wav",
-      "CachePath": "SFX/numbered/05-PreChorus_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-05.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-05_FBC78EF0.wem"
      },
      {
-      "Id": "954518308",
+      "Id": "808173365",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\06-Vocals.wav",
-      "CachePath": "SFX/numbered/06-Vocals_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-04.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-04_FBC78EF0.wem"
      },
      {
-      "Id": "974897334",
+      "Id": "812277341",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\04-Verse Loop.wav",
-      "CachePath": "SFX/numbered/04-Verse Loop_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\drums\\drums-05.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-05_FBC78EF0.wem"
      },
      {
-      "Id": "1022774792",
+      "Id": "854926430",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\24-OF ALL ELSE.wav",
-      "CachePath": "SFX/numbered/24-OF ALL ELSE_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\synths\\synths-13.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-13_FBC78EF0.wem"
      },
      {
-      "Id": "1050255536",
+      "Id": "862726695",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered\\19-TransitionToBass.wav",
-      "CachePath": "SFX/numbered/19-TransitionToBass_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\effects\\effects-16.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-16_FBC78EF0.wem"
+     },
+     {
+      "Id": "882187473",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-21.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-21_FBC78EF0.wem"
+     },
+     {
+      "Id": "897351673",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-20.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-20_FBC78EF0.wem"
+     },
+     {
+      "Id": "908805987",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-14.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-14_FBC78EF0.wem"
+     },
+     {
+      "Id": "912532128",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-06.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-06_FBC78EF0.wem"
+     },
+     {
+      "Id": "918747025",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-07.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-07_FBC78EF0.wem"
+     },
+     {
+      "Id": "931858479",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-13.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-13_FBC78EF0.wem"
+     },
+     {
+      "Id": "970905130",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\synths\\synths-11.wav",
+      "CachePath": "SFX/numbered-tracks/synths/synths-11_FBC78EF0.wem"
+     },
+     {
+      "Id": "978106736",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-21.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-21_FBC78EF0.wem"
+     },
+     {
+      "Id": "981018647",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\effects\\effects-09.wav",
+      "CachePath": "SFX/numbered-tracks/effects/effects-09_FBC78EF0.wem"
+     },
+     {
+      "Id": "1004310905",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-25.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-25_FBC78EF0.wem"
+     },
+     {
+      "Id": "1021963390",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\drums\\drums-14.wav",
+      "CachePath": "SFX/numbered-tracks/drums/drums-14_FBC78EF0.wem"
      }
     ],
     "Events": [
@@ -241,10 +641,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "300846105"
+          "Id": "14601773"
          },
          {
-          "Id": "556877399"
+          "Id": "16933846"
+         },
+         {
+          "Id": "61100032"
+         },
+         {
+          "Id": "212802296"
+         },
+         {
+          "Id": "509565016"
+         },
+         {
+          "Id": "573425474"
          }
         ]
        },
@@ -257,10 +669,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "510369466"
+          "Id": "78150488"
          },
          {
-          "Id": "974897334"
+          "Id": "603938441"
+         },
+         {
+          "Id": "696588412"
+         },
+         {
+          "Id": "741013778"
+         },
+         {
+          "Id": "790178300"
+         },
+         {
+          "Id": "808173365"
          }
         ]
        },
@@ -273,10 +697,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "930454313"
+          "Id": "164256059"
          },
          {
-          "Id": "954518308"
+          "Id": "564598151"
+         },
+         {
+          "Id": "633159164"
+         },
+         {
+          "Id": "793799790"
+         },
+         {
+          "Id": "812277341"
+         },
+         {
+          "Id": "912532128"
          }
         ]
        },
@@ -289,7 +725,13 @@
         },
         "MediaRefs": [
          {
-          "Id": "756658763"
+          "Id": "195555444"
+         },
+         {
+          "Id": "267755926"
+         },
+         {
+          "Id": "918747025"
          }
         ]
        },
@@ -302,10 +744,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "294400331"
+          "Id": "177313669"
          },
          {
-          "Id": "520016084"
+          "Id": "180655868"
+         },
+         {
+          "Id": "380706409"
+         },
+         {
+          "Id": "583803980"
+         },
+         {
+          "Id": "710745721"
+         },
+         {
+          "Id": "981018647"
          }
         ]
        },
@@ -318,10 +772,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "49582116"
+          "Id": "146390498"
          },
          {
-          "Id": "605314117"
+          "Id": "239955643"
+         },
+         {
+          "Id": "370606360"
+         },
+         {
+          "Id": "676522323"
+         },
+         {
+          "Id": "754905645"
+         },
+         {
+          "Id": "970905130"
          }
         ]
        },
@@ -334,10 +800,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "70891469"
+          "Id": "95860188"
          },
          {
-          "Id": "659927045"
+          "Id": "513953752"
+         },
+         {
+          "Id": "663050299"
+         },
+         {
+          "Id": "749951978"
+         },
+         {
+          "Id": "854926430"
+         },
+         {
+          "Id": "931858479"
          }
         ]
        },
@@ -350,10 +828,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "618183375"
+          "Id": "214154766"
          },
          {
-          "Id": "805149301"
+          "Id": "237199711"
+         },
+         {
+          "Id": "481855345"
+         },
+         {
+          "Id": "630511594"
+         },
+         {
+          "Id": "908805987"
+         },
+         {
+          "Id": "1021963390"
          }
         ]
        },
@@ -366,13 +856,31 @@
         },
         "MediaRefs": [
          {
-          "Id": "389102413"
+          "Id": "58195949"
          },
          {
-          "Id": "870739064"
+          "Id": "59607191"
          },
          {
-          "Id": "902810354"
+          "Id": "282128578"
+         },
+         {
+          "Id": "327752722"
+         },
+         {
+          "Id": "419319704"
+         },
+         {
+          "Id": "471273366"
+         },
+         {
+          "Id": "570345039"
+         },
+         {
+          "Id": "609688289"
+         },
+         {
+          "Id": "862726695"
          }
         ]
        },
@@ -385,10 +893,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "412412372"
+          "Id": "85207392"
          },
          {
-          "Id": "1050255536"
+          "Id": "118162370"
+         },
+         {
+          "Id": "296741113"
+         },
+         {
+          "Id": "349269093"
+         },
+         {
+          "Id": "619565587"
+         },
+         {
+          "Id": "897351673"
          }
         ]
        },
@@ -401,10 +921,22 @@
         },
         "MediaRefs": [
          {
-          "Id": "11996023"
+          "Id": "4335750"
          },
          {
-          "Id": "181317921"
+          "Id": "228531806"
+         },
+         {
+          "Id": "373235486"
+         },
+         {
+          "Id": "565931166"
+         },
+         {
+          "Id": "882187473"
+         },
+         {
+          "Id": "978106736"
          }
         ]
        },
@@ -417,13 +949,31 @@
         },
         "MediaRefs": [
          {
-          "Id": "62245044"
+          "Id": "142536866"
          },
          {
-          "Id": "627257909"
+          "Id": "160551658"
          },
          {
-          "Id": "1022774792"
+          "Id": "354619930"
+         },
+         {
+          "Id": "403905594"
+         },
+         {
+          "Id": "413796122"
+         },
+         {
+          "Id": "671931262"
+         },
+         {
+          "Id": "679928541"
+         },
+         {
+          "Id": "749547894"
+         },
+         {
+          "Id": "1004310905"
          }
         ]
        },
@@ -441,6 +991,26 @@
         ]
        }
       ]
+     }
+    ],
+    "GameParameters": [
+     {
+      "Id": "596299267",
+      "Name": "SynthVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SynthVolume",
+      "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
+     },
+     {
+      "Id": "640585335",
+      "Name": "EffectsVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
+      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
+     },
+     {
+      "Id": "3019350247",
+      "Name": "DrumVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\DrumVolume",
+      "GUID": "{75BBA363-EDA7-4D5B-8DCD-2492AC4BD042}"
      }
     ],
     "StateGroups": [
@@ -617,6 +1187,6 @@
     ]
    }
   ],
-  "FileHash": "{FEB2F185-0A7E-794D-1DF7-4146A3938E20}"
+  "FileHash": "{61ACB9B1-D7A3-4780-5613-57CCA72EE2DD}"
  }
 }
