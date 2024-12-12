@@ -1,0 +1,22 @@
+Event	ID	Name			Wwise Object Path	Notes
+	1287408361	Gunshot			\Default Work Unit\Gunshot	
+	1690196772	RatSqueak			\Default Work Unit\RatSqueak	
+	1866025847	Footstep			\Default Work Unit\Footstep	
+	2917402406	Bloodsplosion			\Default Work Unit\Bloodsplosion	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	57193795	gunshot-05	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\gunshots\gunshot-05_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\gunshot\gunshot-05		93452
+	67667721	footstep-04	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-04_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-04		40996
+	164029556	footstep-01	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-01_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-01		29988
+	166118060	footstep-06	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-06_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-06		29988
+	180040565	footstep-05	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-05_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-05		34708
+	231814274	gunshot-04	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\gunshots\gunshot-04_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\gunshot\gunshot-04		106788
+	241150547	footstep-02	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-02_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-02		40996
+	536064219	squeak	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\Animals, Rodent, Mouse, Rat, Squeaks SND14864_FBC78EF0.wem		\Actor-Mixer Hierarchy\Default Work Unit\squeak		1085608
+	631797485	footstep-03	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-03_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-03		37852
+	663937859	gunshot-03	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\gunshots\gunshot-03_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\gunshot\gunshot-03		115000
+	890272576	gunshot-02	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\gunshots\gunshot-02_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\gunshot\gunshot-02		87092
+	906818641	hit	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\hit_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\hit		188836
+	1002471945	gunshot-01	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\gunshots\gunshot-01_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\gunshot\gunshot-01		99404
+	1068125542	footstep-07	C:\Users\frase\Documents\GameDev\RatWars\RatWars_WwiseProject\.cache\Mac\SFX\steps\footstep-07_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\footstep\footstep-07		34708
+

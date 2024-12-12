@@ -17,6 +17,8 @@ AMusicManager::AMusicManager()
 
 	drumValue = 0;
 
+	trackBPM = 116;
+	
 	pointThresholds = {
 		{1,1000},
 		{2,2000},
@@ -53,10 +55,12 @@ void AMusicManager::BeginPlay()
 	//call music event in WWise
 	UAkGameplayStatics::PostEvent(musicEvent, GetOwner(), int32(AkCallbackType::AK_MusicSyncUserCue| AkCallbackType::AK_MusicSyncBeat),functionCallback);
 
-	UAkGameplayStatics::SetRTPCValue(drumVolume, 0, 0, NULL, FName(FString("DrumVolume")));
+	UAkGameplayStatics::SetRTPCValue(drumVolume, 10, 0, NULL, FName(FString("DrumVolume")));
 	UAkGameplayStatics::SetRTPCValue(synthVolume, 100, 0, NULL, FName(FString("SynthVolume")));
 	UAkGameplayStatics::SetRTPCValue(vocalVolume, 0, 0, NULL, FName(FString("VocalVolume")));
 	UAkGameplayStatics::SetRTPCValue(effectsVolume, 50, 0, NULL, FName(FString("EffectsVolume")));
+
+	beatLength = 60/trackBPM;
 }
 
 // Called every frame
@@ -130,22 +134,28 @@ void AMusicManager::UnlockCallback()
 void AMusicManager::BeatCallback()
 {
 	beatTime = timer;
+	if (drumValue > 10)
+	{
+		drumValue -=5;
+	}
+	UAkGameplayStatics::SetRTPCValue(drumVolume, drumValue, 0, NULL, FName(FString("DrumVolume")));
 }
 
 bool AMusicManager::IsOnBeat() {
 
 	bool returnValue;
 
-	if (abs(timer - beatTime) < 0.1)
+	if (abs(timer - beatTime) < (beatLength/4) || abs(timer - (beatTime+beatLength)) < (beatLength/4))
 	{
 		if (drumValue < 100) {
-			drumValue += 10;
+			drumValue += 20;
 		}
 		returnValue = true;
 	}
 	else {
-		if (drumValue > 0) {
-			drumValue -= 10;
+	
+		if (drumValue > 10) {
+			drumValue -= 5;
 		}
 
 		returnValue = false;

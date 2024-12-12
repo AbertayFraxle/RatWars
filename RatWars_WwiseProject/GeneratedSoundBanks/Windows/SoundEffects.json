@@ -1,0 +1,223 @@
+{
+ "SoundBanksInfo": {
+  "Platform": "Windows",
+  "BasePlatform": "Windows",
+  "SchemaVersion": "16",
+  "SoundBankVersion": "150",
+  "SoundBanks": [
+   {
+    "Id": "3898083304",
+    "Type": "User",
+    "GUID": "{8C751822-1DDA-4519-BA2C-BEEE26FAC534}",
+    "Language": "SFX",
+    "Hash": "{92EF0D54-3F69-C601-1F8B-98100B83391A}",
+    "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
+    "ShortName": "SoundEffects",
+    "Path": "SoundEffects.bnk",
+    "Media": [
+     {
+      "Id": "57193795",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "gunshots\\gunshot-05.wav",
+      "CachePath": "SFX/gunshots/gunshot-05_818F3B66.wem"
+     },
+     {
+      "Id": "67667721",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-04.wav",
+      "CachePath": "SFX/steps/footstep-04_818F3B66.wem"
+     },
+     {
+      "Id": "164029556",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-01.wav",
+      "CachePath": "SFX/steps/footstep-01_818F3B66.wem"
+     },
+     {
+      "Id": "166118060",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-06.wav",
+      "CachePath": "SFX/steps/footstep-06_818F3B66.wem"
+     },
+     {
+      "Id": "180040565",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-05.wav",
+      "CachePath": "SFX/steps/footstep-05_818F3B66.wem"
+     },
+     {
+      "Id": "231814274",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "gunshots\\gunshot-04.wav",
+      "CachePath": "SFX/gunshots/gunshot-04_818F3B66.wem"
+     },
+     {
+      "Id": "241150547",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-02.wav",
+      "CachePath": "SFX/steps/footstep-02_818F3B66.wem"
+     },
+     {
+      "Id": "536064219",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "Animals, Rodent, Mouse, Rat, Squeaks SND14864.wav",
+      "CachePath": "SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_FBC78EF0.wem"
+     },
+     {
+      "Id": "631797485",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-03.wav",
+      "CachePath": "SFX/steps/footstep-03_818F3B66.wem"
+     },
+     {
+      "Id": "663937859",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "gunshots\\gunshot-03.wav",
+      "CachePath": "SFX/gunshots/gunshot-03_818F3B66.wem"
+     },
+     {
+      "Id": "890272576",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "gunshots\\gunshot-02.wav",
+      "CachePath": "SFX/gunshots/gunshot-02_818F3B66.wem"
+     },
+     {
+      "Id": "906818641",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "hit.wav",
+      "CachePath": "SFX/hit_818F3B66.wem"
+     },
+     {
+      "Id": "1002471945",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "gunshots\\gunshot-01.wav",
+      "CachePath": "SFX/gunshots/gunshot-01_818F3B66.wem"
+     },
+     {
+      "Id": "1068125542",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "steps\\footstep-07.wav",
+      "CachePath": "SFX/steps/footstep-07_818F3B66.wem"
+     }
+    ],
+    "Events": [
+     {
+      "Id": "2917402406",
+      "Name": "Bloodsplosion",
+      "ObjectPath": "\\Events\\Default Work Unit\\Bloodsplosion",
+      "GUID": "{E25BB430-307E-4EDF-9335-726C42CC4E67}",
+      "MaxAttenuation": "2000",
+      "DurationType": "OneShot",
+      "DurationMin": "0.9830313",
+      "DurationMax": "1.3121893",
+      "MediaRefs": [
+       {
+        "Id": "906818641"
+       }
+      ]
+     },
+     {
+      "Id": "1866025847",
+      "Name": "Footstep",
+      "ObjectPath": "\\Events\\Default Work Unit\\Footstep",
+      "GUID": "{4D0D5542-8469-43D9-AB9D-BC9D293D349C}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.16945578",
+      "DurationMax": "0.23185942",
+      "MediaRefs": [
+       {
+        "Id": "67667721"
+       },
+       {
+        "Id": "164029556"
+       },
+       {
+        "Id": "166118060"
+       },
+       {
+        "Id": "180040565"
+       },
+       {
+        "Id": "241150547"
+       },
+       {
+        "Id": "631797485"
+       },
+       {
+        "Id": "1068125542"
+       }
+      ]
+     },
+     {
+      "Id": "1287408361",
+      "Name": "Gunshot",
+      "ObjectPath": "\\Events\\Default Work Unit\\Gunshot",
+      "GUID": "{4987482C-3F89-4300-BEA6-7E3574DE40C6}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.42768317",
+      "DurationMax": "0.6340446",
+      "MediaRefs": [
+       {
+        "Id": "57193795"
+       },
+       {
+        "Id": "231814274"
+       },
+       {
+        "Id": "663937859"
+       },
+       {
+        "Id": "890272576"
+       },
+       {
+        "Id": "1002471945"
+       }
+      ]
+     },
+     {
+      "Id": "1690196772",
+      "Name": "RatSqueak",
+      "ObjectPath": "\\Events\\Default Work Unit\\RatSqueak",
+      "GUID": "{0453A15A-B508-49E4-A62F-091D26CD875F}",
+      "MaxAttenuation": "500",
+      "DurationType": "Infinite",
+      "MediaRefs": [
+       {
+        "Id": "536064219"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "FileHash": "{C853F224-8C6A-C80F-2338-373C9382417B}"
+ }
+}

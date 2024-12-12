@@ -10,6 +10,16 @@
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>
 				</SoundBank>
+				<SoundBank Name="SoundEffects" ID="{8C751822-1DDA-4519-BA2C-BEEE26FAC534}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Gunshot" ID="{4987482C-3F89-4300-BEA6-7E3574DE40C6}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="footstep" ID="{61023DF1-A98A-4587-B8F2-6684CFF34EFB}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="RatSqueak" ID="{0453A15A-B508-49E4-A62F-091D26CD875F}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Bloodsplosion" ID="{E25BB430-307E-4EDF-9335-726C42CC4E67}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
 			</ChildrenList>
 		</WorkUnit>
 	</SoundBanks>

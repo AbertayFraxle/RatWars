@@ -37,19 +37,25 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAkRtpc* effectsVolume;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float trackBPM;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	float timer;
 	float beatTime;
-
+	float beatLength;
+	
 	int drumValue;
 
 	int musicSegment;
 	TMap<int, int> pointThresholds;
 	bool shouldIncrease;
 	bool locked;
+	
+	
 	FString prefix;
 
 	FString ZeroFill(int number);

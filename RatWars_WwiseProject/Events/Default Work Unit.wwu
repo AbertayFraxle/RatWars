@@ -14,6 +14,50 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="Gunshot" ID="{4987482C-3F89-4300-BEA6-7E3574DE40C6}">
+					<ChildrenList>
+						<Action Name="" ID="{D15D83F6-4609-4C2A-B1BE-75B50EE46F9E}" ShortID="446770037">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="gunshot" ID="{CECA70C1-918F-4567-A228-C29CE2165E3F}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Bloodsplosion" ID="{E25BB430-307E-4EDF-9335-726C42CC4E67}">
+					<ChildrenList>
+						<Action Name="" ID="{80F322C1-314B-483A-AC44-E76CC80CCD35}" ShortID="889266309">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="hit" ID="{B456C066-022C-4D4E-976A-2741A6E6741A}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="RatSqueak" ID="{0453A15A-B508-49E4-A62F-091D26CD875F}">
+					<ChildrenList>
+						<Action Name="" ID="{9D17B47C-C779-43FE-A1D7-FB84DE1CB54F}" ShortID="844715689">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="squeak" ID="{8F7B2ED7-EE4D-4159-8034-DBD8A944DEF5}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Footstep" ID="{4D0D5542-8469-43D9-AB9D-BC9D293D349C}">
+					<ChildrenList>
+						<Action Name="" ID="{D931ECDE-A3A7-42AD-98CF-62758B203B13}" ShortID="390876007">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="footstep" ID="{61023DF1-A98A-4587-B8F2-6684CFF34EFB}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

@@ -9,6 +9,25 @@
 							<ObjectRef Name="System" ID="{467A36AF-E149-4990-840D-E1B1FA7B4856}" WorkUnitID="{182CDC4A-DFB6-4744-8AB7-D06EC8A47915}"/>
 						</Reference>
 					</ReferenceList>
+					<ChildrenList>
+						<AuxBus Name="TunnelReverb" ID="{C4DA65CB-5B32-4525-82DA-851F452F84CE}">
+							<ObjectLists>
+								<ObjectList Name="Effects">
+									<Reference>
+										<Local>
+											<EffectSlot Name="" ID="{113DC156-75E0-468E-8E13-2D115A1D2B87}" ShortID="609320064">
+												<ReferenceList>
+													<Reference Name="Effect" PluginName="Wwise RoomVerb" CompanyID="0" PluginID="118" PluginType="3">
+														<ObjectRef Name="Hall_Medium" ID="{50286348-176A-4235-9E4C-CA5F73D87818}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+													</Reference>
+												</ReferenceList>
+											</EffectSlot>
+										</Local>
+									</Reference>
+								</ObjectList>
+							</ObjectLists>
+						</AuxBus>
+					</ChildrenList>
 				</Bus>
 			</ChildrenList>
 		</WorkUnit>
