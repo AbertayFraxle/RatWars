@@ -6,6 +6,7 @@
 				<Folder Name="gunshots" ID="{3261F352-0B86-42FB-9174-BC97B476EB26}" ShortID="359558242"/>
 				<RandomSequenceContainer Name="gunshot" ID="{CECA70C1-918F-4567-A228-C29CE2165E3F}" ShortID="313684615">
 					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
 						<Property Name="NormalOrShuffle" Type="int16" Value="0"/>
 						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 						<Property Name="Volume" Type="Real64">
@@ -225,6 +226,7 @@
 								</ModifierInfo>
 							</ModifierList>
 						</Property>
+						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Attenuation">
@@ -350,6 +352,7 @@
 							</ValueList>
 						</Property>
 						<Property Name="OverLimitBehavior" Type="int16" Value="1"/>
+						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 						<Property Name="UseMaxSoundPerInstance" Type="bool">
 							<ValueList>
 								<Value>True</Value>
@@ -471,6 +474,8 @@
 				</Sound>
 				<RandomSequenceContainer Name="footstep" ID="{61023DF1-A98A-4587-B8F2-6684CFF34EFB}" ShortID="425722648">
 					<PropertyList>
+						<Property Name="3DSpatialization" Type="int16" Value="1"/>
+						<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
 								<Value>-5</Value>

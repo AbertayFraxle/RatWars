@@ -2652,6 +2652,25 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="VocalMute" ID="{C61D72FD-D630-40D2-9813-F6FC4198BA1F}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																	<Property Name="TimeMs" Type="Real64" Value="32128.458011197"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="VocalUnmute" ID="{80F08063-6CDA-42DF-9C2D-633193D4CD99}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -3111,6 +3130,16 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="VocalUnmute" ID="{E69AC572-6858-4B07-9F18-BE16EC6FBDE4}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																	<Property Name="TimeMs" Type="Real64" Value="8055.63608870968"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -3517,6 +3546,15 @@
 													<Reference>
 														<Local>
 															<MusicCue Name="LoopBegin" ID="{A2344F5D-17BE-4C5B-9AF3-36729983F52A}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="VocalUnmute" ID="{249A2C59-B1C3-424C-8385-94D379A6C6BE}">
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>
@@ -6134,6 +6172,15 @@
 															</MusicCue>
 														</Local>
 													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="OnLastVocalUnmute" ID="{712E23AF-0861-47BC-B41C-0C411D129F71}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
 												</ObjectList>
 											</ObjectLists>
 										</MusicSegment>
@@ -6596,6 +6643,15 @@
 													<Reference>
 														<Local>
 															<MusicCue Name="LoopBegin" ID="{1A02CEAA-DBEC-4852-87D5-8FBFE8292308}">
+																<PropertyList>
+																	<Property Name="CueType" Type="int16" Value="2"/>
+																</PropertyList>
+															</MusicCue>
+														</Local>
+													</Reference>
+													<Reference>
+														<Local>
+															<MusicCue Name="OnLastVocalUnmute" ID="{4A632611-191C-4586-A283-4DD9E1D06823}">
 																<PropertyList>
 																	<Property Name="CueType" Type="int16" Value="2"/>
 																</PropertyList>

@@ -55,7 +55,7 @@ void AMusicManager::BeginPlay()
 
 	UAkGameplayStatics::SetRTPCValue(drumVolume, 10, 0, NULL, FName(FString("DrumVolume")));
 	UAkGameplayStatics::SetRTPCValue(synthVolume, 100, 0, NULL, FName(FString("SynthVolume")));
-	UAkGameplayStatics::SetRTPCValue(vocalVolume, 0, 0, NULL, FName(FString("VocalVolume")));
+	UAkGameplayStatics::SetRTPCValue(vocalVolume, 110, 0, NULL, FName(FString("VocalVolume")));
 	UAkGameplayStatics::SetRTPCValue(effectsVolume, 50, 0, NULL, FName(FString("EffectsVolume")));
 
 	beatLength = 60/trackBPM;
@@ -116,8 +116,28 @@ FString AMusicManager::ZeroFill(int number) {
 void AMusicManager::CallbackFunction(EAkCallbackType callbackType ,UAkCallbackInfo* callbackInfo)
 {
 	if (callbackType == EAkCallbackType::MusicSyncUserCue) {
+
+		UAkMusicSyncCallbackInfo* musicSyncInfo = static_cast<UAkMusicSyncCallbackInfo*>(callbackInfo); 
 		
-		UnlockCallback();
+
+		
+		if (musicSyncInfo->UserCueName==FString("LoopBegin") )
+		{
+			UnlockCallback();
+		}
+		if (musicSyncInfo->UserCueName==FString("VocalUnmute" ))
+		{
+			VocalUnmuteCallback();
+		}
+		if (musicSyncInfo->UserCueName ==FString("VocalMute" ))
+		{
+			VocalMuteCallback();
+		}
+		if (musicSyncInfo->UserCueName ==FString("OnLastVocalUnmute") )
+		{
+			OnLastVocalUnmuteCallback();
+		}
+		
 	}
 	if (callbackType == EAkCallbackType::MusicSyncBeat) {
 		BeatCallback();
@@ -137,6 +157,24 @@ void AMusicManager::BeatCallback()
 		drumValue -=5;
 	}
 	UAkGameplayStatics::SetRTPCValue(drumVolume, drumValue, 0, NULL, FName(FString("DrumVolume")));
+}
+
+void AMusicManager::VocalMuteCallback()
+{
+	vocalValue = 0;
+	UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
+}
+
+void AMusicManager::VocalUnmuteCallback()
+{
+	vocalValue = 110;
+	UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
+}
+
+void AMusicManager::OnLastVocalUnmuteCallback()
+{
+	vocalValue = 110;
+	UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
 }
 
 bool AMusicManager::IsOnBeat() {

@@ -49,6 +49,7 @@ protected:
 	float beatLength;
 	
 	int drumValue;
+	int vocalValue;
 
 	int musicSegment;
 	TMap<int, int> pointThresholds;
@@ -66,6 +67,10 @@ protected:
 	void UnlockCallback();
 
 	void BeatCallback();
+
+	void VocalMuteCallback();
+	void VocalUnmuteCallback();
+	void OnLastVocalUnmuteCallback();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

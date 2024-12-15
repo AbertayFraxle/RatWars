@@ -279,7 +279,7 @@
     "Type": "User",
     "GUID": "{8C751822-1DDA-4519-BA2C-BEEE26FAC534}",
     "Language": "SFX",
-    "Hash": "{92EF0D54-3F69-C601-1F8B-98100B83391A}",
+    "Hash": "{20F970EF-A994-F65C-108D-A076B0A48DAD}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
@@ -491,7 +491,7 @@
     "Type": "User",
     "GUID": "{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}",
     "Language": "SFX",
-    "Hash": "{10409CE4-DA77-B60B-727B-7743B4B492B4}",
+    "Hash": "{63C12A0D-9896-1B29-3B5E-986066549EA6}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Music",
     "ShortName": "Music",
     "Path": "Music.bnk",
@@ -1742,6 +1742,6 @@
     ]
    }
   ],
-  "FileHash": "{A93D8D0A-E6D8-A1FC-F36B-32CBAFC474E3}"
+  "FileHash": "{0C3795CB-EE08-A010-159C-41E0896E4C5D}"
  }
 }

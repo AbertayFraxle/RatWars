@@ -74,7 +74,7 @@
 				</StateGroup>
 			</StateGroups>
 		</SoundBank>
-		<SoundBank Id="3898083304" Type="User" GUID="{8C751822-1DDA-4519-BA2C-BEEE26FAC534}" Language="SFX" Hash="{92EF0D54-3F69-C601-1F8B-98100B83391A}">
+		<SoundBank Id="3898083304" Type="User" GUID="{8C751822-1DDA-4519-BA2C-BEEE26FAC534}" Language="SFX" Hash="{20F970EF-A994-F65C-108D-A076B0A48DAD}">
 			<ObjectPath>\SoundBanks\Default Work Unit\SoundEffects</ObjectPath>
 			<ShortName>SoundEffects</ShortName>
 			<Path>SoundEffects.bnk</Path>
@@ -169,7 +169,7 @@
 				</Event>
 			</Events>
 		</SoundBank>
-		<SoundBank Id="3991942870" Type="User" GUID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}" Language="SFX" Hash="{10409CE4-DA77-B60B-727B-7743B4B492B4}">
+		<SoundBank Id="3991942870" Type="User" GUID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}" Language="SFX" Hash="{63C12A0D-9896-1B29-3B5E-986066549EA6}">
 			<ObjectPath>\SoundBanks\Default Work Unit\Music</ObjectPath>
 			<ShortName>Music</ShortName>
 			<Path>Music.bnk</Path>
@@ -697,5 +697,5 @@
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{C66588CF-BE24-168A-3AFD-FE513BBD84FC}</FileHash>
+	<FileHash>{A0906D1C-1D2E-84CD-58E8-76E9F20FF5C2}</FileHash>
 </SoundBanksInfo>
