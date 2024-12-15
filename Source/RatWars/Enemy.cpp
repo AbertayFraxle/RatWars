@@ -33,7 +33,8 @@ void AEnemy::Kill()
 	FOnAkPostEventCallback nullCallback;
 	UAkGameplayStatics::PostEvent(deathEvent, this, int32(0), nullCallback);
 
-	bloodEmitter->Activate();
+	bloodEmitter->SetWorldScale3D(FVector(1));
+	bloodEmitter->Activate(true);
 	GetComponentByClass<USkeletalMeshComponent>()->SetHiddenInGame(true);
 
 	GetComponentByClass<UCapsuleComponent>()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -66,12 +67,14 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 bool AEnemy::ReduceHealth(int damage)
 {
 	health -=damage;
-
+	
 	if (health <= 0)
 	{
 		Kill();
 		return true;
 	}
+
+	
 	return false;
 }
 

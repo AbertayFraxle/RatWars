@@ -30,7 +30,8 @@ APlayerCharacter::APlayerCharacter()
 
 	beatMultiplier = 1;
 	hitMultiplier = 1;
-	
+	health = 100;
+
 }
 
 // Called when the game starts or when spawned
@@ -58,6 +59,22 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//if the cooldown is over, heal the player over time
+	if (regenTimer > 0) {
+		regenTimer -= DeltaTime;
+	}
+	else if (health <100) {
+		
+		if (secondRegenTimer < 0) {
+			health += 5;
+			secondRegenTimer = 2;
+		}
+		else {
+			secondRegenTimer -= DeltaTime;
+		}
+			
+	}
 
 	musicManager->score = score;
 

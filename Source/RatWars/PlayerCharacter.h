@@ -110,6 +110,14 @@ public:
 	int beatMultiplier;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int hitMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float regenTimer;
+
+	float secondRegenTimer;
 	
 protected:
 	// Called when the game starts or when spawned
