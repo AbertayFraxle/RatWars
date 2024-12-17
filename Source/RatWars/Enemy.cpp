@@ -33,13 +33,14 @@ void AEnemy::Kill()
 	FOnAkPostEventCallback nullCallback;
 	UAkGameplayStatics::PostEvent(deathEvent, this, int32(0), nullCallback);
 
-	bloodEmitter->SetWorldScale3D(FVector(1));
+	//activate blood explosion, hide mesh, disable collider and set death bool to true
 	bloodEmitter->Activate(true);
 	GetComponentByClass<USkeletalMeshComponent>()->SetHiddenInGame(true);
-
 	GetComponentByClass<UCapsuleComponent>()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	shouldDie = true;
-	
+
+	//post event to stop rat squeaking
+	UAkGameplayStatics::PostEvent(stopSqueakEvent, this, int32(0), nullCallback);	
 }
 
 // Called every frame
@@ -47,6 +48,7 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//if death bool is true count up to 1 second, then destroy
 	if (shouldDie)
 	{
 		killTimer+=DeltaTime;
@@ -64,8 +66,10 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+//function to reduce enemy health, returns true if enemy is killed
 bool AEnemy::ReduceHealth(int damage)
 {
+	//reduce health by damage amount, call kill function if health less than or zero
 	health -=damage;
 	
 	if (health <= 0)

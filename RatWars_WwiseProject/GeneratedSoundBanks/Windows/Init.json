@@ -10,12 +10,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{8A4341E7-7AA5-02F7-BC3D-A77EA4CDE84F}",
+    "Hash": "{DB248BC8-D923-C282-0D75-4BB8D6F67649}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "2513915904",
+       "Name": "Hall_Large",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large",
+       "GUID": "{6D154498-FF6D-4823-96FC-56841B70E079}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
       {
        "Id": "3451596814",
        "Name": "Hall_Medium",
@@ -54,6 +62,19 @@
     ],
     "AuxBusses": [
      {
+      "Id": "4079271112",
+      "Name": "TunnelReverbLarge",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\TunnelReverbLarge",
+      "GUID": "{5307F081-AB82-4BBC-913C-B4E989E70A4F}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2513915904"
+        }
+       ]
+      }
+     },
+     {
       "Id": "4134938995",
       "Name": "TunnelReverb",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\TunnelReverb",
@@ -75,10 +96,10 @@
       "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
      },
      {
-      "Id": "640585335",
-      "Name": "EffectsVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
-      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
+      "Id": "988953028",
+      "Name": "SFXVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SFXVolume",
+      "GUID": "{1A6EE13B-34B4-4AF3-B950-AC3624D72000}"
      },
      {
       "Id": "2630770510",
@@ -105,6 +126,12 @@
         "Name": "None",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\None",
         "GUID": "{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"
+       },
+       {
+        "Id": "979765101",
+        "Name": "WIN",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\WIN",
+        "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
        },
        {
         "Id": "1646090112",
@@ -261,12 +288,18 @@
         "Name": "segment_22",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\segment_22",
         "GUID": "{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"
+       },
+       {
+        "Id": "2044049779",
+        "Name": "DEAD",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\DEAD",
+        "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{B6E1E216-80CC-DA53-76A5-880CA4CA4C17}"
+  "FileHash": "{40738C23-A287-90ED-6A94-4DADF8D41A59}"
  }
 }

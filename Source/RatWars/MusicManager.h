@@ -44,40 +44,61 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//timer for game time
 	float timer;
+
+	//store time of beat
 	float beatTime;
+
+	//store how long a beat is
 	float beatLength;
-	
+
+	//volume values for different music tracks
 	int drumValue;
 	int vocalValue;
+	int realVocalValue;
 
+	//store music segment number
 	int musicSegment;
+
+	//store thresholds for increasing segment
 	TMap<int, int> pointThresholds;
+
+	//logic for moving on
 	bool shouldIncrease;
 	bool locked;
 	
-	
+	//for passing segment to WWise state
 	FString prefix;
-
 	FString ZeroFill(int number);
 
+	//function to trigger on callback
 	UFUNCTION()
 	void CallbackFunction(EAkCallbackType callbackType, UAkCallbackInfo* callbackInfo);
 
+	//different functions for CallbackFunction to call
 	void UnlockCallback();
 
 	void BeatCallback();
 
 	void VocalMuteCallback();
 	void VocalUnmuteCallback();
-	void OnLastVocalUnmuteCallback();
+
+	//blueprint function for ending the game
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void GameEnd();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//increase the Music Segment
 	void IncreaseSegment();
 
+	//determine if shot is on beat
 	UFUNCTION(BlueprintCallable)
 	bool IsOnBeat();
+
+	//set real vocal value
+	void SetVocalValue(int nVocalValue);
 
 };

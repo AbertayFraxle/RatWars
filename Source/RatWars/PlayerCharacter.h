@@ -3,7 +3,11 @@
 #pragma once
 
 #define FOOT_STEP_INTERVAL 0.4
-
+#define MULTIPLIER_MAX 8
+#define HEALTH_MAX 100
+#define HEALTH_REGEN_AMOUNT 5
+#define HEALTH_REGEN_INTERVAL 2
+#define REGEN_COOLDOWN 10
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputAction.h"
@@ -89,6 +93,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAkAudioEvent* gunshotEvent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAkAudioEvent* landEvent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAkAudioEvent* damagedEvent;
+
 	//VFX
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraComponent* muzzleFlash;
@@ -114,15 +124,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float regenTimer;
 
-	float secondRegenTimer;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void CalcVocalVolume();
+	void RegenPlayerHealth(float DeltaTime);
 
+	//for health regen
+	float regenTimer;
+	float secondRegenTimer;
+
+	//detect change in falling
+	bool isFalling;
+	
+	//timer for footsteps
 	float stepTimer;
 
 public:	
@@ -138,4 +155,7 @@ public:
 
 	//fire gun function
 	void Shoot(const FInputActionValue& Value);
+
+	UFUNCTION(BlueprintCallable)
+	void ReduceHealth(int damage);
 };

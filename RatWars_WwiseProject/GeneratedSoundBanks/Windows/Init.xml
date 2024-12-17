@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{8A4341E7-7AA5-02F7-BC3D-A77EA4CDE84F}">
+		<SoundBank Id="1355168291" Type="User" GUID="{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}" Language="SFX" Hash="{DB248BC8-D923-C282-0D75-4BB8D6F67649}">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
 				<ShareSets>
+					<Plugin Id="2513915904" Name="Hall_Large" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Large" GUID="{6D154498-FF6D-4823-96FC-56841B70E079}" LibName="Wwise RoomVerb" LibId="7733251"/>
 					<Plugin Id="3451596814" Name="Hall_Medium" ObjectPath="\Effects\Factory Effects\RoomVerb\Halls\Hall_Medium" GUID="{50286348-176A-4235-9E4C-CA5F73D87818}" LibName="Wwise RoomVerb" LibId="7733251"/>
 				</ShareSets>
 				<AudioDevices>
@@ -18,6 +19,13 @@
 				<Bus Id="3803692087" Name="Master Audio Bus" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus" GUID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"/>
 			</Busses>
 			<AuxBusses>
+				<AuxBus Id="4079271112" Name="TunnelReverbLarge" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\TunnelReverbLarge" GUID="{5307F081-AB82-4BBC-913C-B4E989E70A4F}">
+					<PluginRefs>
+						<ShareSets>
+							<PluginRef Id="2513915904"/>
+						</ShareSets>
+					</PluginRefs>
+				</AuxBus>
 				<AuxBus Id="4134938995" Name="TunnelReverb" ObjectPath="\Master-Mixer Hierarchy\Default Work Unit\Master Audio Bus\TunnelReverb" GUID="{C4DA65CB-5B32-4525-82DA-851F452F84CE}">
 					<PluginRefs>
 						<ShareSets>
@@ -28,7 +36,7 @@
 			</AuxBusses>
 			<GameParameters>
 				<GameParameter Id="596299267" Name="SynthVolume" ObjectPath="\Game Parameters\Default Work Unit\SynthVolume" GUID="{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"/>
-				<GameParameter Id="640585335" Name="EffectsVolume" ObjectPath="\Game Parameters\Default Work Unit\EffectsVolume" GUID="{103403E9-2F32-4FA6-BF25-14177EDBB55E}"/>
+				<GameParameter Id="988953028" Name="SFXVolume" ObjectPath="\Game Parameters\Default Work Unit\SFXVolume" GUID="{1A6EE13B-34B4-4AF3-B950-AC3624D72000}"/>
 				<GameParameter Id="2630770510" Name="VocalVolume" ObjectPath="\Game Parameters\Default Work Unit\VocalVolume" GUID="{009E7C30-AC65-4E65-930B-F06C935B3F60}"/>
 				<GameParameter Id="3019350247" Name="DrumVolume" ObjectPath="\Game Parameters\Default Work Unit\DrumVolume" GUID="{75BBA363-EDA7-4D5B-8DCD-2492AC4BD042}"/>
 			</GameParameters>
@@ -36,6 +44,7 @@
 				<StateGroup Id="2183912641" Name="MusicSegment" ObjectPath="\States\Default Work Unit\MusicSegment" GUID="{89AA16A0-1CC7-4B91-A31F-28B4885421D2}">
 					<States>
 						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\MusicSegment\None" GUID="{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"/>
+						<State Id="979765101" Name="WIN" ObjectPath="\States\Default Work Unit\MusicSegment\WIN" GUID="{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"/>
 						<State Id="1646090112" Name="segment_14" ObjectPath="\States\Default Work Unit\MusicSegment\segment_14" GUID="{77C43F16-B755-4C26-BE66-1AC6376D143C}"/>
 						<State Id="1646090113" Name="segment_15" ObjectPath="\States\Default Work Unit\MusicSegment\segment_15" GUID="{2B4CC0F2-86CA-4A6F-91E1-67BC09FB7EB4}"/>
 						<State Id="1646090114" Name="segment_16" ObjectPath="\States\Default Work Unit\MusicSegment\segment_16" GUID="{1851E230-0072-46EA-BC20-475D7AEB884F}"/>
@@ -62,10 +71,11 @@
 						<State Id="1696423005" Name="segment_20" ObjectPath="\States\Default Work Unit\MusicSegment\segment_20" GUID="{8A56F66C-E091-4CE6-85AC-56F7CC5D38AB}"/>
 						<State Id="1696423006" Name="segment_23" ObjectPath="\States\Default Work Unit\MusicSegment\segment_23" GUID="{DF8B4F66-B1EB-4563-8BCB-94851FFF1633}"/>
 						<State Id="1696423007" Name="segment_22" ObjectPath="\States\Default Work Unit\MusicSegment\segment_22" GUID="{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"/>
+						<State Id="2044049779" Name="DEAD" ObjectPath="\States\Default Work Unit\MusicSegment\DEAD" GUID="{14FFB073-871C-43CC-B67C-73941F49AEAF}"/>
 					</States>
 				</StateGroup>
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{F495EB80-3EBE-A502-DA0F-40E4EB6C3D3F}</FileHash>
+	<FileHash>{A58F180B-0ABC-4703-6CF0-C07A6D872BB0}</FileHash>
 </SoundBanksInfo>

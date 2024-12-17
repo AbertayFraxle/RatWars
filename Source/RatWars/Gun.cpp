@@ -20,7 +20,8 @@ AGun::AGun()
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//initialise recoil timer
+	recoilTimer = RECOIL_TIMER_MAX;
 }
 
 // Called every frame
@@ -28,18 +29,25 @@ void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//initialise rotate amount
+	//if recoil timer is less than maximum
 	if (recoilTimer < RECOIL_TIMER_MAX)
 	{
+		//count up recoilTimer
 		recoilTimer +=DeltaTime;
 
-		float rotateAmount = FMath::Lerp(30,0,recoilTimer/RECOIL_TIMER_MAX);
+		//interpolate the angles of rotation on gun based on recoil timer and apply to model
+		float rotateAmount  = FMath::Lerp(30,0,recoilTimer/RECOIL_TIMER_MAX);
 		gunModel->SetRelativeRotation(FRotator(gunModel->GetRelativeRotation().Roll,rotateAmount,gunModel->GetRelativeRotation().Yaw));
 	}
+
+	
 }
 
 bool AGun::CanShootGun()
 {
 
+	//if still recoiling return false, otherwise return true
 	if (recoilTimer >= RECOIL_TIMER_MAX)
 	{
 		return true;
@@ -51,5 +59,6 @@ bool AGun::CanShootGun()
 
 void AGun::AddRecoil()
 {
+	//reset recoil timer
 	recoilTimer = 0;
 }

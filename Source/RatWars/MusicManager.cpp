@@ -15,10 +15,13 @@ AMusicManager::AMusicManager()
 	locked = true;
 	shouldIncrease = false;
 
+	//set drum volume to 0
 	drumValue = 0;
 
+	//set bpm
 	trackBPM = 116;
-	
+
+	//set point thresholds to increase MusicSegment
 	pointThresholds = {
 		{1,1000},
 		{2,2000},
@@ -38,6 +41,7 @@ void AMusicManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//define callback function for music event
 	FOnAkPostEventCallback functionCallback;
 	static FName callBackName("CallbackFunction");
 	functionCallback.BindUFunction(this, callBackName);
@@ -53,11 +57,13 @@ void AMusicManager::BeginPlay()
 	//call music event in WWise
 	UAkGameplayStatics::PostEvent(musicEvent, GetOwner(), int32(AkCallbackType::AK_MusicSyncUserCue| AkCallbackType::AK_MusicSyncBeat),functionCallback);
 
+	//set initial values for music track volumes
 	UAkGameplayStatics::SetRTPCValue(drumVolume, 10, 0, NULL, FName(FString("DrumVolume")));
 	UAkGameplayStatics::SetRTPCValue(synthVolume, 100, 0, NULL, FName(FString("SynthVolume")));
-	UAkGameplayStatics::SetRTPCValue(vocalVolume, 110, 0, NULL, FName(FString("VocalVolume")));
+	UAkGameplayStatics::SetRTPCValue(vocalVolume, 100, 0, NULL, FName(FString("VocalVolume")));
 	UAkGameplayStatics::SetRTPCValue(effectsVolume, 50, 0, NULL, FName(FString("EffectsVolume")));
 
+	//determine the length of a beat via bpm
 	beatLength = 60/trackBPM;
 }
 
@@ -66,6 +72,7 @@ void AMusicManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//increase game timer
 	timer += DeltaTime;
 
 	//increase the segment if it should increase
@@ -75,6 +82,7 @@ void AMusicManager::Tick(float DeltaTime)
 	}
 	else {
 
+		//if the score is greater than the current threshold set that should increase
 		if (int32(score) >= pointThresholds.FindRef(musicSegment))
 		{
 			shouldIncrease = true;
@@ -90,15 +98,18 @@ void AMusicManager::IncreaseSegment()
 		//turn off the lock and increase amount
 		shouldIncrease = false;
 		locked = true;
-
+		
+		
 		//increment music segment
 		musicSegment++;
 
+	
 		//convert musicSegment to string and packto pass to WWise
 		FName newStateValue = FName(prefix + ZeroFill(musicSegment));
 
 		//update musicSegment state in WWise
 		UAkGameplayStatics::SetState(NULL, FName(FString("MusicSegment")), newStateValue);
+		
 	}
 }
 
@@ -115,12 +126,14 @@ FString AMusicManager::ZeroFill(int number) {
 
 void AMusicManager::CallbackFunction(EAkCallbackType callbackType ,UAkCallbackInfo* callbackInfo)
 {
+
+	//if callback is triggered by user defined cue in WWise
 	if (callbackType == EAkCallbackType::MusicSyncUserCue) {
 
 		UAkMusicSyncCallbackInfo* musicSyncInfo = static_cast<UAkMusicSyncCallbackInfo*>(callbackInfo); 
 		
 
-		
+		//define callbacks for different cues
 		if (musicSyncInfo->UserCueName==FString("LoopBegin") )
 		{
 			UnlockCallback();
@@ -133,15 +146,18 @@ void AMusicManager::CallbackFunction(EAkCallbackType callbackType ,UAkCallbackIn
 		{
 			VocalMuteCallback();
 		}
-		if (musicSyncInfo->UserCueName ==FString("OnLastVocalUnmute") )
+
+		//if at the end of the music, call blueprint function to end game (level loading in C++ is a nightmare lol)
+		if (musicSyncInfo->UserCueName ==FString("EndGame") )
 		{
-			OnLastVocalUnmuteCallback();
+			GameEnd();
 		}
-		
 	}
 	if (callbackType == EAkCallbackType::MusicSyncBeat) {
+		//if callback is triggered by beat
 		BeatCallback();
 	}
+
 }
 
 void AMusicManager::UnlockCallback()
@@ -151,54 +167,77 @@ void AMusicManager::UnlockCallback()
 
 void AMusicManager::BeatCallback()
 {
+	//on beat, reduce the drum volume by 5 and update RTPC in WWise
 	beatTime = timer;
 	if (drumValue > 10)
 	{
 		drumValue -=5;
 	}
 	UAkGameplayStatics::SetRTPCValue(drumVolume, drumValue, 0, NULL, FName(FString("DrumVolume")));
+
+	//if vocal shouldnt be muted, set it to the real value, and update RTPC in WWise
+	if (vocalValue !=0)
+	{
+		vocalValue = realVocalValue;
+		UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, beatLength, NULL, FName(FString("VocalVolume")));
+	}
 }
 
 void AMusicManager::VocalMuteCallback()
 {
-	vocalValue = 0;
-	UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
+	//mute the vocal track if current segment is meant to loop
+	if (!locked)
+	{
+		vocalValue = 0;
+		UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
+	}
 }
 
 void AMusicManager::VocalUnmuteCallback()
 {
-	vocalValue = 110;
+	//unmute the vocals
+	vocalValue = realVocalValue;
 	UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
 }
 
-void AMusicManager::OnLastVocalUnmuteCallback()
+void AMusicManager::GameEnd_Implementation()
 {
-	vocalValue = 110;
-	UAkGameplayStatics::SetRTPCValue(vocalVolume, vocalValue, 0, NULL, FName(FString("VocalVolume")));
 }
+
 
 bool AMusicManager::IsOnBeat() {
-
+	
 	bool returnValue;
 
+	//if the difference between beatTime and currentTime is within a quarter of the beatLength
 	if (abs(timer - beatTime) < (beatLength/4) || abs(timer - (beatTime+beatLength)) < (beatLength/4))
 	{
+		//increase drum volume by 20
 		if (drumValue < 100) {
 			drumValue += 20;
 		}
 		returnValue = true;
 	}
 	else {
-	
+
+		//reduce drumValue by 5
 		if (drumValue > 10) {
 			drumValue -= 5;
 		}
 
 		returnValue = false;
 	}
+
+	//update drum track volume by updating RTPC in WWise
 	UAkGameplayStatics::SetRTPCValue(drumVolume, drumValue, 0, NULL, FName(FString("DrumVolume")));
 
 	return returnValue;
 
+}
+
+void AMusicManager::SetVocalValue(int nVocalValue)
+{
+	//set vocal value to new vocal value
+	realVocalValue = nVocalValue;
 }
 

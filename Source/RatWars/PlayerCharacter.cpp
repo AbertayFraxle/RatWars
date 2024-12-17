@@ -18,19 +18,27 @@ APlayerCharacter::APlayerCharacter()
 	camera->bUsePawnControlRotation = true;
 	camera->SetupAttachment(RootComponent);
 
-	
+	//create gun actor
 	gunActor = CreateDefaultSubobject<UChildActorComponent>(TEXT("GunActor"));
 	gunActor->SetupAttachment(camera);
+
+	//create component for position of gun tip
 	gunTip = CreateDefaultSubobject<USceneComponent>(TEXT("GunTip"));
 	gunTip->SetupAttachment(gunActor);
+
+	//create system for muzzle flash particles
 	muzzleFlash = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlash"));
 	muzzleFlash->SetupAttachment(gunTip);
-	
+
+	//store reference to movement component
 	movementComponent = GetCharacterMovement();
 
+	//initialise multipliers
 	beatMultiplier = 1;
 	hitMultiplier = 1;
-	health = 100;
+
+	//initialise health
+	health = HEALTH_MAX;
 
 }
 
@@ -39,6 +47,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//store reference to gun actor class
 	gun = Cast<AGun>(gunActor->GetChildActor());
 	
 	//Bind Input Mapping Context to Character
@@ -55,28 +64,69 @@ void APlayerCharacter::BeginPlay()
 	musicManager = Cast<AMusicManager>(foundActor);
 }
 
+void APlayerCharacter::CalcVocalVolume()
+{
+
+	//multiply total multiplier by 20 to determine vocal volume, clamp to max of 100, then pass to music manager
+	int nVocalValue = ((hitMultiplier+beatMultiplier)*20);
+	if (nVocalValue > 100)
+	{
+		nVocalValue = 100;
+	}
+	musicManager->SetVocalValue(nVocalValue);
+}
+
+void APlayerCharacter::RegenPlayerHealth(float DeltaTime)
+{
+	if (regenTimer > 0) {
+		//if the cooldown isn't over tick it down
+		regenTimer -= DeltaTime;
+	}
+	else if (health <HEALTH_MAX) {
+		//if the cooldown is over, and player under 100 health
+		//heal player by 5 health every 2 seconds
+		if (secondRegenTimer < 0) {
+			health += HEALTH_REGEN_AMOUNT;
+			secondRegenTimer = HEALTH_REGEN_INTERVAL;
+		}
+		else {
+			secondRegenTimer -= DeltaTime;
+		}
+				
+	}
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//if the cooldown is over, heal the player over time
-	if (regenTimer > 0) {
-		regenTimer -= DeltaTime;
-	}
-	else if (health <100) {
-		
-		if (secondRegenTimer < 0) {
-			health += 5;
-			secondRegenTimer = 2;
+	//pass score to music manager
+	musicManager->score = score;
+	
+	//determine vocal volume and pass to music manager
+	CalcVocalVolume();	
+	
+	//heal the player over time
+	RegenPlayerHealth(DeltaTime);
+	
+	//if thers a change in player falling state, and player stops falling, play landing event
+	if (!isFalling)
+	{
+		if (movementComponent->IsFalling())
+		{
+			isFalling = true;
 		}
-		else {
-			secondRegenTimer -= DeltaTime;
+	}else
+	{
+		if (!movementComponent->IsFalling())
+		{
+			isFalling = false;
+			UAkGameplayStatics::PostEvent(landEvent, this, int32(0), nullCallback);
 		}
-			
 	}
 
-	musicManager->score = score;
+
 
 	//if the player is moving on the ground, tick down the stepTimer, and when its less than 0, post event to play a footstep noise
 	if (FVector(movementComponent->Velocity.X,movementComponent->Velocity.Y,movementComponent->Velocity.Z).Length() > 0)
@@ -94,6 +144,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 		}
 	}
 
+
+	//line cast straight down to get player's position on the ground
 	FCollisionQueryParams queryParams;
 	queryParams.AddIgnoredActor(this);
 	FHitResult hit;
@@ -121,6 +173,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	
 }
 
+//move the player
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D moveVector = Value.Get<FVector2D>();
@@ -140,50 +193,79 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 void APlayerCharacter::Shoot(const FInputActionValue& Value)
 {
 
+	//check if the gun can shoot
 	if (gun->CanShootGun())
 	{
+		//check to see if the shot was on the beat via music manager
 		bool hasHit = musicManager->IsOnBeat();
 
+		//if on the beat
 		if (hasHit)
 		{
-			if (beatMultiplier< 8)
+			//increase beat multiplier to a maximum
+			if (beatMultiplier< MULTIPLIER_MAX)
 			{
 				beatMultiplier+=1;
 			}
 		}else
 		{
+			//reset beat multiplier to 1
 			beatMultiplier = 1;
 		}
-		
+
+		//post WWise event for gunshot
 		UAkGameplayStatics::PostEvent(gunshotEvent, this, int32(0), nullCallback);
+
+		//activate muzzleflash particles
 		muzzleFlash->Activate(true);
+
+		//add recoil to gun model
 		gun->AddRecoil();
 
+		//create vfx for gunshot
 		UNiagaraComponent * gunBeam = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),gunBeamTemplate,gunTip->GetComponentLocation(),FRotator::ZeroRotator,FVector(1),true,true);
 		gunBeam->SetNiagaraVariableVec3(FString("endPos"),GetActorLocation()+camera->GetForwardVector()*gunRange);
 
-		
+
+		//line trace for gun shot and see if hit target
 		FCollisionQueryParams queryParams;
 		queryParams.AddIgnoredActor(this);
 		FHitResult hit;
 		GetWorld()->LineTraceSingleByChannel(hit,gunTip->GetComponentLocation(),GetActorLocation()+camera->GetForwardVector()*gunRange,ECC_Camera,queryParams);
 
+		//if target hit
 		if (hit.bBlockingHit && hit.GetActor())
 		{
+			//if target is an enemy
 			if (Cast<AEnemy>(hit.GetActor()))
 			{
-				if (hitMultiplier < 8)
+				//increase hit multiplier to maximum
+				if (hitMultiplier < MULTIPLIER_MAX)
 				{
 					hitMultiplier += 1;
 				}
+
+				//reduce enemy health, and if kills, increase score
 				if (Cast<AEnemy>(hit.GetActor())->ReduceHealth(gunDamage))
 				{
 					score +=baseScoreAmount * (beatMultiplier+hitMultiplier);
 				};
 			}else
 			{
+
+				//if miss reset hit multiplier
 				hitMultiplier = 1;
 			}
 		}
 	}
+}
+
+void APlayerCharacter::ReduceHealth(int damage)
+{
+	//decrease health and reset regen timer
+	regenTimer = REGEN_COOLDOWN;
+	health -= damage;
+
+	//play damaged sound
+	UAkGameplayStatics::PostEvent(damagedEvent, this, int32(0), nullCallback);
 }

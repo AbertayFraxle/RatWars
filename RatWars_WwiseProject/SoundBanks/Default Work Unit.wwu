@@ -5,6 +5,7 @@
 			<ChildrenList>
 				<SoundBank Name="Music" ID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}">
 					<ObjectInclusionList>
+						<ObjectRef Name="Stop_HATEFUL" ID="{ACF6AD7F-484B-430D-80ED-8F39341D84E2}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_HATEFUL" ID="{E52F75B3-DF21-47EC-86A7-397A25EB419A}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
@@ -12,9 +13,12 @@
 				</SoundBank>
 				<SoundBank Name="SoundEffects" ID="{8C751822-1DDA-4519-BA2C-BEEE26FAC534}">
 					<ObjectInclusionList>
+						<ObjectRef Name="Attack" ID="{05727381-2BB2-402E-B964-770B8D9CE402}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Gunshot" ID="{4987482C-3F89-4300-BEA6-7E3574DE40C6}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="footstep" ID="{61023DF1-A98A-4587-B8F2-6684CFF34EFB}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}" Origin="Manual" Filter="7"/>
-						<ObjectRef Name="RatSqueak" ID="{0453A15A-B508-49E4-A62F-091D26CD875F}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_Squeak" ID="{0453A15A-B508-49E4-A62F-091D26CD875F}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Landing" ID="{A9A213DE-5673-4B10-A726-3C279EAE4E7C}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_Squeak" ID="{C8E86179-9A30-4D78-AA91-F2026971B88A}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Bloodsplosion" ID="{E25BB430-307E-4EDF-9335-726C42CC4E67}" WorkUnitID="{9533A405-C765-45D6-8C24-6569F1089E17}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>

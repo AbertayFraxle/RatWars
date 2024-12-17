@@ -18,12 +18,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{8A4341E7-7AA5-02F7-BC3D-A77EA4CDE84F}",
+    "Hash": "{DB248BC8-D923-C282-0D75-4BB8D6F67649}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "2513915904",
+       "Name": "Hall_Large",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large",
+       "GUID": "{6D154498-FF6D-4823-96FC-56841B70E079}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
       {
        "Id": "3451596814",
        "Name": "Hall_Medium",
@@ -62,6 +70,19 @@
     ],
     "AuxBusses": [
      {
+      "Id": "4079271112",
+      "Name": "TunnelReverbLarge",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\TunnelReverbLarge",
+      "GUID": "{5307F081-AB82-4BBC-913C-B4E989E70A4F}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2513915904"
+        }
+       ]
+      }
+     },
+     {
       "Id": "4134938995",
       "Name": "TunnelReverb",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\TunnelReverb",
@@ -83,10 +104,10 @@
       "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
      },
      {
-      "Id": "640585335",
-      "Name": "EffectsVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
-      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
+      "Id": "988953028",
+      "Name": "SFXVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SFXVolume",
+      "GUID": "{1A6EE13B-34B4-4AF3-B950-AC3624D72000}"
      },
      {
       "Id": "2630770510",
@@ -113,6 +134,12 @@
         "Name": "None",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\None",
         "GUID": "{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"
+       },
+       {
+        "Id": "979765101",
+        "Name": "WIN",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\WIN",
+        "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
        },
        {
         "Id": "1646090112",
@@ -269,6 +296,12 @@
         "Name": "segment_22",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\segment_22",
         "GUID": "{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"
+       },
+       {
+        "Id": "2044049779",
+        "Name": "DEAD",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\DEAD",
+        "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
        }
       ]
      }
@@ -279,7 +312,7 @@
     "Type": "User",
     "GUID": "{8C751822-1DDA-4519-BA2C-BEEE26FAC534}",
     "Language": "SFX",
-    "Hash": "{20F970EF-A994-F65C-108D-A076B0A48DAD}",
+    "Hash": "{2B91DFFF-AB14-C258-337E-9B06D42FDC02}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
@@ -290,7 +323,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-05.wav",
-      "CachePath": "SFX/gunshots/gunshot-05_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-05_A2498ED0.wem"
      },
      {
       "Id": "67667721",
@@ -298,7 +331,15 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-04.wav",
-      "CachePath": "SFX/steps/footstep-04_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-04_A2498ED0.wem"
+     },
+     {
+      "Id": "92168181",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-04.wav",
+      "CachePath": "SFX/attack/attack-04_A2498ED0.wem"
      },
      {
       "Id": "164029556",
@@ -306,7 +347,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-01.wav",
-      "CachePath": "SFX/steps/footstep-01_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-01_A2498ED0.wem"
      },
      {
       "Id": "166118060",
@@ -314,7 +355,15 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-06.wav",
-      "CachePath": "SFX/steps/footstep-06_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-06_A2498ED0.wem"
+     },
+     {
+      "Id": "178613020",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-01.wav",
+      "CachePath": "SFX/attack/attack-01_A2498ED0.wem"
      },
      {
       "Id": "180040565",
@@ -322,7 +371,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-05.wav",
-      "CachePath": "SFX/steps/footstep-05_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-05_A2498ED0.wem"
      },
      {
       "Id": "231814274",
@@ -330,7 +379,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-04.wav",
-      "CachePath": "SFX/gunshots/gunshot-04_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-04_A2498ED0.wem"
      },
      {
       "Id": "241150547",
@@ -338,7 +387,23 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-02.wav",
-      "CachePath": "SFX/steps/footstep-02_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-02_A2498ED0.wem"
+     },
+     {
+      "Id": "335479766",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "landing.wav",
+      "CachePath": "SFX/landing_A2498ED0.wem"
+     },
+     {
+      "Id": "429989106",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-03.wav",
+      "CachePath": "SFX/attack/attack-03_A2498ED0.wem"
      },
      {
       "Id": "536064219",
@@ -346,7 +411,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Animals, Rodent, Mouse, Rat, Squeaks SND14864.wav",
-      "CachePath": "SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_FBC78EF0.wem"
+      "CachePath": "SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_56CEF360.wem"
      },
      {
       "Id": "631797485",
@@ -354,7 +419,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-03.wav",
-      "CachePath": "SFX/steps/footstep-03_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-03_A2498ED0.wem"
      },
      {
       "Id": "663937859",
@@ -362,7 +427,15 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-03.wav",
-      "CachePath": "SFX/gunshots/gunshot-03_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-03_A2498ED0.wem"
+     },
+     {
+      "Id": "675586947",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-02.wav",
+      "CachePath": "SFX/attack/attack-02_A2498ED0.wem"
      },
      {
       "Id": "890272576",
@@ -370,7 +443,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-02.wav",
-      "CachePath": "SFX/gunshots/gunshot-02_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-02_A2498ED0.wem"
      },
      {
       "Id": "906818641",
@@ -378,7 +451,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "hit.wav",
-      "CachePath": "SFX/hit_818F3B66.wem"
+      "CachePath": "SFX/hit_A2498ED0.wem"
      },
      {
       "Id": "1002471945",
@@ -386,7 +459,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-01.wav",
-      "CachePath": "SFX/gunshots/gunshot-01_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-01_A2498ED0.wem"
      },
      {
       "Id": "1068125542",
@@ -394,10 +467,34 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-07.wav",
-      "CachePath": "SFX/steps/footstep-07_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-07_A2498ED0.wem"
      }
     ],
     "Events": [
+     {
+      "Id": "180661997",
+      "Name": "Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Attack",
+      "GUID": "{05727381-2BB2-402E-B964-770B8D9CE402}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.1637917",
+      "DurationMax": "1.4224167",
+      "MediaRefs": [
+       {
+        "Id": "92168181"
+       },
+       {
+        "Id": "178613020"
+       },
+       {
+        "Id": "429989106"
+       },
+       {
+        "Id": "675586947"
+       }
+      ]
+     },
      {
       "Id": "2917402406",
       "Name": "Bloodsplosion",
@@ -450,6 +547,7 @@
       "Name": "Gunshot",
       "ObjectPath": "\\Events\\Default Work Unit\\Gunshot",
       "GUID": "{4987482C-3F89-4300-BEA6-7E3574DE40C6}",
+      "MaxAttenuation": "100",
       "DurationType": "OneShot",
       "DurationMin": "0.42768317",
       "DurationMax": "0.6340446",
@@ -472,9 +570,23 @@
       ]
      },
      {
-      "Id": "1690196772",
-      "Name": "RatSqueak",
-      "ObjectPath": "\\Events\\Default Work Unit\\RatSqueak",
+      "Id": "2548270042",
+      "Name": "Landing",
+      "ObjectPath": "\\Events\\Default Work Unit\\Landing",
+      "GUID": "{A9A213DE-5673-4B10-A726-3C279EAE4E7C}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.3248125",
+      "DurationMax": "0.3248125",
+      "MediaRefs": [
+       {
+        "Id": "335479766"
+       }
+      ]
+     },
+     {
+      "Id": "1357217968",
+      "Name": "Play_Squeak",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Squeak",
       "GUID": "{0453A15A-B508-49E4-A62F-091D26CD875F}",
       "MaxAttenuation": "500",
       "DurationType": "Infinite",
@@ -483,6 +595,16 @@
         "Id": "536064219"
        }
       ]
+     },
+     {
+      "Id": "3713853302",
+      "Name": "Stop_Squeak",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Squeak",
+      "GUID": "{C8E86179-9A30-4D78-AA91-F2026971B88A}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
      }
     ]
    },
@@ -491,7 +613,7 @@
     "Type": "User",
     "GUID": "{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}",
     "Language": "SFX",
-    "Hash": "{63C12A0D-9896-1B29-3B5E-986066549EA6}",
+    "Hash": "{50A670EE-F5DB-9152-C5E8-88CF28ADD274}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Music",
     "ShortName": "Music",
     "Path": "Music.bnk",
@@ -825,6 +947,14 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-15_FBC78EF0.wem"
      },
      {
+      "Id": "499784922",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "ASHAMED.wav",
+      "CachePath": "SFX/ASHAMED_FBC78EF0.wem"
+     },
+     {
       "Id": "509565016",
       "Language": "SFX",
       "Streaming": "false",
@@ -967,6 +1097,14 @@
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-09.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-09_FBC78EF0.wem"
+     },
+     {
+      "Id": "716777968",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "DONT TRY.wav",
+      "CachePath": "SFX/DONT TRY_FBC78EF0.wem"
      },
      {
       "Id": "741013778",
@@ -1177,40 +1315,6 @@
       "GUID": "{E52F75B3-DF21-47EC-86A7-397A25EB419A}",
       "DurationType": "Infinite",
       "SwitchContainers": [
-       {
-        "SwitchValue": {
-         "GroupType": "State",
-         "GroupId": "2183912641",
-         "Id": "1662867830",
-         "GUID": "{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"
-        },
-        "MediaRefs": [
-         {
-          "Id": "14601773"
-         },
-         {
-          "Id": "16933846"
-         },
-         {
-          "Id": "61100032"
-         },
-         {
-          "Id": "212802296"
-         },
-         {
-          "Id": "340528269"
-         },
-         {
-          "Id": "509565016"
-         },
-         {
-          "Id": "573425474"
-         },
-         {
-          "Id": "807725814"
-         }
-        ]
-       },
        {
         "SwitchValue": {
          "GroupType": "State",
@@ -1538,8 +1642,78 @@
           "Id": "978106736"
          }
         ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "2044049779",
+         "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "716777968"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "1662867830",
+         "GUID": "{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "14601773"
+         },
+         {
+          "Id": "16933846"
+         },
+         {
+          "Id": "61100032"
+         },
+         {
+          "Id": "212802296"
+         },
+         {
+          "Id": "340528269"
+         },
+         {
+          "Id": "509565016"
+         },
+         {
+          "Id": "573425474"
+         },
+         {
+          "Id": "807725814"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "979765101",
+         "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "499784922"
+         }
+        ]
        }
       ]
+     },
+     {
+      "Id": "2885510313",
+      "Name": "Stop_HATEFUL",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_HATEFUL",
+      "GUID": "{ACF6AD7F-484B-430D-80ED-8F39341D84E2}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
      }
     ],
     "GameParameters": [
@@ -1548,12 +1722,6 @@
       "Name": "SynthVolume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\SynthVolume",
       "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
-     },
-     {
-      "Id": "640585335",
-      "Name": "EffectsVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
-      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
      },
      {
       "Id": "2630770510",
@@ -1580,6 +1748,12 @@
         "Name": "None",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\None",
         "GUID": "{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"
+       },
+       {
+        "Id": "979765101",
+        "Name": "WIN",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\WIN",
+        "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
        },
        {
         "Id": "1646090112",
@@ -1736,12 +1910,18 @@
         "Name": "segment_22",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\segment_22",
         "GUID": "{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"
+       },
+       {
+        "Id": "2044049779",
+        "Name": "DEAD",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\DEAD",
+        "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{0C3795CB-EE08-A010-159C-41E0896E4C5D}"
+  "FileHash": "{341CB097-40CC-4636-546E-0E6DF4BB4169}"
  }
 }

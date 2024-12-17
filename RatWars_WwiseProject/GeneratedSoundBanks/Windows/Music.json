@@ -10,7 +10,7 @@
     "Type": "User",
     "GUID": "{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}",
     "Language": "SFX",
-    "Hash": "{63C12A0D-9896-1B29-3B5E-986066549EA6}",
+    "Hash": "{50A670EE-F5DB-9152-C5E8-88CF28ADD274}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Music",
     "ShortName": "Music",
     "Path": "Music.bnk",
@@ -344,6 +344,14 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-15_FBC78EF0.wem"
      },
      {
+      "Id": "499784922",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "ASHAMED.wav",
+      "CachePath": "SFX/ASHAMED_FBC78EF0.wem"
+     },
+     {
       "Id": "509565016",
       "Language": "SFX",
       "Streaming": "false",
@@ -486,6 +494,14 @@
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-09.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-09_FBC78EF0.wem"
+     },
+     {
+      "Id": "716777968",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "DONT TRY.wav",
+      "CachePath": "SFX/DONT TRY_FBC78EF0.wem"
      },
      {
       "Id": "741013778",
@@ -696,40 +712,6 @@
       "GUID": "{E52F75B3-DF21-47EC-86A7-397A25EB419A}",
       "DurationType": "Infinite",
       "SwitchContainers": [
-       {
-        "SwitchValue": {
-         "GroupType": "State",
-         "GroupId": "2183912641",
-         "Id": "1662867830",
-         "GUID": "{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"
-        },
-        "MediaRefs": [
-         {
-          "Id": "14601773"
-         },
-         {
-          "Id": "16933846"
-         },
-         {
-          "Id": "61100032"
-         },
-         {
-          "Id": "212802296"
-         },
-         {
-          "Id": "340528269"
-         },
-         {
-          "Id": "509565016"
-         },
-         {
-          "Id": "573425474"
-         },
-         {
-          "Id": "807725814"
-         }
-        ]
-       },
        {
         "SwitchValue": {
          "GroupType": "State",
@@ -1057,8 +1039,78 @@
           "Id": "978106736"
          }
         ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "2044049779",
+         "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "716777968"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "1662867830",
+         "GUID": "{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "14601773"
+         },
+         {
+          "Id": "16933846"
+         },
+         {
+          "Id": "61100032"
+         },
+         {
+          "Id": "212802296"
+         },
+         {
+          "Id": "340528269"
+         },
+         {
+          "Id": "509565016"
+         },
+         {
+          "Id": "573425474"
+         },
+         {
+          "Id": "807725814"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "979765101",
+         "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "499784922"
+         }
+        ]
        }
       ]
+     },
+     {
+      "Id": "2885510313",
+      "Name": "Stop_HATEFUL",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_HATEFUL",
+      "GUID": "{ACF6AD7F-484B-430D-80ED-8F39341D84E2}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
      }
     ],
     "GameParameters": [
@@ -1067,12 +1119,6 @@
       "Name": "SynthVolume",
       "ObjectPath": "\\Game Parameters\\Default Work Unit\\SynthVolume",
       "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
-     },
-     {
-      "Id": "640585335",
-      "Name": "EffectsVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
-      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
      },
      {
       "Id": "2630770510",
@@ -1099,6 +1145,12 @@
         "Name": "None",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\None",
         "GUID": "{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"
+       },
+       {
+        "Id": "979765101",
+        "Name": "WIN",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\WIN",
+        "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
        },
        {
         "Id": "1646090112",
@@ -1255,12 +1307,18 @@
         "Name": "segment_22",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\segment_22",
         "GUID": "{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"
+       },
+       {
+        "Id": "2044049779",
+        "Name": "DEAD",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\DEAD",
+        "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{0D9F9CF2-D227-FAE0-E982-5C7AAF03DC67}"
+  "FileHash": "{554BD7B1-757F-6BE8-2550-72A03EBFCA68}"
  }
 }

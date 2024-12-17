@@ -32,6 +32,8 @@
 						<State Name="segment_24" ID="{14FD15D8-2793-4EDA-BEB4-43A109CFCCC0}"/>
 						<State Name="segment_25" ID="{DAB94018-4ACA-40B2-BE52-2C79FB9B4951}"/>
 						<State Name="segment_26" ID="{12740E7D-5057-48AF-B769-99AE0E806C54}"/>
+						<State Name="DEAD" ID="{14FFB073-871C-43CC-B67C-73941F49AEAF}"/>
+						<State Name="WIN" ID="{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"/>
 					</ChildrenList>
 				</StateGroup>
 			</ChildrenList>

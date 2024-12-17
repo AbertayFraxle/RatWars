@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3991942870" Type="User" GUID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}" Language="SFX" Hash="{63C12A0D-9896-1B29-3B5E-986066549EA6}">
+		<SoundBank Id="3991942870" Type="User" GUID="{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}" Language="SFX" Hash="{50A670EE-F5DB-9152-C5E8-88CF28ADD274}">
 			<ObjectPath>\SoundBanks\Default Work Unit\Music</ObjectPath>
 			<ShortName>Music</ShortName>
 			<Path>Music.bnk</Path>
@@ -170,6 +170,10 @@
 					<ShortName>numbered-tracks\effects\effects-15.wav</ShortName>
 					<CachePath>SFX/numbered-tracks/effects/effects-15_FBC78EF0.wem</CachePath>
 				</File>
+				<File Id="499784922" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ASHAMED.wav</ShortName>
+					<CachePath>SFX/ASHAMED_FBC78EF0.wem</CachePath>
+				</File>
 				<File Id="509565016" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>numbered-tracks\drums\drums-01.wav</ShortName>
 					<CachePath>SFX/numbered-tracks/drums/drums-01_FBC78EF0.wem</CachePath>
@@ -241,6 +245,10 @@
 				<File Id="710745721" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>numbered-tracks\synths\synths-09.wav</ShortName>
 					<CachePath>SFX/numbered-tracks/synths/synths-09_FBC78EF0.wem</CachePath>
+				</File>
+				<File Id="716777968" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>DONT TRY.wav</ShortName>
+					<CachePath>SFX/DONT TRY_FBC78EF0.wem</CachePath>
 				</File>
 				<File Id="741013778" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>numbered-tracks\synths\synths-03.wav</ShortName>
@@ -346,19 +354,6 @@
 			<Events>
 				<Event Id="3886502571" Name="Play_HATEFUL" ObjectPath="\Events\Default Work Unit\Play_HATEFUL" GUID="{E52F75B3-DF21-47EC-86A7-397A25EB419A}" DurationType="Infinite">
 					<SwitchContainers>
-						<SwitchContainer>
-							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867830" GUID="{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"/>
-							<MediaRefs>
-								<MediaRef Id="14601773"/>
-								<MediaRef Id="16933846"/>
-								<MediaRef Id="61100032"/>
-								<MediaRef Id="212802296"/>
-								<MediaRef Id="340528269"/>
-								<MediaRef Id="509565016"/>
-								<MediaRef Id="573425474"/>
-								<MediaRef Id="807725814"/>
-							</MediaRefs>
-						</SwitchContainer>
 						<SwitchContainer>
 							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867829" GUID="{3E7CBF84-F1D1-4065-8174-B414C58BA63A}"/>
 							<MediaRefs>
@@ -485,12 +480,37 @@
 								<MediaRef Id="978106736"/>
 							</MediaRefs>
 						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="State" GroupId="2183912641" Id="2044049779" GUID="{14FFB073-871C-43CC-B67C-73941F49AEAF}"/>
+							<MediaRefs>
+								<MediaRef Id="716777968"/>
+							</MediaRefs>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="State" GroupId="2183912641" Id="1662867830" GUID="{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"/>
+							<MediaRefs>
+								<MediaRef Id="14601773"/>
+								<MediaRef Id="16933846"/>
+								<MediaRef Id="61100032"/>
+								<MediaRef Id="212802296"/>
+								<MediaRef Id="340528269"/>
+								<MediaRef Id="509565016"/>
+								<MediaRef Id="573425474"/>
+								<MediaRef Id="807725814"/>
+							</MediaRefs>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="State" GroupId="2183912641" Id="979765101" GUID="{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"/>
+							<MediaRefs>
+								<MediaRef Id="499784922"/>
+							</MediaRefs>
+						</SwitchContainer>
 					</SwitchContainers>
 				</Event>
+				<Event Id="2885510313" Name="Stop_HATEFUL" ObjectPath="\Events\Default Work Unit\Stop_HATEFUL" GUID="{ACF6AD7F-484B-430D-80ED-8F39341D84E2}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 			<GameParameters>
 				<GameParameter Id="596299267" Name="SynthVolume" ObjectPath="\Game Parameters\Default Work Unit\SynthVolume" GUID="{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"/>
-				<GameParameter Id="640585335" Name="EffectsVolume" ObjectPath="\Game Parameters\Default Work Unit\EffectsVolume" GUID="{103403E9-2F32-4FA6-BF25-14177EDBB55E}"/>
 				<GameParameter Id="2630770510" Name="VocalVolume" ObjectPath="\Game Parameters\Default Work Unit\VocalVolume" GUID="{009E7C30-AC65-4E65-930B-F06C935B3F60}"/>
 				<GameParameter Id="3019350247" Name="DrumVolume" ObjectPath="\Game Parameters\Default Work Unit\DrumVolume" GUID="{75BBA363-EDA7-4D5B-8DCD-2492AC4BD042}"/>
 			</GameParameters>
@@ -498,6 +518,7 @@
 				<StateGroup Id="2183912641" Name="MusicSegment" ObjectPath="\States\Default Work Unit\MusicSegment" GUID="{89AA16A0-1CC7-4B91-A31F-28B4885421D2}">
 					<States>
 						<State Id="748895195" Name="None" ObjectPath="\States\Default Work Unit\MusicSegment\None" GUID="{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"/>
+						<State Id="979765101" Name="WIN" ObjectPath="\States\Default Work Unit\MusicSegment\WIN" GUID="{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"/>
 						<State Id="1646090112" Name="segment_14" ObjectPath="\States\Default Work Unit\MusicSegment\segment_14" GUID="{77C43F16-B755-4C26-BE66-1AC6376D143C}"/>
 						<State Id="1646090113" Name="segment_15" ObjectPath="\States\Default Work Unit\MusicSegment\segment_15" GUID="{2B4CC0F2-86CA-4A6F-91E1-67BC09FB7EB4}"/>
 						<State Id="1646090114" Name="segment_16" ObjectPath="\States\Default Work Unit\MusicSegment\segment_16" GUID="{1851E230-0072-46EA-BC20-475D7AEB884F}"/>
@@ -524,10 +545,11 @@
 						<State Id="1696423005" Name="segment_20" ObjectPath="\States\Default Work Unit\MusicSegment\segment_20" GUID="{8A56F66C-E091-4CE6-85AC-56F7CC5D38AB}"/>
 						<State Id="1696423006" Name="segment_23" ObjectPath="\States\Default Work Unit\MusicSegment\segment_23" GUID="{DF8B4F66-B1EB-4563-8BCB-94851FFF1633}"/>
 						<State Id="1696423007" Name="segment_22" ObjectPath="\States\Default Work Unit\MusicSegment\segment_22" GUID="{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"/>
+						<State Id="2044049779" Name="DEAD" ObjectPath="\States\Default Work Unit\MusicSegment\DEAD" GUID="{14FFB073-871C-43CC-B67C-73941F49AEAF}"/>
 					</States>
 				</StateGroup>
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{519EC75E-FFBC-02B1-C3A3-03D5DD84517F}</FileHash>
+	<FileHash>{332794C6-A5AB-C19F-A0A0-3B5A9E442462}</FileHash>
 </SoundBanksInfo>

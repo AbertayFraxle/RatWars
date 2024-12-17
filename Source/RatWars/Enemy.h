@@ -19,12 +19,17 @@ public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	//AK events to call
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAkAudioEvent* squeakEvent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAkAudioEvent* stopSqueakEvent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAkAudioEvent* deathEvent;
 
+	//niagara vfx particle system
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraComponent* bloodEmitter;
 	
@@ -32,9 +37,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//function to kill self
 	void Kill();
 
 
+	//	variables to handle death
 	float killTimer;
 	bool shouldDie;
 	int health;

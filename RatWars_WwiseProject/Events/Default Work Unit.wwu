@@ -8,7 +8,7 @@
 						<Action Name="" ID="{7C4028B2-6FE2-4F2A-BAFF-554BE7D37DF8}" ShortID="481141007">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="HATEFUL" ID="{6A657988-5E44-4415-9E00-023044972772}" WorkUnitID="{EA1A5FF5-66B4-404B-AD15-DB05881C3090}"/>
+									<ObjectRef Name="MusicSwitcher" ID="{6A657988-5E44-4415-9E00-023044972772}" WorkUnitID="{EA1A5FF5-66B4-404B-AD15-DB05881C3090}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
@@ -36,7 +36,7 @@
 						</Action>
 					</ChildrenList>
 				</Event>
-				<Event Name="RatSqueak" ID="{0453A15A-B508-49E4-A62F-091D26CD875F}">
+				<Event Name="Play_Squeak" ID="{0453A15A-B508-49E4-A62F-091D26CD875F}">
 					<ChildrenList>
 						<Action Name="" ID="{9D17B47C-C779-43FE-A1D7-FB84DE1CB54F}" ShortID="844715689">
 							<ReferenceList>
@@ -53,6 +53,56 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="footstep" ID="{61023DF1-A98A-4587-B8F2-6684CFF34EFB}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_HATEFUL" ID="{ACF6AD7F-484B-430D-80ED-8F39341D84E2}">
+					<ChildrenList>
+						<Action Name="" ID="{667D3FFF-D82F-40AA-B13A-EEFB9D1090BA}" ShortID="339576467">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="MusicSwitcher" ID="{6A657988-5E44-4415-9E00-023044972772}" WorkUnitID="{EA1A5FF5-66B4-404B-AD15-DB05881C3090}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Squeak" ID="{C8E86179-9A30-4D78-AA91-F2026971B88A}">
+					<ChildrenList>
+						<Action Name="" ID="{9C7F838B-1494-42AB-9008-E29E6676C3AD}" ShortID="299825397">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="squeak" ID="{8F7B2ED7-EE4D-4159-8034-DBD8A944DEF5}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Landing" ID="{A9A213DE-5673-4B10-A726-3C279EAE4E7C}">
+					<ChildrenList>
+						<Action Name="" ID="{0074CB6D-5C77-4723-B81C-44299A83B4E6}" ShortID="620523636">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="landing" ID="{BCA4D181-CBD9-48BB-A90A-DA1EB07547EF}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Attack" ID="{05727381-2BB2-402E-B964-770B8D9CE402}">
+					<ChildrenList>
+						<Action Name="" ID="{95162C0B-14BF-403C-B65D-79CC7A1B2289}" ShortID="98596567">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="attack" ID="{67A77AEF-183E-43CC-AD9E-C37D09DE8CBE}" WorkUnitID="{AA60D5F3-BEEC-4E13-915F-A1E076BB6107}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

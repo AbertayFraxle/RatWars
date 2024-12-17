@@ -3,6 +3,7 @@ State Group	ID	Name			Wwise Object Path	Notes
 
 State	ID	Name	State Group			Notes
 	748895195	None	MusicSegment			
+	979765101	WIN	MusicSegment			
 	1646090112	segment_14	MusicSegment			
 	1646090113	segment_15	MusicSegment			
 	1646090114	segment_16	MusicSegment			
@@ -29,14 +30,17 @@ State	ID	Name	State Group			Notes
 	1696423005	segment_20	MusicSegment			
 	1696423006	segment_23	MusicSegment			
 	1696423007	segment_22	MusicSegment			
+	2044049779	DEAD	MusicSegment			
 
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
 
 Auxiliary Bus	ID	Name			Wwise Object Path	Notes
+	4079271112	TunnelReverbLarge			\Default Work Unit\Master Audio Bus\TunnelReverbLarge	
 	4134938995	TunnelReverb			\Default Work Unit\Master Audio Bus\TunnelReverb	
 
 Effect plug-ins	ID	Name	Type				Notes
+	2513915904	Hall_Large	Wwise RoomVerb			
 	3451596814	Hall_Medium	Wwise RoomVerb			
 
 Audio Devices	ID	Name	Type				Notes

@@ -1,69 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
 	<SoundBanks>
-		<SoundBank Id="3898083304" Type="User" GUID="{8C751822-1DDA-4519-BA2C-BEEE26FAC534}" Language="SFX" Hash="{92EF0D54-3F69-C601-1F8B-98100B83391A}">
+		<SoundBank Id="3898083304" Type="User" GUID="{8C751822-1DDA-4519-BA2C-BEEE26FAC534}" Language="SFX" Hash="{2B91DFFF-AB14-C258-337E-9B06D42FDC02}">
 			<ObjectPath>\SoundBanks\Default Work Unit\SoundEffects</ObjectPath>
 			<ShortName>SoundEffects</ShortName>
 			<Path>SoundEffects.bnk</Path>
 			<Media>
 				<File Id="57193795" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>gunshots\gunshot-05.wav</ShortName>
-					<CachePath>SFX/gunshots/gunshot-05_818F3B66.wem</CachePath>
+					<CachePath>SFX/gunshots/gunshot-05_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="67667721" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-04.wav</ShortName>
-					<CachePath>SFX/steps/footstep-04_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-04_A2498ED0.wem</CachePath>
+				</File>
+				<File Id="92168181" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>attack\attack-04.wav</ShortName>
+					<CachePath>SFX/attack/attack-04_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="164029556" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-01.wav</ShortName>
-					<CachePath>SFX/steps/footstep-01_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-01_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="166118060" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-06.wav</ShortName>
-					<CachePath>SFX/steps/footstep-06_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-06_A2498ED0.wem</CachePath>
+				</File>
+				<File Id="178613020" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>attack\attack-01.wav</ShortName>
+					<CachePath>SFX/attack/attack-01_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="180040565" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-05.wav</ShortName>
-					<CachePath>SFX/steps/footstep-05_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-05_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="231814274" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>gunshots\gunshot-04.wav</ShortName>
-					<CachePath>SFX/gunshots/gunshot-04_818F3B66.wem</CachePath>
+					<CachePath>SFX/gunshots/gunshot-04_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="241150547" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-02.wav</ShortName>
-					<CachePath>SFX/steps/footstep-02_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-02_A2498ED0.wem</CachePath>
+				</File>
+				<File Id="335479766" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>landing.wav</ShortName>
+					<CachePath>SFX/landing_A2498ED0.wem</CachePath>
+				</File>
+				<File Id="429989106" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>attack\attack-03.wav</ShortName>
+					<CachePath>SFX/attack/attack-03_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="536064219" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>Animals, Rodent, Mouse, Rat, Squeaks SND14864.wav</ShortName>
-					<CachePath>SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_FBC78EF0.wem</CachePath>
+					<CachePath>SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_56CEF360.wem</CachePath>
 				</File>
 				<File Id="631797485" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-03.wav</ShortName>
-					<CachePath>SFX/steps/footstep-03_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-03_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="663937859" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>gunshots\gunshot-03.wav</ShortName>
-					<CachePath>SFX/gunshots/gunshot-03_818F3B66.wem</CachePath>
+					<CachePath>SFX/gunshots/gunshot-03_A2498ED0.wem</CachePath>
+				</File>
+				<File Id="675586947" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>attack\attack-02.wav</ShortName>
+					<CachePath>SFX/attack/attack-02_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="890272576" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>gunshots\gunshot-02.wav</ShortName>
-					<CachePath>SFX/gunshots/gunshot-02_818F3B66.wem</CachePath>
+					<CachePath>SFX/gunshots/gunshot-02_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="906818641" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>hit.wav</ShortName>
-					<CachePath>SFX/hit_818F3B66.wem</CachePath>
+					<CachePath>SFX/hit_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="1002471945" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>gunshots\gunshot-01.wav</ShortName>
-					<CachePath>SFX/gunshots/gunshot-01_818F3B66.wem</CachePath>
+					<CachePath>SFX/gunshots/gunshot-01_A2498ED0.wem</CachePath>
 				</File>
 				<File Id="1068125542" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>steps\footstep-07.wav</ShortName>
-					<CachePath>SFX/steps/footstep-07_818F3B66.wem</CachePath>
+					<CachePath>SFX/steps/footstep-07_A2498ED0.wem</CachePath>
 				</File>
 			</Media>
 			<Events>
+				<Event Id="180661997" Name="Attack" ObjectPath="\Events\Default Work Unit\Attack" GUID="{05727381-2BB2-402E-B964-770B8D9CE402}" MaxAttenuation="1000" DurationType="OneShot" DurationMin="1.1637917" DurationMax="1.4224167">
+					<MediaRefs>
+						<MediaRef Id="92168181"/>
+						<MediaRef Id="178613020"/>
+						<MediaRef Id="429989106"/>
+						<MediaRef Id="675586947"/>
+					</MediaRefs>
+				</Event>
 				<Event Id="2917402406" Name="Bloodsplosion" ObjectPath="\Events\Default Work Unit\Bloodsplosion" GUID="{E25BB430-307E-4EDF-9335-726C42CC4E67}" MaxAttenuation="2000" DurationType="OneShot" DurationMin="0.9830313" DurationMax="1.3121893">
 					<MediaRefs>
 						<MediaRef Id="906818641"/>
@@ -80,7 +108,7 @@
 						<MediaRef Id="1068125542"/>
 					</MediaRefs>
 				</Event>
-				<Event Id="1287408361" Name="Gunshot" ObjectPath="\Events\Default Work Unit\Gunshot" GUID="{4987482C-3F89-4300-BEA6-7E3574DE40C6}" DurationType="OneShot" DurationMin="0.42768317" DurationMax="0.6340446">
+				<Event Id="1287408361" Name="Gunshot" ObjectPath="\Events\Default Work Unit\Gunshot" GUID="{4987482C-3F89-4300-BEA6-7E3574DE40C6}" MaxAttenuation="100" DurationType="OneShot" DurationMin="0.42768317" DurationMax="0.6340446">
 					<MediaRefs>
 						<MediaRef Id="57193795"/>
 						<MediaRef Id="231814274"/>
@@ -89,13 +117,19 @@
 						<MediaRef Id="1002471945"/>
 					</MediaRefs>
 				</Event>
-				<Event Id="1690196772" Name="RatSqueak" ObjectPath="\Events\Default Work Unit\RatSqueak" GUID="{0453A15A-B508-49E4-A62F-091D26CD875F}" MaxAttenuation="500" DurationType="Infinite">
+				<Event Id="2548270042" Name="Landing" ObjectPath="\Events\Default Work Unit\Landing" GUID="{A9A213DE-5673-4B10-A726-3C279EAE4E7C}" DurationType="OneShot" DurationMin="0.3248125" DurationMax="0.3248125">
+					<MediaRefs>
+						<MediaRef Id="335479766"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="1357217968" Name="Play_Squeak" ObjectPath="\Events\Default Work Unit\Play_Squeak" GUID="{0453A15A-B508-49E4-A62F-091D26CD875F}" MaxAttenuation="500" DurationType="Infinite">
 					<MediaRefs>
 						<MediaRef Id="536064219"/>
 					</MediaRefs>
 				</Event>
+				<Event Id="3713853302" Name="Stop_Squeak" ObjectPath="\Events\Default Work Unit\Stop_Squeak" GUID="{C8E86179-9A30-4D78-AA91-F2026971B88A}" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 			</Events>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{E7FBCB89-93F9-0CF3-89D7-B6FBB62AB619}</FileHash>
+	<FileHash>{0E37889F-A78C-FAAE-C231-7EDED2221BF8}</FileHash>
 </SoundBanksInfo>

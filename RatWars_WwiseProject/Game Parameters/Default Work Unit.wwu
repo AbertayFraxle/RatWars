@@ -18,7 +18,7 @@
 						<Property Name="InitialValue" Type="Real64" Value="100"/>
 					</PropertyList>
 				</GameParameter>
-				<GameParameter Name="EffectsVolume" ID="{103403E9-2F32-4FA6-BF25-14177EDBB55E}">
+				<GameParameter Name="SFXVolume" ID="{1A6EE13B-34B4-4AF3-B950-AC3624D72000}">
 					<PropertyList>
 						<Property Name="InitialValue" Type="Real64" Value="100"/>
 					</PropertyList>

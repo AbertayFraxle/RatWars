@@ -18,12 +18,20 @@
     "Type": "User",
     "GUID": "{701ECBBD-9C7B-4030-8CDB-749EE5D1C7B9}",
     "Language": "SFX",
-    "Hash": "{71808CB1-3460-0359-174A-66ED631AA1A3}",
+    "Hash": "{93FF1FBF-D398-A74F-A1C9-6A3B9FE5DE88}",
     "ObjectPath": "Init",
     "ShortName": "Init",
     "Path": "Init.bnk",
     "Plugins": {
      "ShareSets": [
+      {
+       "Id": "2513915904",
+       "Name": "Hall_Large",
+       "ObjectPath": "\\Effects\\Factory Effects\\RoomVerb\\Halls\\Hall_Large",
+       "GUID": "{6D154498-FF6D-4823-96FC-56841B70E079}",
+       "LibName": "Wwise RoomVerb",
+       "LibId": "7733251"
+      },
       {
        "Id": "3451596814",
        "Name": "Hall_Medium",
@@ -62,6 +70,19 @@
     ],
     "AuxBusses": [
      {
+      "Id": "4079271112",
+      "Name": "TunnelReverbLarge",
+      "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\TunnelReverbLarge",
+      "GUID": "{5307F081-AB82-4BBC-913C-B4E989E70A4F}",
+      "PluginRefs": {
+       "ShareSets": [
+        {
+         "Id": "2513915904"
+        }
+       ]
+      }
+     },
+     {
       "Id": "4134938995",
       "Name": "TunnelReverb",
       "ObjectPath": "\\Master-Mixer Hierarchy\\Default Work Unit\\Master Audio Bus\\TunnelReverb",
@@ -83,10 +104,10 @@
       "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
      },
      {
-      "Id": "640585335",
-      "Name": "EffectsVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
-      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
+      "Id": "988953028",
+      "Name": "SFXVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\SFXVolume",
+      "GUID": "{1A6EE13B-34B4-4AF3-B950-AC3624D72000}"
      },
      {
       "Id": "2630770510",
@@ -113,6 +134,12 @@
         "Name": "None",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\None",
         "GUID": "{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"
+       },
+       {
+        "Id": "979765101",
+        "Name": "WIN",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\WIN",
+        "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
        },
        {
         "Id": "1646090112",
@@ -269,6 +296,12 @@
         "Name": "segment_22",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\segment_22",
         "GUID": "{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"
+       },
+       {
+        "Id": "2044049779",
+        "Name": "DEAD",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\DEAD",
+        "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
        }
       ]
      }
@@ -279,7 +312,7 @@
     "Type": "User",
     "GUID": "{8C751822-1DDA-4519-BA2C-BEEE26FAC534}",
     "Language": "SFX",
-    "Hash": "{92EF0D54-3F69-C601-1F8B-98100B83391A}",
+    "Hash": "{2B91DFFF-AB14-C258-337E-9B06D42FDC02}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\SoundEffects",
     "ShortName": "SoundEffects",
     "Path": "SoundEffects.bnk",
@@ -290,7 +323,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-05.wav",
-      "CachePath": "SFX/gunshots/gunshot-05_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-05_A2498ED0.wem"
      },
      {
       "Id": "67667721",
@@ -298,7 +331,15 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-04.wav",
-      "CachePath": "SFX/steps/footstep-04_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-04_A2498ED0.wem"
+     },
+     {
+      "Id": "92168181",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-04.wav",
+      "CachePath": "SFX/attack/attack-04_A2498ED0.wem"
      },
      {
       "Id": "164029556",
@@ -306,7 +347,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-01.wav",
-      "CachePath": "SFX/steps/footstep-01_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-01_A2498ED0.wem"
      },
      {
       "Id": "166118060",
@@ -314,7 +355,15 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-06.wav",
-      "CachePath": "SFX/steps/footstep-06_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-06_A2498ED0.wem"
+     },
+     {
+      "Id": "178613020",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-01.wav",
+      "CachePath": "SFX/attack/attack-01_A2498ED0.wem"
      },
      {
       "Id": "180040565",
@@ -322,7 +371,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-05.wav",
-      "CachePath": "SFX/steps/footstep-05_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-05_A2498ED0.wem"
      },
      {
       "Id": "231814274",
@@ -330,7 +379,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-04.wav",
-      "CachePath": "SFX/gunshots/gunshot-04_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-04_A2498ED0.wem"
      },
      {
       "Id": "241150547",
@@ -338,7 +387,23 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-02.wav",
-      "CachePath": "SFX/steps/footstep-02_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-02_A2498ED0.wem"
+     },
+     {
+      "Id": "335479766",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "landing.wav",
+      "CachePath": "SFX/landing_A2498ED0.wem"
+     },
+     {
+      "Id": "429989106",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-03.wav",
+      "CachePath": "SFX/attack/attack-03_A2498ED0.wem"
      },
      {
       "Id": "536064219",
@@ -346,7 +411,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "Animals, Rodent, Mouse, Rat, Squeaks SND14864.wav",
-      "CachePath": "SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_FBC78EF0.wem"
+      "CachePath": "SFX/Animals, Rodent, Mouse, Rat, Squeaks SND14864_56CEF360.wem"
      },
      {
       "Id": "631797485",
@@ -354,7 +419,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-03.wav",
-      "CachePath": "SFX/steps/footstep-03_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-03_A2498ED0.wem"
      },
      {
       "Id": "663937859",
@@ -362,7 +427,15 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-03.wav",
-      "CachePath": "SFX/gunshots/gunshot-03_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-03_A2498ED0.wem"
+     },
+     {
+      "Id": "675586947",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "attack\\attack-02.wav",
+      "CachePath": "SFX/attack/attack-02_A2498ED0.wem"
      },
      {
       "Id": "890272576",
@@ -370,7 +443,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-02.wav",
-      "CachePath": "SFX/gunshots/gunshot-02_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-02_A2498ED0.wem"
      },
      {
       "Id": "906818641",
@@ -378,7 +451,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "hit.wav",
-      "CachePath": "SFX/hit_818F3B66.wem"
+      "CachePath": "SFX/hit_A2498ED0.wem"
      },
      {
       "Id": "1002471945",
@@ -386,7 +459,7 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "gunshots\\gunshot-01.wav",
-      "CachePath": "SFX/gunshots/gunshot-01_818F3B66.wem"
+      "CachePath": "SFX/gunshots/gunshot-01_A2498ED0.wem"
      },
      {
       "Id": "1068125542",
@@ -394,10 +467,34 @@
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "steps\\footstep-07.wav",
-      "CachePath": "SFX/steps/footstep-07_818F3B66.wem"
+      "CachePath": "SFX/steps/footstep-07_A2498ED0.wem"
      }
     ],
     "Events": [
+     {
+      "Id": "180661997",
+      "Name": "Attack",
+      "ObjectPath": "\\Events\\Default Work Unit\\Attack",
+      "GUID": "{05727381-2BB2-402E-B964-770B8D9CE402}",
+      "MaxAttenuation": "1000",
+      "DurationType": "OneShot",
+      "DurationMin": "1.1637917",
+      "DurationMax": "1.4224167",
+      "MediaRefs": [
+       {
+        "Id": "92168181"
+       },
+       {
+        "Id": "178613020"
+       },
+       {
+        "Id": "429989106"
+       },
+       {
+        "Id": "675586947"
+       }
+      ]
+     },
      {
       "Id": "2917402406",
       "Name": "Bloodsplosion",
@@ -450,6 +547,7 @@
       "Name": "Gunshot",
       "ObjectPath": "\\Events\\Default Work Unit\\Gunshot",
       "GUID": "{4987482C-3F89-4300-BEA6-7E3574DE40C6}",
+      "MaxAttenuation": "100",
       "DurationType": "OneShot",
       "DurationMin": "0.42768317",
       "DurationMax": "0.6340446",
@@ -472,9 +570,23 @@
       ]
      },
      {
-      "Id": "1690196772",
-      "Name": "RatSqueak",
-      "ObjectPath": "\\Events\\Default Work Unit\\RatSqueak",
+      "Id": "2548270042",
+      "Name": "Landing",
+      "ObjectPath": "\\Events\\Default Work Unit\\Landing",
+      "GUID": "{A9A213DE-5673-4B10-A726-3C279EAE4E7C}",
+      "DurationType": "OneShot",
+      "DurationMin": "0.3248125",
+      "DurationMax": "0.3248125",
+      "MediaRefs": [
+       {
+        "Id": "335479766"
+       }
+      ]
+     },
+     {
+      "Id": "1357217968",
+      "Name": "Play_Squeak",
+      "ObjectPath": "\\Events\\Default Work Unit\\Play_Squeak",
       "GUID": "{0453A15A-B508-49E4-A62F-091D26CD875F}",
       "MaxAttenuation": "500",
       "DurationType": "Infinite",
@@ -483,6 +595,16 @@
         "Id": "536064219"
        }
       ]
+     },
+     {
+      "Id": "3713853302",
+      "Name": "Stop_Squeak",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_Squeak",
+      "GUID": "{C8E86179-9A30-4D78-AA91-F2026971B88A}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
      }
     ]
    },
@@ -491,19 +613,11 @@
     "Type": "User",
     "GUID": "{EFE25CE8-2A98-4443-B48B-9A5442A2A7D9}",
     "Language": "SFX",
-    "Hash": "{77819637-DF9B-E370-0D54-2E3F228BBD3B}",
+    "Hash": "{104167AA-D258-24E1-990E-A55CA5E086D3}",
     "ObjectPath": "\\SoundBanks\\Default Work Unit\\Music",
     "ShortName": "Music",
     "Path": "Music.bnk",
     "Media": [
-     {
-      "Id": "4335750",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\drums\\drums-22.wav",
-      "CachePath": "SFX/numbered-tracks/drums/drums-22_FBC78EF0.wem"
-     },
      {
       "Id": "14601773",
       "Language": "SFX",
@@ -519,6 +633,14 @@
       "Location": "Memory",
       "ShortName": "numbered-tracks\\effects\\effects-02.wav",
       "CachePath": "SFX/numbered-tracks/effects/effects-02_FBC78EF0.wem"
+     },
+     {
+      "Id": "28592761",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-12.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-12_FBC78EF0.wem"
      },
      {
       "Id": "58195949",
@@ -545,6 +667,30 @@
       "CachePath": "SFX/numbered-tracks/synths/synths-02_FBC78EF0.wem"
      },
      {
+      "Id": "63233383",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-16.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-16_FBC78EF0.wem"
+     },
+     {
+      "Id": "76587587",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-05.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-05_FBC78EF0.wem"
+     },
+     {
+      "Id": "77300878",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-18.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-18_FBC78EF0.wem"
+     },
+     {
       "Id": "78150488",
       "Language": "SFX",
       "Streaming": "false",
@@ -569,6 +715,14 @@
       "CachePath": "SFX/numbered-tracks/drums/drums-12_FBC78EF0.wem"
      },
      {
+      "Id": "114509012",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-10.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-10_FBC78EF0.wem"
+     },
+     {
       "Id": "118162370",
       "Language": "SFX",
       "Streaming": "false",
@@ -577,28 +731,12 @@
       "CachePath": "SFX/numbered-tracks/drums/drums-20_FBC78EF0.wem"
      },
      {
-      "Id": "142536866",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\effects\\effects-23.wav",
-      "CachePath": "SFX/numbered-tracks/effects/effects-23_FBC78EF0.wem"
-     },
-     {
       "Id": "146390498",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\drums\\drums-10.wav",
       "CachePath": "SFX/numbered-tracks/drums/drums-10_FBC78EF0.wem"
-     },
-     {
-      "Id": "160551658",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\drums\\drums-23.wav",
-      "CachePath": "SFX/numbered-tracks/drums/drums-23_FBC78EF0.wem"
      },
      {
       "Id": "164256059",
@@ -631,6 +769,14 @@
       "Location": "Memory",
       "ShortName": "numbered-tracks\\drums\\drums-07.wav",
       "CachePath": "SFX/numbered-tracks/drums/drums-07_FBC78EF0.wem"
+     },
+     {
+      "Id": "198215388",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-06.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-06_FBC78EF0.wem"
      },
      {
       "Id": "212802296",
@@ -673,12 +819,36 @@
       "CachePath": "SFX/numbered-tracks/drums/drums-11_FBC78EF0.wem"
      },
      {
+      "Id": "248384573",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-17.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-17_FBC78EF0.wem"
+     },
+     {
       "Id": "267755926",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-07.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-07_FBC78EF0.wem"
+     },
+     {
+      "Id": "274505767",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-08.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-08_FBC78EF0.wem"
+     },
+     {
+      "Id": "275508295",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-03.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-03_FBC78EF0.wem"
      },
      {
       "Id": "282128578",
@@ -705,20 +875,20 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-18_FBC78EF0.wem"
      },
      {
+      "Id": "340528269",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-02.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-02_FBC78EF0.wem"
+     },
+     {
       "Id": "349269093",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-20.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-20_FBC78EF0.wem"
-     },
-     {
-      "Id": "354619930",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\effects\\effects-25.wav",
-      "CachePath": "SFX/numbered-tracks/effects/effects-25_FBC78EF0.wem"
      },
      {
       "Id": "370606360",
@@ -729,14 +899,6 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-10_FBC78EF0.wem"
      },
      {
-      "Id": "373235486",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\effects\\effects-22.wav",
-      "CachePath": "SFX/numbered-tracks/effects/effects-22_FBC78EF0.wem"
-     },
-     {
       "Id": "380706409",
       "Language": "SFX",
       "Streaming": "false",
@@ -745,20 +907,20 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-08_FBC78EF0.wem"
      },
      {
-      "Id": "403905594",
+      "Id": "408341887",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered-tracks\\synths\\synths-25.wav",
-      "CachePath": "SFX/numbered-tracks/synths/synths-25_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\vocals\\vocals-19.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-19_FBC78EF0.wem"
      },
      {
-      "Id": "413796122",
+      "Id": "418630184",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered-tracks\\synths\\synths-24.wav",
-      "CachePath": "SFX/numbered-tracks/synths/synths-24_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\vocals\\vocals-04.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-04_FBC78EF0.wem"
      },
      {
       "Id": "419319704",
@@ -785,6 +947,14 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-15_FBC78EF0.wem"
      },
      {
+      "Id": "499784922",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "ASHAMED.wav",
+      "CachePath": "SFX/ASHAMED_FBC78EF0.wem"
+     },
+     {
       "Id": "509565016",
       "Language": "SFX",
       "Streaming": "false",
@@ -809,12 +979,12 @@
       "CachePath": "SFX/numbered-tracks/synths/synths-06_FBC78EF0.wem"
      },
      {
-      "Id": "565931166",
+      "Id": "567159732",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered-tracks\\synths\\synths-22.wav",
-      "CachePath": "SFX/numbered-tracks/synths/synths-22_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\vocals\\vocals-11.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-11_FBC78EF0.wem"
      },
      {
       "Id": "570345039",
@@ -831,6 +1001,14 @@
       "Location": "Memory",
       "ShortName": "numbered-tracks\\drums\\drums-02.wav",
       "CachePath": "SFX/numbered-tracks/drums/drums-02_FBC78EF0.wem"
+     },
+     {
+      "Id": "574408558",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-13.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-13_FBC78EF0.wem"
      },
      {
       "Id": "583803980",
@@ -881,6 +1059,14 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-06_FBC78EF0.wem"
      },
      {
+      "Id": "641859126",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-20.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-20_FBC78EF0.wem"
+     },
+     {
       "Id": "663050299",
       "Language": "SFX",
       "Streaming": "false",
@@ -889,28 +1075,12 @@
       "CachePath": "SFX/numbered-tracks/drums/drums-13_FBC78EF0.wem"
      },
      {
-      "Id": "671931262",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\drums\\drums-24.wav",
-      "CachePath": "SFX/numbered-tracks/drums/drums-24_FBC78EF0.wem"
-     },
-     {
       "Id": "676522323",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\effects\\effects-11.wav",
       "CachePath": "SFX/numbered-tracks/effects/effects-11_FBC78EF0.wem"
-     },
-     {
-      "Id": "679928541",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\synths\\synths-23.wav",
-      "CachePath": "SFX/numbered-tracks/synths/synths-23_FBC78EF0.wem"
      },
      {
       "Id": "696588412",
@@ -929,28 +1099,20 @@
       "CachePath": "SFX/numbered-tracks/synths/synths-09_FBC78EF0.wem"
      },
      {
+      "Id": "716777968",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "DONT TRY.wav",
+      "CachePath": "SFX/DONT TRY_FBC78EF0.wem"
+     },
+     {
       "Id": "741013778",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-03.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-03_FBC78EF0.wem"
-     },
-     {
-      "Id": "742880957",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered\\26-Final Outro.wav",
-      "CachePath": "SFX/numbered/26-Final Outro_FBC78EF0.wem"
-     },
-     {
-      "Id": "749547894",
-      "Language": "SFX",
-      "Streaming": "false",
-      "Location": "Memory",
-      "ShortName": "numbered-tracks\\effects\\effects-24.wav",
-      "CachePath": "SFX/numbered-tracks/effects/effects-24_FBC78EF0.wem"
      },
      {
       "Id": "749951978",
@@ -983,6 +1145,14 @@
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-05.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-05_FBC78EF0.wem"
+     },
+     {
+      "Id": "807725814",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-01.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-01_FBC78EF0.wem"
      },
      {
       "Id": "808173365",
@@ -1033,12 +1203,28 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-20_FBC78EF0.wem"
      },
      {
+      "Id": "903887050",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-21.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-21_FBC78EF0.wem"
+     },
+     {
       "Id": "908805987",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\synths\\synths-14.wav",
       "CachePath": "SFX/numbered-tracks/synths/synths-14_FBC78EF0.wem"
+     },
+     {
+      "Id": "911528448",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-14.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-14_FBC78EF0.wem"
      },
      {
       "Id": "912532128",
@@ -1057,12 +1243,28 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-07_FBC78EF0.wem"
      },
      {
+      "Id": "931809377",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-09.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-09_FBC78EF0.wem"
+     },
+     {
       "Id": "931858479",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
       "ShortName": "numbered-tracks\\effects\\effects-13.wav",
       "CachePath": "SFX/numbered-tracks/effects/effects-13_FBC78EF0.wem"
+     },
+     {
+      "Id": "945765125",
+      "Language": "SFX",
+      "Streaming": "false",
+      "Location": "Memory",
+      "ShortName": "numbered-tracks\\vocals\\vocals-07.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-07_FBC78EF0.wem"
      },
      {
       "Id": "970905130",
@@ -1089,12 +1291,12 @@
       "CachePath": "SFX/numbered-tracks/effects/effects-09_FBC78EF0.wem"
      },
      {
-      "Id": "1004310905",
+      "Id": "995507012",
       "Language": "SFX",
       "Streaming": "false",
       "Location": "Memory",
-      "ShortName": "numbered-tracks\\drums\\drums-25.wav",
-      "CachePath": "SFX/numbered-tracks/drums/drums-25_FBC78EF0.wem"
+      "ShortName": "numbered-tracks\\vocals\\vocals-15.wav",
+      "CachePath": "SFX/numbered-tracks/vocals/vocals-15_FBC78EF0.wem"
      },
      {
       "Id": "1021963390",
@@ -1117,40 +1319,18 @@
         "SwitchValue": {
          "GroupType": "State",
          "GroupId": "2183912641",
-         "Id": "1662867830",
-         "GUID": "{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"
-        },
-        "MediaRefs": [
-         {
-          "Id": "14601773"
-         },
-         {
-          "Id": "16933846"
-         },
-         {
-          "Id": "61100032"
-         },
-         {
-          "Id": "212802296"
-         },
-         {
-          "Id": "509565016"
-         },
-         {
-          "Id": "573425474"
-         }
-        ]
-       },
-       {
-        "SwitchValue": {
-         "GroupType": "State",
-         "GroupId": "2183912641",
          "Id": "1662867829",
          "GUID": "{3E7CBF84-F1D1-4065-8174-B414C58BA63A}"
         },
         "MediaRefs": [
          {
           "Id": "78150488"
+         },
+         {
+          "Id": "275508295"
+         },
+         {
+          "Id": "418630184"
          },
          {
           "Id": "603938441"
@@ -1178,7 +1358,13 @@
         },
         "MediaRefs": [
          {
+          "Id": "76587587"
+         },
+         {
           "Id": "164256059"
+         },
+         {
+          "Id": "198215388"
          },
          {
           "Id": "564598151"
@@ -1206,13 +1392,28 @@
         },
         "MediaRefs": [
          {
+          "Id": "177313669"
+         },
+         {
+          "Id": "180655868"
+         },
+         {
           "Id": "195555444"
          },
          {
           "Id": "267755926"
          },
          {
+          "Id": "274505767"
+         },
+         {
+          "Id": "380706409"
+         },
+         {
           "Id": "918747025"
+         },
+         {
+          "Id": "945765125"
          }
         ]
        },
@@ -1225,19 +1426,25 @@
         },
         "MediaRefs": [
          {
-          "Id": "177313669"
+          "Id": "114509012"
          },
          {
-          "Id": "180655868"
+          "Id": "146390498"
          },
          {
-          "Id": "380706409"
+          "Id": "370606360"
          },
          {
           "Id": "583803980"
          },
          {
           "Id": "710745721"
+         },
+         {
+          "Id": "754905645"
+         },
+         {
+          "Id": "931809377"
          },
          {
           "Id": "981018647"
@@ -1253,19 +1460,25 @@
         },
         "MediaRefs": [
          {
-          "Id": "146390498"
+          "Id": "28592761"
+         },
+         {
+          "Id": "95860188"
          },
          {
           "Id": "239955643"
          },
          {
-          "Id": "370606360"
+          "Id": "513953752"
+         },
+         {
+          "Id": "567159732"
          },
          {
           "Id": "676522323"
          },
          {
-          "Id": "754905645"
+          "Id": "749951978"
          },
          {
           "Id": "970905130"
@@ -1281,22 +1494,28 @@
         },
         "MediaRefs": [
          {
-          "Id": "95860188"
+          "Id": "574408558"
          },
          {
-          "Id": "513953752"
+          "Id": "630511594"
          },
          {
           "Id": "663050299"
          },
          {
-          "Id": "749951978"
-         },
-         {
           "Id": "854926430"
          },
          {
+          "Id": "908805987"
+         },
+         {
+          "Id": "911528448"
+         },
+         {
           "Id": "931858479"
+         },
+         {
+          "Id": "1021963390"
          }
         ]
        },
@@ -1309,22 +1528,28 @@
         },
         "MediaRefs": [
          {
+          "Id": "63233383"
+         },
+         {
           "Id": "214154766"
          },
          {
           "Id": "237199711"
          },
          {
+          "Id": "471273366"
+         },
+         {
           "Id": "481855345"
          },
          {
-          "Id": "630511594"
+          "Id": "609688289"
          },
          {
-          "Id": "908805987"
+          "Id": "862726695"
          },
          {
-          "Id": "1021963390"
+          "Id": "995507012"
          }
         ]
        },
@@ -1343,6 +1568,12 @@
           "Id": "59607191"
          },
          {
+          "Id": "77300878"
+         },
+         {
+          "Id": "248384573"
+         },
+         {
           "Id": "282128578"
          },
          {
@@ -1352,16 +1583,7 @@
           "Id": "419319704"
          },
          {
-          "Id": "471273366"
-         },
-         {
           "Id": "570345039"
-         },
-         {
-          "Id": "609688289"
-         },
-         {
-          "Id": "862726695"
          }
         ]
        },
@@ -1386,7 +1608,13 @@
           "Id": "349269093"
          },
          {
+          "Id": "408341887"
+         },
+         {
           "Id": "619565587"
+         },
+         {
+          "Id": "641859126"
          },
          {
           "Id": "897351673"
@@ -1402,19 +1630,13 @@
         },
         "MediaRefs": [
          {
-          "Id": "4335750"
-         },
-         {
           "Id": "228531806"
          },
          {
-          "Id": "373235486"
-         },
-         {
-          "Id": "565931166"
-         },
-         {
           "Id": "882187473"
+         },
+         {
+          "Id": "903887050"
          },
          {
           "Id": "978106736"
@@ -1425,36 +1647,12 @@
         "SwitchValue": {
          "GroupType": "State",
          "GroupId": "2183912641",
-         "Id": "1646090118",
-         "GUID": "{9D554CA0-78FD-44C3-A0F0-F6D296AFE3F9}"
+         "Id": "2044049779",
+         "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
         },
         "MediaRefs": [
          {
-          "Id": "142536866"
-         },
-         {
-          "Id": "160551658"
-         },
-         {
-          "Id": "354619930"
-         },
-         {
-          "Id": "403905594"
-         },
-         {
-          "Id": "413796122"
-         },
-         {
-          "Id": "671931262"
-         },
-         {
-          "Id": "679928541"
-         },
-         {
-          "Id": "749547894"
-         },
-         {
-          "Id": "1004310905"
+          "Id": "716777968"
          }
         ]
        },
@@ -1462,16 +1660,60 @@
         "SwitchValue": {
          "GroupType": "State",
          "GroupId": "2183912641",
-         "Id": "1646090119",
-         "GUID": "{5A583031-2A8E-4C38-9A23-39A08E348B65}"
+         "Id": "1662867830",
+         "GUID": "{95AC89FE-62F5-432F-A6C9-6AB2D2693CCE}"
         },
         "MediaRefs": [
          {
-          "Id": "742880957"
+          "Id": "14601773"
+         },
+         {
+          "Id": "16933846"
+         },
+         {
+          "Id": "61100032"
+         },
+         {
+          "Id": "212802296"
+         },
+         {
+          "Id": "340528269"
+         },
+         {
+          "Id": "509565016"
+         },
+         {
+          "Id": "573425474"
+         },
+         {
+          "Id": "807725814"
+         }
+        ]
+       },
+       {
+        "SwitchValue": {
+         "GroupType": "State",
+         "GroupId": "2183912641",
+         "Id": "979765101",
+         "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
+        },
+        "MediaRefs": [
+         {
+          "Id": "499784922"
          }
         ]
        }
       ]
+     },
+     {
+      "Id": "2885510313",
+      "Name": "Stop_HATEFUL",
+      "ObjectPath": "\\Events\\Default Work Unit\\Stop_HATEFUL",
+      "GUID": "{ACF6AD7F-484B-430D-80ED-8F39341D84E2}",
+      "MaxAttenuation": "0",
+      "DurationType": "OneShot",
+      "DurationMin": "0",
+      "DurationMax": "0"
      }
     ],
     "GameParameters": [
@@ -1482,10 +1724,10 @@
       "GUID": "{77001226-F94A-48D2-9FA8-7D35EFF86AC3}"
      },
      {
-      "Id": "640585335",
-      "Name": "EffectsVolume",
-      "ObjectPath": "\\Game Parameters\\Default Work Unit\\EffectsVolume",
-      "GUID": "{103403E9-2F32-4FA6-BF25-14177EDBB55E}"
+      "Id": "2630770510",
+      "Name": "VocalVolume",
+      "ObjectPath": "\\Game Parameters\\Default Work Unit\\VocalVolume",
+      "GUID": "{009E7C30-AC65-4E65-930B-F06C935B3F60}"
      },
      {
       "Id": "3019350247",
@@ -1506,6 +1748,12 @@
         "Name": "None",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\None",
         "GUID": "{11D6C665-E20A-41FA-AA29-9B608E07C7CC}"
+       },
+       {
+        "Id": "979765101",
+        "Name": "WIN",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\WIN",
+        "GUID": "{ED84E741-F38B-40FB-9CB5-C0427E631E8E}"
        },
        {
         "Id": "1646090112",
@@ -1662,12 +1910,18 @@
         "Name": "segment_22",
         "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\segment_22",
         "GUID": "{414CDCA8-1D90-47A7-817A-8AD259D23CEB}"
+       },
+       {
+        "Id": "2044049779",
+        "Name": "DEAD",
+        "ObjectPath": "\\States\\Default Work Unit\\MusicSegment\\DEAD",
+        "GUID": "{14FFB073-871C-43CC-B67C-73941F49AEAF}"
        }
       ]
      }
     ]
    }
   ],
-  "FileHash": "{23FC5DCB-DE21-AC56-8C6F-26E5F82DC7C4}"
+  "FileHash": "{7D55F960-62F7-B177-C3D1-EC562A16E7B0}"
  }
 }
